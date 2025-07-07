@@ -125,11 +125,11 @@ demographic_check <- function(reference_population,
     ggplot2::theme_bw() +
     ggplot2::labs(x = "Age group", y = "Percent of population", fill = "", color = "") +
     ggplot2::scale_y_continuous(labels = scales::comma) +
-    ggplot2::theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 45, hjust = 1)) +
     g
 
   #Combined plot
-  combined_plot <- (demographic_plots$population_plot + theme(legend.position = "none"))/( demographic_plots$age_breakdown_plot + theme(legend.position = "bottom"))
+  combined_plot <- (population_plot + theme(legend.position = "none"))/( age_breakdown_plot + theme(legend.position = "bottom"))
 
   # -------------------------
   # Return plots

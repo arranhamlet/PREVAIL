@@ -72,13 +72,13 @@ summary_plots <- function(model_run, params) {
 
   cumulative_case_plot <- ggplot2::ggplot(
     cumulative_cases,
-    ggplot2::aes(x = time, y = cum_median, ymin = cum_lower, ymax = cum_upper)
+    ggplot2::aes(x = time / 365 + year_start - 1, y = cum_median, ymin = cum_lower, ymax = cum_upper)
   ) +
     ggplot2::geom_line() +
     ggplot2::geom_ribbon(alpha = 0.25) +
     ggplot2::scale_y_continuous(labels = scales::comma) +
     ggplot2::scale_x_continuous(breaks = scales::breaks_pretty()) +
-    ggplot2::labs(x = "", y = "") +
+    ggplot2::labs(x = "", y = "Cumulative cases") +
     ggplot2::theme_bw()
 
   # --- Weekly state summaries for plotting ---
@@ -161,14 +161,19 @@ summary_plots <- function(model_run, params) {
   susceptibility_data[, age_group_label := factor(age, levels = seq_len(n_labels), labels = age_group_labels)]
 
   latest_year <- max(susceptibility_data$year)
+
   susceptibility_plot <- ggplot2::ggplot(
     susceptibility_data[year == latest_year],
     ggplot2::aes(x = age_group_label, y = prop, fill = status)
   ) +
     ggplot2::geom_bar(stat = "identity") +
-    ggplot2::labs(x = "", y = "Proportion", fill = "") +
+    ggplot2::labs(x = "", y = "Percent", fill = "") +
     ggplot2::scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
-    ggplot2::theme_bw()
+    ggplot2::theme_bw() +
+    ggplot2::theme(legend.position = "bottom",
+                   axis.text.x = ggplot2::element_text(angle = 45,
+                                                       hjust = 1)) +
+    ggplot2::guides(fill = ggplot2::guide_legend(ncol = 2))
 
   # --- Vaccination coverage plot ---
   vac_cov <- dplyr::mutate(susceptibility_data,
@@ -188,7 +193,7 @@ summary_plots <- function(model_run, params) {
     ggplot2::aes(x = year, y = prop)
   ) +
     ggplot2::geom_line() +
-    ggplot2::labs(x = "", y = "Vaccination coverage (total population)") +
+    ggplot2::labs(x = "", y = "Population vaccination coverage") +
     ggplot2::scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
     ggplot2::scale_x_continuous(breaks = scales::breaks_pretty()) +
     ggplot2::coord_cartesian(ylim = c(0, 1)) +

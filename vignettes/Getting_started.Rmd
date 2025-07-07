@@ -14,8 +14,6 @@ if (requireNamespace("PREVAIL", quietly = TRUE)) {
   library(PREVAIL)
 } else if (requireNamespace("devtools", quietly = TRUE)) {
   devtools::load_all()
-
-  
 }
 
 # library(tidyverse)
@@ -194,35 +192,21 @@ The function returns a named list containing:
 
 - `cumulative_case_plot`: A cumulative incidence plot with uncertainty bands.
 
-- `vaccination_coverage_plot`: A plot of the population level vaccination coverage over time.
-
 - `susceptibility_data`: A weekly `data.table` in long format that shows the evolving proportion of the population in each susceptibility class.
 
-These plots as depicted for this scenario are as follows:
+Here we show the `cumulative_case_plot` and `susceptibility_plot`.
 
 ```{r , echo=FALSE, out.width = '75%', out.height = '75%'}
-knitr::include_graphics("vignette_img/vignette_plot_2.jpg", error = FALSE)
+knitr::include_graphics("vignette_img/vignette_plot_5.jpg", error = FALSE)
 ```
 
-Compartment time series for key states. Illustrates epidemic cycles and changes in population immunity.
+Cumulative cases over time. Note the rapid flattening after widespread vaccination and when cases are switched due to `WHO_seed_switch = TRUE`.
 
 ```{r , echo=FALSE, out.width = '75%', out.height = '75%'}
 knitr::include_graphics("vignette_img/vignette_plot_3.jpg", error = FALSE)
 ```
 
 Baseline age-specific immunity profile. Younger ages tend to have vaccine-derived protection; older ages have more infection-derived immunity.
-
-```{r , echo=FALSE, out.width = '75%', out.height = '75%'}
-knitr::include_graphics("vignette_img/vignette_plot_4.jpg", error = FALSE)
-```
-
-Cumulative cases over time. Note the rapid flattening after widespread vaccination.
-
-```{r , echo=FALSE, out.width = '75%', out.height = '75%'}
-knitr::include_graphics("vignette_img/vignette_plot_5.jpg", error = FALSE)
-```
-
-Historical vaccination coverage, 1950 to present.
 
 # 5. Calculate current susceptibility and prepare for onward projections.
 

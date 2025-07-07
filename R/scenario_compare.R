@@ -4,8 +4,7 @@
 #' 1. Combining case output data and generating comparative line and ribbon plots.
 #' 2. Producing summary statistics including peak and total cases.
 #' 3. Generating cumulative case trajectories.
-#' 4. Creating boxplots of peak and total case distributions (requires simulated `run` column).
-#' 5. Comparing susceptible proportions over time between the scenarios.
+#' 4. Comparing susceptible proportions over time between the scenarios.
 #'
 #' @param scenario_1 A named list of outputs from scenario 1, including:
 #'   - `select_state_plot$data`: Time-series summary data (`data.table`)
@@ -28,6 +27,7 @@
 #' @importFrom tidyr pivot_longer
 #' @importFrom scales comma percent_format pretty_breaks
 #' @importFrom patchwork wrap_table plot_layout
+#' @importFrom flextable flextable set_header_labels colformat_num fontsize
 #' @export
 scenario_compare <- function(scenario_1, scenario_2) {
 
@@ -94,25 +94,32 @@ scenario_compare <- function(scenario_1, scenario_2) {
   # Add new column for Susceptible % Increase (only in difference row)
   case_summary_full[, susceptible_pct_increase := c(sprintf("%.1f%%", max_susc_1 * 100), sprintf("%.1f%%", max_susc_2 * 100), sprintf("%.1f%%", percent_increase_susc))]
 
-  # --- Format summary statistics as a gt table ---
-  case_summary_format <- gt::gt(case_summary_full) %>%
-    gt::fmt_number(columns = where(is.numeric), decimals = 0, use_seps = TRUE) %>%
-    gt::cols_label(
-      type                       = "Scenario",
-      peak_median_cases          = "Peak Median",
-      time_of_peak               = "Time of Peak",
-      total_median_cases         = "Total Median",
-      total_lower_cases          = "Total Lower",
-      total_upper_cases          = "Total Upper",
-      susceptible_pct_increase   = "Susceptible % Increase"
+  # --- Format summary statistics as a flextable ---
+    case_summary_format <- case_summary_full %>%
+    dplyr::mutate(dplyr::across(where(is.numeric), \(x) round(x, 0))) %>%
+    flextable::flextable() %>%
+    flextable::set_header_labels(
+      type                     = "Scenario",
+      peak_median_cases        = "Peak Median",
+      time_of_peak             = "Time of Peak",
+      total_median_cases       = "Total Median",
+      total_lower_cases        = "Total Lower",
+      total_upper_cases        = "Total Upper",
+      susceptible_pct_increase = "Susceptible % Increase"
     ) %>%
-    gt::tab_options(data_row.padding = gt::px(3)) %>%
-    gt::tab_style(
-      style = gt::cell_text(weight = "bold"),
-      locations = gt::cells_column_labels(gt::everything())
+    flextable::colformat_num(
+      j = which(sapply(case_summary_full, is.numeric)),
+      digits = 0,
+      big.mark = ","
     ) %>%
-    gt::opt_table_font(font = "sans") %>%
-    gt::opt_row_striping()
+    flextable::fontsize(size = 12, part = "all") %>%
+    flextable::bold(part = "header") %>%
+    flextable::padding(padding = 3, part = "all") %>%
+    flextable::theme_zebra() %>%
+    flextable::font(fontname = "sans", part = "all") %>%
+    flextable::autofit() %>%
+    flextable::set_table_properties(width = 1, layout = "autofit") %>%
+    flextable::align(j = NULL, align = "center", part = "all")
 
   # --- Combine cumulative trajectories ---
   cumulative_cases <- data.table::rbindlist(list(
@@ -152,13 +159,13 @@ scenario_compare <- function(scenario_1, scenario_2) {
     ggplot2::scale_x_continuous(breaks = scales::pretty_breaks())
 
   # --- Combine all plots and table ---
-  summary_linegraphs <- (
+  summary_linegraphs <- ((
     (subset_case_plot + ggplot2::theme(legend.position = "none")) +
       cumulative_case_plot + ggplot2::theme(legend.position = "none") +
       susceptibility_plot +
       patchwork::plot_layout(guides = "collect")
   ) /
-    patchwork::wrap_table(case_summary_format, panel = "full")
+    flextable::gen_grob(case_summary_format, fit = "width", scaling = "min")) + plot_layout(heights = c(4, 1))
 
   # --- Return named list of results ---
   list(

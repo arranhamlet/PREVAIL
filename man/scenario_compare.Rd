@@ -26,6 +26,5 @@ This function compares two transmission scenarios by:
 1. Combining case output data and generating comparative line and ribbon plots.
 2. Producing summary statistics including peak and total cases.
 3. Generating cumulative case trajectories.
-4. Creating boxplots of peak and total case distributions (requires simulated `run` column).
-5. Comparing susceptible proportions over time between the scenarios.
+4. Comparing susceptible proportions over time between the scenarios.
 }

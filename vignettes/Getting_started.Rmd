@@ -61,7 +61,7 @@ pacman::p_load(
 
 # 2. Load and Process Parameters
 
-To run our model, we need to first prepare our parameters. To do this, we use the function `data_load_process_wrapper()`. This function loads the data included in the package on demography, vaccination coverage, and disease dynamics. In order to run the model, we just need to specify a few arguments.
+Before running the model, you must assemble all demographic, vaccination, and disease parameters tailored for your scenario. The `data_load_process_wrapper()` function consolidates all this information using package datasets.
 
 **iso** - The 3 letter country code that specifies which UN recognised country or territory we are interested in. This will determine our demography, vaccination coverage and prior disease exposure. For a full list please see `data(PREVAIL_locations)`. In this example we will use "PSE" for Palestine.
 
@@ -157,6 +157,8 @@ demographic_plots <- demographic_check(
 demographic_plots$combined_plot
 ```
 
+*Why?* - To ensure your simulation is built on realistic demography, and that population aging and growth trends match external data.
+
 ```{r , echo=FALSE, out.width = '75%', out.height = '75%'}
 knitr::include_graphics("vignette_img/vignette_plot_1.jpg", error = FALSE)
 ```
@@ -202,27 +204,25 @@ These plots as depicted for this scenario are as follows:
 knitr::include_graphics("vignette_img/vignette_plot_2.jpg", error = FALSE)
 ```
 
-Time series of all key model compartments: susceptible, exposed, infectious, infectious severe, recovered, recovered with complications, total population, and incident cases. The panels highlight epidemic cycles and long-term transitions in population immunity structure, as well as the demographic trends driving overall population growth.
- 
+Compartment time series for key states. Illustrates epidemic cycles and changes in population immunity.
+
 ```{r , echo=FALSE, out.width = '75%', out.height = '75%'}
 knitr::include_graphics("vignette_img/vignette_plot_3.jpg", error = FALSE)
 ```
 
-Age-stratified distribution of population immunity at baseline, showing the proportion of each age group classified as susceptible, vaccine-derived protected, infection-derived protected, or with hybrid protection (both vaccine and infection). Younger age groups show a higher proportion of vaccine-derived immunity, while older age groups are dominated by infection-derived protection, reflecting historical vaccination rollout and disease transmission dynamics.
+Baseline age-specific immunity profile. Younger ages tend to have vaccine-derived protection; older ages have more infection-derived immunity.
 
 ```{r , echo=FALSE, out.width = '75%', out.height = '75%'}
 knitr::include_graphics("vignette_img/vignette_plot_4.jpg", error = FALSE)
 ```
 
-Cumulative number of cases over time as projected by the model. Large epidemics prior to widespread vaccination are followed by a sharp reduction in incident cases once high coverage is achieved, resulting in the flattening of the cumulative curve after the 1990s.
+Cumulative cases over time. Note the rapid flattening after widespread vaccination.
 
 ```{r , echo=FALSE, out.width = '75%', out.height = '75%'}
 knitr::include_graphics("vignette_img/vignette_plot_5.jpg", error = FALSE)
 ```
 
-Time series of estimated population-level vaccination coverage from 1950 to present. The rapid increase in coverage during the late 1980s and 1990s reflects scale-up of routine immunisation services, with a subsequent plateau and minor fluctuations in recent years.
-
-
+Historical vaccination coverage, 1950 to present.
 
 # 5. Calculate current susceptibility and prepare for onward projections.
 
@@ -336,36 +336,51 @@ comparison <- scenario_compare(
 The function returns a list with the following components:
 
 - `individual_plots`: Which is comprised of
-  - A **weekly time-series** of median cases for both scenarios with uncertainty ribbons.
-  - A **cumulative case trajectory** plot showing the build-up of cases over time.
-  - A **susceptibility trajectory** over time, highlighting changes in the proportion of the population classified as susceptible.
+  - A weekly time-series of median cases for both scenarios with uncertainty ribbons.
+  - A cumulative case trajectory plot showing the build-up of cases over time.
+  - A susceptibility trajectory over time, highlighting changes in the proportion of the population classified as susceptible.
 
 - `summary_table`: A formatted `gt` table that includes:
-  - **Peak median cases** and the **time of peak**.
-  - **Total cases** with uncertainty bounds.
-  - The **percentage increase in susceptible population** at the timepoint of maximum difference between scenarios.
+  - Peak median cases and the time of peak.
+  - Total cases with uncertainty bounds.
+  - The percentage increase in susceptible population at the timepoint of maximum difference between scenarios.
   
 - `summary_plot`: A composite plot combining:
-  - The **weekly time-series** plot.
-  - The **cumulative case trajectory** plot.
-  - The **susceptibility trajectory** plot.
-  - The **summary table** plot.
+  - The weekly time-series plot.
+  - The cumulative case trajectory plot.
+  - The susceptibility trajectory plot.
+  - The summary table plot.
   
+Here we show `summary_plot`.
+
+```{r , echo=FALSE, out.width = '75%', out.height = '75%'}
+knitr::include_graphics("vignette_img/vignette_plot_6.jpg", error = FALSE)
+```
+
 ### Interpreting the Outputs
 
 This function is designed for side-by-side comparison of different scenario runs from the same model structure.
 
-The **case plots** illustrate both the scale and timing of outbreaks, allowing visual inspection of:
-- **Delays** in peak infection
-- **Reduction** in overall burden
-- **Shifts** in outbreak shape due to interventions
+The case plots illustrate both the scale and timing of outbreaks, allowing visual inspection of:
+- Delays in peak infection
+- Reduction in overall burden
+- Shifts in outbreak shape due to interventions
 
-The **susceptibility plot** shows the dynamics of the proportion of the population still at risk over time. This is particularly useful for evaluating how vaccination or prior immunity influence long-term vulnerability.
+The susceptibility plot shows the dynamics of the proportion of the population still at risk over time. This is particularly useful for evaluating how vaccination or prior immunity influence long-term vulnerability.
 
-The **summary table** allows easy extraction of numerical differences, including:
+The summary table allows easy extraction of numerical differences, including:
 - Differences in total and peak cases.
 - Time shifts in the epidemic peak.
 - Increase or reduction in susceptibility over time, useful for understanding potential rebound risks.
 
 > **Note:** Both scenarios must include the same structure of outputs — including `select_state_plot`, `susceptibility_data`, and `cumulative_case_plot`. Each scenario should be the result of a full call to `summary_plots()` or similar.
+
+# 7. Final notes
+
+This workflow provides a fully reproducible, end-to-end pipeline for scenario modeling using PREVAIL. By working through this vignette, users can:
+
+* Understand the structure and logic of each function.
+* Verify demographic realism before simulating.
+* Summarize and compare outcomes across multiple scenarios.
+
 

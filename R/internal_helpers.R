@@ -410,7 +410,8 @@ df_to_array <- function(df) {
 #' @param updates Optional `data.frame` with columns `dim1`, `dim2`, ..., and `value` to override specific positions.
 #'
 #' @return A `data.frame` with columns `ID`, `dim1`, ..., and `value`, representing all array coordinates.
-#' @import data.table
+#'
+#' @importFrom data.table setDT fifelse
 #' @keywords internal
 generate_array_df <- function(dim1, dim2 = NULL, dim3 = NULL, dim4 = NULL, dim5 = NULL, dim6 = NULL,
                               default_value = 0, updates = NULL) {

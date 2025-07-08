@@ -17,5 +17,5 @@ utils::globalVariables(c(
   "target_pop_description", "time", "total_median", "type", "upper",
   "vaccination", "vaccination_name", "vaccine", "vaccine_code",
   "vaccine_description", "value", "value.update", "weight", "where",
-  "who_region", "."
+  "who_region", ".", "year", ".I", ".N"
 ))

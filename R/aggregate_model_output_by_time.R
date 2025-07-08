@@ -13,7 +13,7 @@
 #' @param start_date A string date (e.g. "2020-01-01") indicating the model time origin.
 #'
 #' @return A data.table with time-aggregated results.
-#' @importFrom data.table as.data.table
+#' @importFrom data.table as.data.table as.IDate
 #' @importFrom lubridate floor_date
 #' @export
 aggregate_model_output_by_time <- function(df, timestep = "day", target_unit = "week", start_date = "2000-01-01") {
@@ -36,9 +36,9 @@ aggregate_model_output_by_time <- function(df, timestep = "day", target_unit = "
   # Convert model time to actual date and period
   dt[, date := date0 + time * step_days]
   dt[, period := switch(target_unit,
-                        week  = as.IDate(lubridate::floor_date(date, unit = "week")),
-                        month = as.IDate(lubridate::floor_date(date, unit = "month")),
-                        year  = as.IDate(lubridate::floor_date(date, unit = "year")),
+                        week  = data.table::as.IDate(lubridate::floor_date(date, unit = "week")),
+                        month = data.table::as.IDate(lubridate::floor_date(date, unit = "month")),
+                        year  = data.table::as.IDate(lubridate::floor_date(date, unit = "year")),
                         stop("Unsupported target_unit. Use 'week', 'month', or 'year'.")
   )]
 

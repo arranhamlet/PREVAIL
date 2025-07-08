@@ -38,7 +38,7 @@ summary_plots <- function(model_run, params) {
 
   # --- Filter and label relevant model states ---
   state_filter <- c("total_pop", "S", "E", "I", "R", "Is", "Rc", "new_case")
-  model_run_plot <- model_run[state %chin% state_filter & age == "All"]
+  model_run_plot <- model_run[state %in% state_filter & age == "All"]
 
   model_run_plot[, state_plot := data.table::fcase(
     state == "S",         "Susceptible",
@@ -104,7 +104,7 @@ summary_plots <- function(model_run, params) {
 
   # --- Susceptibility snapshot by age/year ---
   susceptibility_data_all <- model_run[
-    state %chin% c("S", "E", "I", "R", "Is", "Rc") & age != "All" & time %% 365 == 1L
+    state %in% c("S", "E", "I", "R", "Is", "Rc") & age != "All" & time %% 365 == 1L
   ][, year := year_start + floor(time / 365)][
     , .SD[.N], by = .(year, age, risk, vaccination, run, state)
   ][, status := data.table::fcase(
@@ -119,7 +119,7 @@ summary_plots <- function(model_run, params) {
 
   # --- Detailed weekly susceptibility proportions ---
   detailed_susceptibility <- model_run[
-    state %chin% c("S", "E", "I", "R", "Is", "Rc") & age != "All" & time %% 7 == 1L
+    state %in% c("S", "E", "I", "R", "Is", "Rc") & age != "All" & time %% 7 == 1L
   ][, status := data.table::fcase(
     state == "S" & vaccination == 1, "Susceptible",
     state == "S", "Vaccine derived protection",

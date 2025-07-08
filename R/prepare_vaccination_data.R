@@ -78,7 +78,9 @@ expand_pre1980_vaccination <- function(processed_vaccination, vaccination_pre198
 #' @param vaccination_pre1980 Data frame of historical vaccination introduction assumptions.
 #'
 #' @return A named list of parameters including coverage arrays and seeding inputs.
-#' @import data.table
+#'
+#' @importFrom data.table data.table setDT rbindlist
+#' @importFrom stats setNames
 #' @keywords internal
 case_vaccine_to_param <- function(
     demog_data,

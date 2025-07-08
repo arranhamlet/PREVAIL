@@ -31,7 +31,6 @@ Imports:
     stringr,
     odin2,
     dust2,
-    squire.page,
     monty,
     purrr,
     patchwork,
@@ -41,7 +40,6 @@ Imports:
     readxl
 Remotes:
     mrc-ide/dust2,
-    mrc-ide/squire.page,
     mrc-ide/monty,
     mrc-ide/odin2
 LinkingTo:

@@ -11,7 +11,6 @@ pacman::p_load(
   here,
   rlang,
   data.table,
-  squire.page,
   tidyverse
 )
 

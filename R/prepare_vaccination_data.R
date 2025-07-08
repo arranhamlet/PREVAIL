@@ -10,7 +10,6 @@
 #'
 #' @return A data frame of additional rows to prepend to coverage time series.
 #' @importFrom data.table as.data.table setDT setnames rbindlist copy data.table
-#' @importFrom squire.page get_WHO_region get_income_group
 #' @keywords internal
 expand_pre1980_vaccination <- function(processed_vaccination, vaccination_pre1980, disease, iso) {
   # Ensure input is data.table
@@ -25,8 +24,8 @@ expand_pre1980_vaccination <- function(processed_vaccination, vaccination_pre198
 
   vac_pre1980_sub <- vac_pre1980_sub[
     tolower(disease_n) == disease &
-      who_region == paste0(squire.page::get_WHO_region(iso), "O") &
-      income_group == as.character(squire.page::get_income_group(iso))
+      who_region == paste0(get_WHO_region(iso), "O") &
+      income_group == as.character(get_income_group(iso))
   ]
 
   if (nrow(vac_pre1980_sub) == 0 || nrow(processed_vaccination) == 0) return(processed_vaccination)

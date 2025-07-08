@@ -39,7 +39,10 @@ Imports:
     lubridate,
     rlang,
     abind,
-    scales
+    scales,
+    dust2,
+    squire.page,
+    monty
 Remotes:
     mrc-ide/dust2
     mrc-ide/squire.page

@@ -1,5 +1,5 @@
 # PREVAIL
-<img src="img/PREVAIL_logo_upd.png" align="right" width=20% height=20% />
+<img src="img/PREVAIL_logo_upd.png" alt="PREVAIL logo" align="right" width=20% height=20% />
 
 **PR**ojection of **E**pidemics and **VA**ccination **I**mpact under **L**apses in coverage
 

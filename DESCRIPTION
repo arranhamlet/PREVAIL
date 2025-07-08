@@ -31,7 +31,6 @@ Imports:
     reshape2,
     collapse,
     tibble,
-    squire.page,
     patchwork,
     magrittr,
     data.table,
@@ -45,7 +44,7 @@ Remotes:
     mrc-ide/dust2
     mrc-ide/squire.page
     mrc-ide/monty
-LinkingTo: 
+LinkingTo:
     cpp11, 
     dust2, 
     monty

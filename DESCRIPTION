@@ -16,32 +16,31 @@ Description:
     refugee settings or conflict zones, where the probability of outbreaks is high and 
     intervention strategies must be robust and responsive. It includes flexible input 
     handling, realistic population dynamics, and tools to project cases, attack rates, 
-    and impact of delayed or proactive vaccination campaigns. PREVAIL is supported by 
-    Community Jameel and builds on work funded by the FCDO for mortality rate modeling 
-    in Gaza.
+    and impact of delayed or disrupted immunization activities.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-LazyDataCompression: xz
+RoxygenNote: 7.2.3
 Imports:
-    dplyr,
-    tidyr,
-    purrr,
-    reshape2,
-    collapse,
-    tibble,
-    patchwork,
-    magrittr,
-    data.table,
-    flextable,
+    Rcpp,
     ggplot2,
-    lubridate,
-    rlang,
-    abind,
-    scales,
+    data.table,
+    tidyr,
+    magrittr,
+    dplyr,
+    stringr,
+    odin,
+    odin.dust,
+    dust,
     dust2,
     squire.page,
-    monty
+    monty,
+    purrr,
+    patchwork,
+    forcats,
+    collapse,
+    scales,
+    readxl
 Remotes:
     mrc-ide/dust2
     mrc-ide/squire.page

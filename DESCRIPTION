@@ -41,6 +41,10 @@ Imports:
     rlang,
     abind,
     scales
+Remotes:
+    mrc-ide/dust2
+    mrc-ide/squire.page
+    mrc-ide/monty
 LinkingTo: 
     cpp11, 
     dust2, 

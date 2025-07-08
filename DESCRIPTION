@@ -22,26 +22,24 @@ Encoding: UTF-8
 LazyData: true
 LazyDataCompression: xz
 Imports:
-    Rcpp,
     ggplot2,
     data.table,
     tidyr,
     magrittr,
     dplyr,
-    stringr,
-    odin2,
+    abind,
+    flextable,
+    lubridate,
+    reshape2,
+    rlang,
+    tibble,
     dust2,
-    monty,
     purrr,
     patchwork,
-    forcats,
     collapse,
-    scales,
-    readxl
+    scales
 Remotes:
     mrc-ide/dust2,
-    mrc-ide/monty,
-    mrc-ide/odin2
 LinkingTo:
     cpp11, 
     dust2, 

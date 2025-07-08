@@ -193,3 +193,52 @@
 #' @source Internal compilation for use within the PREVAIL framework
 "PREVAIL_locations"
 
+#' Names of Data Objects Included in the PREVAIL Package
+#'
+#' Provides the names of datasets included in the PREVAIL package. Useful for users to quickly reference and access internal data resources.
+#'
+#' @format A character vector with 13 elements:
+#' \describe{
+#'   \item{contact_matricies}{Contact matrices describing mixing patterns between age groups.}
+#'   \item{disease_parameters}{Disease-specific parameters used in transmission modeling.}
+#'   \item{fertility}{Fertility rates data.}
+#'   \item{full_disease_df}{Complete dataframe containing disease metadata and parameters.}
+#'   \item{migration}{Migration data including numbers and distributions.}
+#'   \item{mortality}{Mortality rate data.}
+#'   \item{population_all}{Total population data by age and location.}
+#'   \item{population_female}{Female-specific population data by age and location.}
+#'   \item{routine_vaccination_data}{Data on routine vaccination coverage.}
+#'   \item{sia_vaccination}{Data on supplementary immunization activities (SIAs).}
+#'   \item{vaccination_pre1980}{Historical vaccination data prior to 1980.}
+#'   \item{vaccination_schedule}{Recommended vaccination schedules.}
+#'   \item{vaccine_parameters}{Parameters describing vaccine characteristics and efficacy.}
+#' }
+#'
+#' @source PREVAIL internal datasets
+"rds_names"
+
+#' WHO Supplementary Immunization Activities (SIA) Vaccination Data
+#'
+#' A dataset containing details of Supplementary Immunization Activities (SIAs) compiled by the World Health Organization (WHO). This data records vaccine campaign activities, coverage, and targeted cohorts for various diseases across countries.
+#'
+#' @format A data frame with the following columns:
+#' \describe{
+#'   \item{\code{d_v_a_id}}{Numeric. Vaccine identifier code.}
+#'   \item{\code{country}}{Character. ISO 3-letter country code.}
+#'   \item{\code{year}}{Numeric. Year when the vaccination activity occurred.}
+#'   \item{\code{age}}{Numeric. Targeted age group for vaccination.}
+#'   \item{\code{fvps}}{Numeric. Number of fully vaccinated persons.}
+#'   \item{\code{cohort}}{Numeric. Total population cohort targeted for vaccination.}
+#'   \item{\code{coverage}}{Numeric. Vaccination coverage as a proportion of the targeted cohort.}
+#'   \item{\code{source}}{Character. Source of vaccination data (e.g., SIA).}
+#'   \item{\code{disease}}{Character. Name of the targeted disease.}
+#'   \item{\code{vaccine}}{Character. Vaccine used in the campaign.}
+#'   \item{\code{activity}}{Character. Type of vaccination activity (e.g., campaign, catch-up).}
+#' }
+#'
+#' @examples
+#' head(WHO_vaccination_sia)
+#'
+#' @source World Health Organization (WHO) SIA database.
+"WHO_vaccination_sia"
+

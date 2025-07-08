@@ -74,11 +74,20 @@ aggregate_inputs <- function(preprocessed,
   death_upd <- preprocessed$processed_demographic_data$crude_death %>%
     dplyr::mutate(value = value / 365 * weight_reformatted$value)
 
+  #Update vaccination
+  vaccination_coverage_expanded <- generate_array_df(
+    dim1 = preprocessed$processed_demographic_data$input_data$n_age,
+    dim2 = preprocessed$processed_demographic_data$input_data$n_vacc,
+    dim3 = preprocessed$processed_demographic_data$input_data$n_risk,
+    dim4 = max(cv_params$vaccination_coverage$dim4),
+    updates = cv_params$vaccination_coverage
+  )
+
   inputs <- list(
     age_beta_mod   = aggregate_age_structure(age_vaccination_beta_modifier, age_breaks = new_age_breaks, method = "weighted.mean", weights = weight_reformatted, time_var = NULL),
-    vacc_cov       = aggregate_age_structure(cv_params$vaccination_coverage, age_breaks = new_age_breaks, method = "weighted.mean", weights = weight_reformatted),
-    N0             = aggregate_age_structure(preprocessed$processed_demographic_data$N0, age_breaks = new_age_breaks, method = "sum"),
-    crude_death    = aggregate_age_structure(death_upd, age_breaks = new_age_breaks, method = "sum"),
+    vacc_cov       = aggregate_age_structure(vaccination_coverage_expanded, age_breaks = new_age_breaks, method = "weighted.mean", weights = weight_reformatted, time_var = "dim4"),
+    N0             = aggregate_age_structure(preprocessed$processed_demographic_data$N0, age_breaks = new_age_breaks, method = "sum", time_var = NULL),
+    crude_death    = aggregate_age_structure(death_upd, age_breaks = new_age_breaks, method = "sum", time_var = "dim3"),
     crude_birth    = aggregate_age_structure(crude_birth_augmented %>% dplyr::select(-population), age_breaks = new_age_breaks, method = "sum", time_var = "dim2"),
     mig_in         = aggregate_age_structure(preprocessed$processed_demographic_data$migration_in_number %>% dplyr::mutate(value = value / 365), age_breaks = new_age_breaks, method = "sum", time_var = "dim4"),
     mig_dist       = aggregate_age_structure(preprocessed$processed_demographic_data$migration_distribution_values, age_breaks = new_age_breaks, method = "weighted.mean", weights = weight_reformatted, time_var = "dim2"),

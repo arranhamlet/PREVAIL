@@ -19,9 +19,4 @@ A numeric vector of length `n_bins` (or fewer if `vec` has fewer elements),
 This function divides a numeric vector into approximately equal-sized groups (bins),
 then computes the sum of values within each bin.
 }
-\examples{
-# Split and sum a vector of length 10 into 3 bins
-split_and_sum(1:10, 3)
-
-}
 \keyword{internal}

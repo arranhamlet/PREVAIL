@@ -121,7 +121,7 @@ demographic_check <- function(reference_population,
     data = final_age,
     mapping = ggplot2::aes(x = age_group, y = prop * 100, color = label, fill = label)
   ) +
-    ggplot2::geom_col(position = ggplot2::position_dodge(), linewidth = 1, show.legend = TRUE) +
+    ggplot2::geom_col(position = ggplot2::position_dodge2(padding = 0.2), linewidth = 1, show.legend = TRUE) +
     ggplot2::theme_bw() +
     ggplot2::labs(x = "Age group", y = "Percent of population", fill = "", color = "") +
     ggplot2::scale_y_continuous(labels = scales::comma) +

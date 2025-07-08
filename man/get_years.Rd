@@ -21,11 +21,4 @@ This helper function returns a sequence of years based on a full vector of years
 and optional start and end bounds. If either `start` or `end` is an empty string,
 the minimum or maximum value in `yrs` is used, respectively.
 }
-\examples{
-get_years(2000:2020, start = 2005, end = 2010)
-get_years(2000:2020, start = "", end = 2010)
-get_years(2000:2020, start = 2005, end = "")
-get_years(2000:2020, start = "", end = "")
-
-}
 \keyword{internal}

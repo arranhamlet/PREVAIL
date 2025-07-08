@@ -156,7 +156,7 @@ summary_plots <- function(model_run, params) {
   ]
 
   n_labels <- length(age_groups) - 1
-  age_group_labels <- paste0(age_groups[-length(age_groups)], "–", age_groups[-1] - 1)
+  age_group_labels <- paste0(age_groups[-length(age_groups)], "-", age_groups[-1] - 1)
   age_group_labels[n_labels] <- paste0(age_groups[n_labels], "+")
   susceptibility_data[, age_group_label := factor(age, levels = seq_len(n_labels), labels = age_group_labels)]
 

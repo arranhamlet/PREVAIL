@@ -122,11 +122,7 @@ param_packager <- function(
     seeded = format_array(seeded, dims_4d_seed),
     tt_seeded = tt_seeded,
     no_seeded_changes = length(tt_seeded),
-    aging_rate = {
-      x <- format_array(data.frame(value = aging_rate, dim1 = 1:n_age), n_age)
-      x[n_age] <- 0
-      x
-    },
+    aging_rate = format_array(data.frame(value = aging_rate, dim1 = 1:n_age), n_age),
     simp_birth_death = simp_birth_death,
     tt_birth_changes = tt_birth_changes,
     no_birth_changes = length(tt_birth_changes),

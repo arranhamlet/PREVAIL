@@ -21,8 +21,6 @@
 #' @importFrom data.table rbindlist data.table :=
 #' @importFrom ggplot2 ggplot aes geom_line geom_ribbon labs
 #'   scale_y_continuous scale_x_continuous theme_bw theme
-#' @importFrom gt gt fmt_number cols_label tab_options tab_style
-#'   cell_text cells_column_labels opt_table_font opt_row_striping
 #' @importFrom dplyr mutate select
 #' @importFrom tidyr pivot_longer
 #' @importFrom scales comma percent_format pretty_breaks

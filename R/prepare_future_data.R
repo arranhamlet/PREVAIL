@@ -15,7 +15,9 @@
 #' @param current_susceptibility A named list with updated `S0`, `Rpop0` values reflecting the final simulation state.
 #'
 #' @return A modified version of the `params` list ready to run forward simulations under future scenarios.
-#'
+#' @importFrom abind abind
+#' @importFrom data.table last
+#' @importFrom stats rbinom
 #' @export
 prepare_future_data <- function(params, future_events, current_susceptibility) {
 

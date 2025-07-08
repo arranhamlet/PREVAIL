@@ -119,12 +119,6 @@ project_to_symmetric_doubly_stochastic <- function(mat, max_iter = 1000, tol = 1
 #'
 #' @return A numeric vector of consecutive years from `start` to `end` (inclusive).
 #'
-#' @examples
-#' get_years(2000:2020, start = 2005, end = 2010)
-#' get_years(2000:2020, start = "", end = 2010)
-#' get_years(2000:2020, start = 2005, end = "")
-#' get_years(2000:2020, start = "", end = "")
-#'
 #' @keywords internal
 get_years <- function(yrs, start, end) {
   start <- if (start == "") min(yrs, na.rm = TRUE) else as.numeric(start)
@@ -145,11 +139,6 @@ get_years <- function(yrs, start, end) {
 #'
 #' @return A numeric matrix with the same number of rows as `mat` and `n_bins` columns,
 #'   where each column represents the sum of values from grouped original age bins.
-#'
-#' @examples
-#' # Collapse a 5x10 matrix into 5x4 matrix with 4 age bins
-#' mat <- matrix(1:50, nrow = 5, ncol = 10)
-#' collapse_age_bins(mat, 4)
 #'
 #' @keywords internal
 collapse_age_bins <- function(mat, n_bins) {
@@ -172,10 +161,6 @@ collapse_age_bins <- function(mat, n_bins) {
 #'
 #' @return A numeric vector of length `n_bins` (or fewer if `vec` has fewer elements),
 #'   where each element is the sum of values in a bin.
-#'
-#' @examples
-#' # Split and sum a vector of length 10 into 3 bins
-#' split_and_sum(1:10, 3)
 #'
 #' @keywords internal
 split_and_sum <- function(vec, n_bins) {

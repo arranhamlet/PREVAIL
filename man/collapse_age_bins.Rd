@@ -20,10 +20,4 @@ A numeric matrix with the same number of rows as `mat` and `n_bins` columns,
 This function reduces the number of age bins in a matrix by aggregating adjacent columns (age groups)
 into a specified number of broader bins. Each row is processed independently.
 }
-\examples{
-# Collapse a 5x10 matrix into 5x4 matrix with 4 age bins
-mat <- matrix(1:50, nrow = 5, ncol = 10)
-collapse_age_bins(mat, 4)
-
-}
 \keyword{internal}

@@ -1,19 +1,19 @@
 #' Generate Aggregated Crude Death Output
 #'
-#' This function computes the aggregated crude death rates from a preprocessed demographic dataset,
-#' using weighted average rates across new age bands. It also computes the total number of deaths before
-#' and after aggregation to check for consistency.
+#' Computes aggregated crude death counts and rates across new age bands from preprocessed demographic data.
+#' The function joins crude death rates to population weights, aggregates by new age groups,
+#' and compares total deaths before and after aggregation for consistency checking. Includes a diagnostic plot.
 #'
-#' @param preprocessed A list-like object containing processed demographic data, including `population_data` and `crude_death`.
-#' @param new_age_breaks A numeric vector defining the new age group breaks (e.g., c(0, 1, 5, 15, 50, Inf)).
-#' @param time_factor A numeric value used to convert annual crude death rate to model timestep (e.g., 365 for daily).
+#' @param preprocessed A list-like object containing demographic model inputs, with a component `processed_demographic_data$crude_death`.
+#' @param weight_reformatted A data.frame or tibble with columns `time`, `age`, and `value` providing population weights, usually long-format population data.
+#' @param age_breaks Numeric vector of age group cut points (e.g., `c(0, 5, 10, 15, 20, ..., 80, 100)`).
 #'
-#' @return A list with aggregated crude death data and comparison of total deaths.
+#' @return Invisibly returns `TRUE` if total deaths are preserved after aggregation. Also produces a diagnostic line plot (deaths by time, original vs. aggregated).
 #'
-#' @importFrom dplyr mutate left_join summarise pull group_by
-#' @importFrom tidyr pivot_longer
-#' @importFrom tibble rownames_to_column
+#' @importFrom dplyr mutate left_join summarise pull group_by rename select
+#' @importFrom ggplot2 ggplot aes geom_line theme_bw labs
 #' @keywords internal
+
 generate_crude_death_outputs <- function(preprocessed, weight_reformatted, age_breaks) {
 
   #Set up raw data and join the population weights

@@ -22,8 +22,8 @@ Description:
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+LazyDataCompression: xz
 Imports:
-    odin2,
     dust2,
     dplyr,
     tidyr,
@@ -31,11 +31,16 @@ Imports:
     reshape2,
     collapse,
     tibble,
-    janitor,
     squire.page,
     patchwork,
     magrittr,
-    data.table
+    data.table,
+    flextable,
+    ggplot2,
+    lubridate,
+    rlang,
+    abind,
+    scales
 LinkingTo: 
     cpp11, 
     dust2, 

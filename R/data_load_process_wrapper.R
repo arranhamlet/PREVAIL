@@ -1,19 +1,22 @@
 #' Load and Process All Model Input Data
 #'
 #' This wrapper function loads internal datasets and processes them into structured model input
-#' parameters for a given country, disease, and vaccine. It integrates demographic, vaccination,
-#' and disease data, and formats it for use in the dynamic transmission model.
+#' parameters for a specified country, disease, and vaccine. It integrates demographic, vaccination,
+#' and disease data, formatting them appropriately for use in the dynamic transmission model within PREVAIL.
 #'
-#' @param iso A 3-letter ISO country code.
-#' @param disease Name of the disease (e.g., "measles").
-#' @param R0 A numeric value or vector specifying the basic reproduction number.
-#' @param year_start Optional. Start year for simulation window.
-#' @param year_end Optional. End year for simulation window.
-#' @param WHO_seed_switch Logical. If `TRUE`, applies custom seeding to replicate data reported to the WHO from 1980.
-#' @param aggregate_age Logical. If `TRUE`, aggregates from single-year age groups to custom age groups.
-#' @return A named list of structured parameters for the transmission model.
-#' @keywords external
+#' @param iso A 3-letter ISO country code identifying the country for analysis (e.g., "ETH" for Ethiopia).
+#' @param disease A character string specifying the disease of interest (e.g., "measles", "diphtheria", "pertussis").
+#' @param R0 Numeric scalar or vector specifying the basic reproduction number, defining disease transmissibility.
+#' @param year_start Optional numeric value specifying the first year of the simulation window. Default ("") uses the earliest available data year.
+#' @param year_end Optional numeric value specifying the last year of the simulation window. Default ("") uses the latest available data year.
+#' @param WHO_seed_switch Logical indicating whether to use WHO-style seeding to replicate historical case-reporting patterns (default is `TRUE`).
+#' @param aggregate_age Logical indicating whether to aggregate data from single-year age groups into custom age intervals (default is `TRUE`).
+#' @param new_age_breaks Numeric vector specifying the breakpoints used to aggregate single-year age groups into broader age bands. Default is `c(0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, Inf)`.
+#'
+#' @return A named list containing structured parameters ready for use in the PREVAIL dynamic transmission model.
+#'
 #' @export
+
 data_load_process_wrapper <- function(
     iso,
     disease,
@@ -24,6 +27,8 @@ data_load_process_wrapper <- function(
     aggregate_age = TRUE,
     new_age_breaks = c(0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, Inf)
 ) {
+
+  stopifnot(is.numeric(new_age_breaks), length(new_age_breaks) >= 2)
 
   # ---- Load Package Data ----
   datasets <- list(
@@ -178,7 +183,9 @@ data_load_process_wrapper <- function(
 
   # ---- Update Aging Rate and Reproductive Age Bounds ----
   aging_rate <- if (aggregate_age) {
-    1 / (365 * base::diff(new_age_breaks))
+    age_correct_last <- new_age_breaks
+    age_correct_last[length(age_correct_last)] <- 101
+    1 / (365 * base::diff(age_correct_last))
   } else {
     1 / 365
   }

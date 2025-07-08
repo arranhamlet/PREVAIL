@@ -26,7 +26,6 @@
 #' @importFrom dplyr filter select mutate bind_rows across case_when left_join all_of
 #' @importFrom tidyr expand_grid pivot_longer
 #' @importFrom purrr map_dfr
-#' @importFrom data.table melt
 #' @importFrom tibble tibble rownames_to_column
 #' @importFrom stats setNames
 #' @importFrom reshape2 melt

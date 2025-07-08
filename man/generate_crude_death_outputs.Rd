@@ -7,18 +7,18 @@
 generate_crude_death_outputs(preprocessed, weight_reformatted, age_breaks)
 }
 \arguments{
-\item{preprocessed}{A list-like object containing processed demographic data, including `population_data` and `crude_death`.}
+\item{preprocessed}{A list-like object containing demographic model inputs, with a component `processed_demographic_data$crude_death`.}
 
-\item{new_age_breaks}{A numeric vector defining the new age group breaks (e.g., c(0, 1, 5, 15, 50, Inf)).}
+\item{weight_reformatted}{A data.frame or tibble with columns `time`, `age`, and `value` providing population weights, usually long-format population data.}
 
-\item{time_factor}{A numeric value used to convert annual crude death rate to model timestep (e.g., 365 for daily).}
+\item{age_breaks}{Numeric vector of age group cut points (e.g., `c(0, 5, 10, 15, 20, ..., 80, 100)`).}
 }
 \value{
-A list with aggregated crude death data and comparison of total deaths.
+Invisibly returns `TRUE` if total deaths are preserved after aggregation. Also produces a diagnostic line plot (deaths by time, original vs. aggregated).
 }
 \description{
-This function computes the aggregated crude death rates from a preprocessed demographic dataset,
-using weighted average rates across new age bands. It also computes the total number of deaths before
-and after aggregation to check for consistency.
+Computes aggregated crude death counts and rates across new age bands from preprocessed demographic data.
+The function joins crude death rates to population weights, aggregates by new age groups,
+and compares total deaths before and after aggregation for consistency checking. Includes a diagnostic plot.
 }
 \keyword{internal}

@@ -24,7 +24,6 @@ Encoding: UTF-8
 LazyData: true
 LazyDataCompression: xz
 Imports:
-    dust2,
     dplyr,
     tidyr,
     purrr,

@@ -40,9 +40,9 @@ Imports:
     scales,
     readxl
 Remotes:
-    mrc-ide/dust2
-    mrc-ide/squire.page
-    mrc-ide/monty
+    mrc-ide/dust2,
+    mrc-ide/squire.page,
+    mrc-ide/monty,
     mrc-ide/odin2
 LinkingTo:
     cpp11, 

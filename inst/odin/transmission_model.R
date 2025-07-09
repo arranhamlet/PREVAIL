@@ -176,7 +176,7 @@ Is_after_vaccination[, , ] <- Is_after_aging[i, j, k] + vaccinating_into_Is[i, j
 vaccinating_out_of_Rc[, , ] <- if((j == 1 && n_vacc < 3) || (j %% 2 == 0 && j + 3 > n_vacc) || (j %% 2 == 1 && j > 1 && j + 2 > n_vacc) || Rc_after_aging[i, j, k] <= 0 || vaccination_prop[i, j, k] <= 0) 0 else Binomial(Rc_after_aging[i, j, k], vaccination_prop[i, j, k])
 Rc_after_vaccination[, , ] <- Rc_after_aging[i, j, k] + vaccinating_into_Rc[i, j, k] - vaccinating_out_of_Rc[i, j, k]
 
-
+#Vaccinating into fixed
 vaccinating_into_S[, , ] <- if(j == 3) vaccinating_out_of_S[i, 1, k] else if(j > 3 && j %% 2 == 1) vaccinating_out_of_S[i, j - 2, k] + vaccinating_out_of_S[i, j - 3, k] else 0
 vaccinating_into_E[, , ] <- if(j == 3) vaccinating_out_of_E[i, 1, k] else if(j > 3 && j %% 2 == 1) vaccinating_out_of_E[i, j - 2, k] + vaccinating_out_of_E[i, j - 3, k] else 0
 vaccinating_into_I[, , ] <- if(j == 3) vaccinating_out_of_I[i, 1, k] else if(j > 3 && j %% 2 == 1) vaccinating_out_of_I[i, j - 2, k] + vaccinating_out_of_I[i, j - 3, k] else 0
@@ -189,8 +189,6 @@ vaccinating_into_Rc[, , ] <- if(j == 3) vaccinating_out_of_Rc[i, 1, k] else if(j
 # Waning for S
 waning_from_S_short[, , ] <- if(j %% 2 == 1 && j > 1 && S_after_vaccination[i, j, k] > 0) Binomial(S_after_vaccination[i, j, k], max(min(short_term_waning[j], 1), 0)) else 0
 waning_to_S_long[, 1:(n_vacc - 1), ] <- if(j %% 2 == 0 && j > 1) waning_from_S_short[i, j + 1, k] else 0
-# waning_to_S_long[, , ] <- if(j %% 2 == 0 && j > 1 && j + 1 <= n_vacc) waning_from_S_short[i, j + 1, k] else 0
-# waning_from_S_long[, , ] <- if(j %% 2 == 0 && j > 1 && S_after_vaccination[i, j, k] > 0) Binomial(S_after_vaccination[i, j, k], max(min(long_term_waning[j], 1), 0)) else 0
 waning_from_S_long[, , ] <- if(j %% 2 == 0 && j > 1 && j <= n_vacc && S_after_vaccination[i, j, k] > 0) Binomial(S_after_vaccination[i, j, k], long_term_waning[j]) else 0
 waning_to_S_unvaccinated[, , ] <- if(j == 1 && n_vacc >= 2) waning_from_S_long[i, 2, k] else 0
 S_after_waning[, , ] <- S_after_vaccination[i, j, k] + waning_to_S_long[i, j, k] + waning_to_S_unvaccinated[i, j, k] - waning_from_S_short[i, j, k] - waning_from_S_long[i, j, k] + waning_to_S_short[i, j, k]
@@ -204,7 +202,6 @@ update(S_available_diff) <- total_S_available - total_S_waning
 initial(total_S_waning) <- 0
 initial(total_S_available) <- 0
 initial(S_available_diff) <- 0
-
 
 # Waning for E
 waning_from_E_short[, , ] <- if(j %% 2 == 1 && j > 1 && E_after_vaccination[i, j, k] > 0) Binomial(E_after_vaccination[i, j, k], max(min(short_term_waning[j], 1), 0)) else 0
@@ -249,29 +246,32 @@ migration_distribution <- interpolate(tt_migration, migration_distribution_value
 pos_neg_migration <- if(sum(migration) < 0) -1 else 1
 migration_adjusted[, , ] <- migration[i, j, k] * pos_neg_migration
 
-migration_occuring_S[, , ] <- if(migration_distribution[1] <= 0 || sum(S) <= 0) 0 else Binomial(sum(migration_adjusted), S[i, j, k]/sum(S) * sum(migration_distribution[1])/sum(migration_distribution))
-migration_S[, , ] <- if(migration_distribution[1] <= 0) 0 else Binomial(migration_occuring_S[i, j, k], migration_distribution[1])/sum(migration_distribution)
+
 dim(migration_occuring_S) <- c(n_age, n_vacc, n_risk)
+dim(migration_occuring_E) <- c(n_age, n_vacc, n_risk)
+dim(migration_occuring_I) <- c(n_age, n_vacc, n_risk)
+dim(migration_occuring_R) <- c(n_age, n_vacc, n_risk)
+dim(migration_occuring_Is) <- c(n_age, n_vacc, n_risk)
+dim(migration_occuring_Rc) <- c(n_age, n_vacc, n_risk)
+
+migration_occuring_S[, , ] <- if(migration_distribution[1] <= 0 || sum(S) <= 0) 0 else Binomial(sum(migration_adjusted), S[i, j, k]/sum(S) * sum(migration_distribution[1])/sum(migration_distribution))
+
+migration_S[, , ] <- if(migration_distribution[1] <= 0) 0 else Binomial(migration_occuring_S[i, j, k], migration_distribution[1])/sum(migration_distribution)
 
 migration_occuring_E[, , ] <- if(migration_distribution[2] <= 0 || sum(E) <= 0) 0 else Binomial(sum(migration_adjusted), E[i, j, k]/sum(E) * sum(migration_distribution[2])/sum(migration_distribution))
 migration_E[, , ] <- if(migration_distribution[2] <= 0) 0 else Binomial(migration_occuring_E[i, j, k], migration_distribution[2])/sum(migration_distribution)
-dim(migration_occuring_E) <- c(n_age, n_vacc, n_risk)
 
 migration_occuring_I[, , ] <- if(migration_distribution[3] <= 0 || sum(I) <= 0) 0 else Binomial(sum(migration_adjusted), I[i, j, k]/sum(I) * sum(migration_distribution[3])/sum(migration_distribution))
 migration_I[, , ] <- if(migration_distribution[3] <= 0) 0 else Binomial(migration_occuring_I[i, j, k], migration_distribution[3])/sum(migration_distribution)
-dim(migration_occuring_I) <- c(n_age, n_vacc, n_risk)
 
 migration_occuring_R[, , ] <- if(migration_distribution[4] <= 0 || sum(R) <= 0) 0 else Binomial(sum(migration_adjusted), R[i, j, k]/sum(R) * sum(migration_distribution[4])/sum(migration_distribution))
 migration_R[, , ] <- if(migration_distribution[4] <= 0) 0 else Binomial(migration_occuring_R[i, j, k], migration_distribution[4])/sum(migration_distribution)
-dim(migration_occuring_R) <- c(n_age, n_vacc, n_risk)
 
 migration_occuring_Is[, , ] <- if(migration_distribution[5] <= 0 || sum(Is) <= 0) 0 else Binomial(sum(migration_adjusted), Is[i, j, k]/sum(Is) * sum(migration_distribution[5])/sum(migration_distribution))
 migration_Is[, , ] <- if(migration_distribution[5] <= 0) 0 else Binomial(migration_occuring_Is[i, j, k], migration_distribution[5])/sum(migration_distribution)
-dim(migration_occuring_Is) <- c(n_age, n_vacc, n_risk)
 
 migration_occuring_Rc[, , ] <- if(migration_distribution[6] <= 0 || sum(Rc) <= 0) 0 else Binomial(sum(migration_adjusted), Rc[i, j, k]/sum(Rc) * sum(migration_distribution[6])/sum(migration_distribution))
 migration_Rc[, , ] <- if(migration_distribution[6] <= 0) 0 else Binomial(migration_occuring_Rc[i, j, k], migration_distribution[6])/sum(migration_distribution)
-dim(migration_occuring_Rc) <- c(n_age, n_vacc, n_risk)
 
 # User parameter values --------------------------------------------------------
 
@@ -442,6 +442,21 @@ reproductive_population[] <- if(i >= repro_low && i <= repro_high) sum(S[i, , ])
   sum(R[i, , ]) * repro_weight[i] +
   sum(Is[i, , ]) * repro_weight[i] +
   sum(Rc[i, , ]) * repro_weight[i] else 0
+
+
+update(repro_S) <- sum(S[repro_low:repro_high, , ])
+update(repro_E) <- sum(E[repro_low:repro_high, , ])
+update(repro_I) <- sum(I[repro_low:repro_high, , ])
+update(repro_R) <- sum(R[repro_low:repro_high, , ])
+update(repro_Is) <- sum(Is[repro_low:repro_high, , ])
+update(repro_Rc) <- sum(Rc[repro_low:repro_high, , ])
+initial(repro_S) <- 0
+initial(repro_I) <- 0
+initial(repro_E) <- 0
+initial(repro_R) <- 0
+initial(repro_Rc) <- 0
+initial(repro_Is) <- 0
+
 
 #Calculate birth rate
 birth_rate[] <- if(reproductive_population[i] <= 0) 0 else sum(Npop_background_death[i, ])/reproductive_population[i]
@@ -692,4 +707,10 @@ initial(vaccination_correct) <- 0
 update(waning_correct) <- sum(waning_to_S_long) + sum(waning_to_S_unvaccinated) + sum(waning_to_S_short) - sum(waning_from_S_short) - sum(waning_from_S_long)
 initial(waning_correct) <- 0
 
+
+update(per_capita_growth) <- (sum(Births) - sum(S_death)) / sum(reproductive_population)
+initial(per_capita_growth) <- 0
+
+update(repro_pop_total) <- sum(reproductive_population)
+initial(repro_pop_total) <- 0
 

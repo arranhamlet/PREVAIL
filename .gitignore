@@ -3,6 +3,6 @@
 .Rhistory
 .RData
 .Ruserdata
-dev
 inst/doc
 docs
+dev

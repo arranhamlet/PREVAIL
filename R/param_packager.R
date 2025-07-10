@@ -86,18 +86,6 @@ param_packager <- function(
   dims_4d_vac <- c(n_age, n_vacc, n_risk, length(tt_vaccination_coverage))
   dims_4d_seed <- c(n_age, n_vacc, n_risk, length(tt_seeded))
 
-  # --- Reproductive weight vector (for accurate birth calculation) ---
-  if (n_age == 101) {
-    repro_weight <- rep(0, 101)
-    repro_weight[16:50] <- 1  # Ages 15–49 exactly
-  } else {
-    age_lowers <- new_age_breaks[-length(new_age_breaks)]
-    age_uppers <- new_age_breaks[-1]
-    repro_overlap <- pmin(age_uppers, 50) - pmax(age_lowers, 15)
-    repro_overlap[repro_overlap < 0] <- 0
-    repro_weight <- repro_overlap / (age_uppers - age_lowers)
-  }
-
   params <- list(
     n_age = n_age, n_vacc = n_vacc, n_risk = n_risk,
     S0 = format_array(S0, dims_3d),
@@ -143,8 +131,7 @@ param_packager <- function(
     cfr_normal = format_array(cfr_normal, n_age),
     cfr_severe = format_array(cfr_severe, n_age),
     population = format_array(population, c(n_age, length(tt_birth_changes))),
-    female_population = format_array(female_population, c(n_age, length(tt_birth_changes))),
-    repro_weight = repro_weight
+    female_population = format_array(female_population, c(n_age, length(tt_birth_changes)))
   )
 
   return(params)

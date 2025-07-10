@@ -33,23 +33,6 @@ update(seropositive[]) <- (sum(S[, 2:n_vacc, ]) + sum(I[i, , ]) + sum(Is[i, , ])
 initial(seropositive[]) <- 0
 dim(seropositive) <- n_age
 
-
-
-update(sum_S_before) <- sum(S)
-update(sum_S_after) <- sum(S_after_aging)
-update(delta_S_aging_stage) <- sum_S_after - sum_S_before
-
-update(total_before_update) <- sum(S) + sum(E) + sum(I) + sum(R) + sum(Is) + sum(Rc)
-update(total_after_update) <- sum(S_after_aging) + sum(E_after_aging) + sum(I_after_aging) + sum(R_after_aging) + sum(Is_after_aging) + sum(Rc_after_aging)
-update(total_change_in_update) <- total_after_update - total_before_update
-
-initial(sum_S_before) <- 0
-initial(sum_S_after) <- 0
-initial(delta_S_aging_stage) <- 0
-initial(total_before_update) <- 0
-initial(total_after_update) <- 0
-initial(total_change_in_update) <- 0
-
 # Entering and exiting compartments ---------------------------------------
 
 #Death
@@ -196,13 +179,6 @@ S_after_waning[, , ] <- S_after_vaccination[i, j, k] + waning_to_S_long[i, j, k]
 waning_to_S_short[, 1:(n_vacc - 1), ] <- if(j %% 2 == 1 && j > 1 && j + 1 <= n_vacc) waning_from_S_long[i, j + 1, k] else 0
 dim(waning_to_S_short) <- c(n_age, n_vacc, n_risk)
 
-update(total_S_waning) <- sum(S_after_waning)
-update(total_S_available) <- sum(S_available)
-update(S_available_diff) <- total_S_available - total_S_waning
-initial(total_S_waning) <- 0
-initial(total_S_available) <- 0
-initial(S_available_diff) <- 0
-
 # Waning for E
 waning_from_E_short[, , ] <- if(j %% 2 == 1 && j > 1 && E_after_vaccination[i, j, k] > 0) Binomial(E_after_vaccination[i, j, k], max(min(short_term_waning[j], 1), 0)) else 0
 waning_to_E_long[, 1:(n_vacc - 1), ] <- if(j %% 2 == 0 && j > 1) waning_from_E_short[i, j + 1, k] else 0
@@ -245,7 +221,6 @@ migration_distribution <- interpolate(tt_migration, migration_distribution_value
 #Positive or negative flow
 pos_neg_migration <- if(sum(migration) < 0) -1 else 1
 migration_adjusted[, , ] <- migration[i, j, k] * pos_neg_migration
-
 
 dim(migration_occuring_S) <- c(n_age, n_vacc, n_risk)
 dim(migration_occuring_E) <- c(n_age, n_vacc, n_risk)
@@ -442,21 +417,6 @@ reproductive_population[] <- if(i >= repro_low && i <= repro_high) sum(S[i, , ])
   sum(R[i, , ]) * repro_weight[i] +
   sum(Is[i, , ]) * repro_weight[i] +
   sum(Rc[i, , ]) * repro_weight[i] else 0
-
-
-update(repro_S) <- sum(S[repro_low:repro_high, , ])
-update(repro_E) <- sum(E[repro_low:repro_high, , ])
-update(repro_I) <- sum(I[repro_low:repro_high, , ])
-update(repro_R) <- sum(R[repro_low:repro_high, , ])
-update(repro_Is) <- sum(Is[repro_low:repro_high, , ])
-update(repro_Rc) <- sum(Rc[repro_low:repro_high, , ])
-initial(repro_S) <- 0
-initial(repro_I) <- 0
-initial(repro_E) <- 0
-initial(repro_R) <- 0
-initial(repro_Rc) <- 0
-initial(repro_Is) <- 0
-
 
 #Calculate birth rate
 birth_rate[] <- if(reproductive_population[i] <= 0) 0 else sum(Npop_background_death[i, ])/reproductive_population[i]
@@ -661,23 +621,6 @@ dim(R_after_waning) <- c(n_age, n_vacc, n_risk)
 dim(Is_after_waning) <- c(n_age, n_vacc, n_risk)
 dim(Rc_after_waning) <- c(n_age, n_vacc, n_risk)
 
-
-
-update(pop_after_aging) <- sum(S_after_aging) + sum(E_after_aging) + sum(I_after_aging) + sum(R_after_aging) + sum(Is_after_aging) + sum(Rc_after_aging)
-initial(pop_after_aging) <- 0
-
-update(pop_after_vaccination) <- sum(S_after_vaccination) + sum(E_after_vaccination) + sum(I_after_vaccination) + sum(R_after_vaccination) + sum(Is_after_vaccination) + sum(Rc_after_vaccination)
-initial(pop_after_vaccination) <- 0
-
-update(pop_after_waning) <- sum(S_after_waning) + sum(E_after_waning) + sum(I_after_waning) + sum(R_after_waning) + sum(Is_after_waning) + sum(Rc_after_waning)
-initial(pop_after_waning) <- 0
-
-update(pop_available) <- sum(S_available) + sum(E_available) + sum(I_available) + sum(R_available) + sum(Is_available) + sum(Rc_available)
-initial(pop_available) <- 0
-
-update(population_final) <- sum(S) + sum(E) + sum(I) + sum(R) + sum(Is) + sum(Rc)
-initial(population_final) <- sum(S0) + sum(I0) + sum(Rpop0)
-
 update(total_deaths) <- sum(S_death) + sum(E_death) + sum(I_death) + sum(R_death) + sum(Is_death) + sum(Rc_death)
 initial(total_deaths) <- 0
 
@@ -694,10 +637,7 @@ update(net_pop_change) <- total_births - total_deaths
 initial(net_pop_change) <- 0
 
 update(vaccinated_loss) <- total_vaccinated_out - total_vaccinated_in
-update(pop_change_vaccination_stage) <- pop_after_vaccination - pop_after_aging
 initial(vaccinated_loss) <- 0
-initial(pop_change_vaccination_stage) <- 0
-
 
 update(aging_correct) <- sum(aging_into_E) + sum(aging_into_I) + sum(aging_into_R) - sum(aging_out_of_E)- sum(aging_out_of_I)- sum(aging_out_of_R)
 
@@ -706,7 +646,6 @@ update(vaccination_correct) <- sum(vaccinating_into_S) - sum(vaccinating_out_of_
 initial(vaccination_correct) <- 0
 update(waning_correct) <- sum(waning_to_S_long) + sum(waning_to_S_unvaccinated) + sum(waning_to_S_short) - sum(waning_from_S_short) - sum(waning_from_S_long)
 initial(waning_correct) <- 0
-
 
 update(per_capita_growth) <- (sum(Births) - sum(S_death)) / sum(reproductive_population)
 initial(per_capita_growth) <- 0

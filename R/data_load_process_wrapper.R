@@ -241,6 +241,35 @@ data_load_process_wrapper <- function(
     new_age_breaks               = new_age_breaks
   )
 
+  # --- Reproductive weight vector (for accurate birth calculation) ---
+  if (packed_params$n_age == 101) {
+    repro_weight <- rep(0, 101)
+    packed_params$repro_weight[16:50] <- 1  # Ages 15–49 exactly
+  } else {
+
+    # Assign each age to an aggregated age group
+    weight_df <- default_inputs$population %>%
+      dplyr::mutate(
+        age_group = cut(
+          dim1,
+          breaks = replace(new_age_breaks, length(new_age_breaks), Inf),
+          right = FALSE,
+          labels = seq_len(length(new_age_breaks)-1)
+        ),
+        in_repro = dim1 >= 16 & dim1 <= 50
+      ) %>%
+      dplyr::group_by(dim2, age_group) %>%
+      dplyr::summarise(
+        group_pop = sum(value),
+        repro_pop = sum(value[in_repro]),
+        repro_weight = ifelse(group_pop > 0, repro_pop / group_pop, 0),
+        .groups = "drop"
+      ) %>%
+      dplyr::filter(dim2 == min(dim2))
+
+    packed_params$repro_weight <- weight_df$repro_weight
+  }
+
   # Attach input metadata
   packed_params$input_data <- data.frame(
     iso              = iso,

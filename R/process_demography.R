@@ -26,7 +26,7 @@
 #' @importFrom dplyr filter select mutate bind_rows across case_when left_join all_of
 #' @importFrom tidyr expand_grid pivot_longer
 #' @importFrom purrr map_dfr
-#' @importFrom tibble tibble rownames_to_column
+#' @importFrom tibble rownames_to_column
 #' @importFrom stats setNames
 #' @importFrom reshape2 melt
 
@@ -151,7 +151,7 @@ process_demography <- function(
     population_data = pop_all,
     female_population = fem_mat,
     contact_matrix = reformatted_contact_matrix,
-    input_data = tibble::tibble(
+    input_data = data.frame(
       iso = iso,
       year_start = min(years_all),
       year_end = max(years_all),

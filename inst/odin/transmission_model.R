@@ -399,24 +399,27 @@ dim(Npop_age) <- n_age
 
 #Calculate death rates
 Npop_background_death[, ] <- if(Npop_age_risk[i, j] <= 0) 0 else Binomial(Npop_age_risk[i, j], max(min(background_death[i, j], 1), 0))
+
 #Interpolate changes in death rate
 death_int <- interpolate(tt_death_changes, crude_death, "constant")
-# life_expectancy <- parameter()
 
 #Select background death rate to use
 background_death[, ]<- if(simp_birth_death == 1) max(min(crude_death[i, j, 1], 1), 0) else max(min(death_int[i, j], 1), 0)
 
 #Calculate birth rates
 repro_weight <- parameter()
-dim(repro_weight) <- n_age
+dim(repro_weight) <- c(n_age, no_migration_changes)
+
+repro_weight_now <- interpolate(tt_migration, repro_weight, "constant")
+dim(repro_weight_now) <- n_age
 
 #Reproductive population
-reproductive_population[] <- if(i >= repro_low && i <= repro_high) sum(S[i, , ]) * repro_weight[i] +
-  sum(E[i, , ]) * repro_weight[i] +
-  sum(I[i, , ]) * repro_weight[i] +
-  sum(R[i, , ]) * repro_weight[i] +
-  sum(Is[i, , ]) * repro_weight[i] +
-  sum(Rc[i, , ]) * repro_weight[i] else 0
+reproductive_population[] <- if(i >= repro_low && i <= repro_high) sum(S[i, , ]) * repro_weight_now[i] +
+  sum(E[i, , ]) * repro_weight_now[i] +
+  sum(I[i, , ]) * repro_weight_now[i] +
+  sum(R[i, , ]) * repro_weight_now[i] +
+  sum(Is[i, , ]) * repro_weight_now[i] +
+  sum(Rc[i, , ]) * repro_weight_now[i] else 0
 
 #Calculate birth rate
 birth_rate[] <- if(reproductive_population[i] <= 0) 0 else sum(Npop_background_death[i, ])/reproductive_population[i]

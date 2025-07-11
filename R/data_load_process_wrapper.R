@@ -190,7 +190,7 @@ data_load_process_wrapper <- function(
     1 / 365
   }
 
-  if (length(unique(inputs$age_beta_mod$dim1)) == 101) {
+  if (length(inputs$N0$dim1) == 101) {
     repro_low <- 16
     repro_high <- 50
   } else {
@@ -198,6 +198,40 @@ data_load_process_wrapper <- function(
     age_uppers <- new_age_breaks[-1]
     repro_low  <- base::min(which(age_uppers > 15 & age_lowers < 50))
     repro_high <- base::max(which(age_lowers < 50 & age_uppers > 15))
+  }
+
+  # --- Reproductive weight vector (for accurate birth calculation) ---
+  if (length(inputs$N0$dim1) == 101) {
+    repro_weight <- rep(0, 101)
+    repro_weight[16:50] <- 1  # Ages 15–49 exactly
+    repro_weight <- data.frame(
+      dim1 = rep(seq_len(101), times = max(inputs$crude_death$dim3)),
+      dim2 = rep(1:max(inputs$crude_death$dim3), each = 101),
+      value = rep(repro_weight, times = max(inputs$crude_death$dim3))
+    )
+  } else {
+
+    # Assign each age to an aggregated age group
+    repro_weight <- default_inputs$population %>%
+      dplyr::mutate(
+        age_group = cut(
+          dim1,
+          breaks = replace(new_age_breaks, length(new_age_breaks), Inf),
+          right = FALSE,
+          labels = seq_len(length(new_age_breaks)-1)
+        ),
+        in_repro = dim1 >= 16 & dim1 <= 50
+      ) %>%
+      dplyr::group_by(dim2, age_group) %>%
+      dplyr::summarise(
+        group_pop = sum(value),
+        repro_pop = sum(value[in_repro]),
+        repro_weight = ifelse(group_pop > 0, repro_pop / group_pop, 0),
+        .groups = "drop"
+      ) %>%
+      select(dim1 = age_group,
+             dim2 = dim2,
+             value = repro_weight)
   }
 
   # ---- Return Packaged Parameters ----
@@ -212,7 +246,7 @@ data_load_process_wrapper <- function(
     severe_recovery_rate         = 1 / as.numeric(datasets$disease_parameters$value[datasets$disease_parameters$parameter == "infectious period"]),
     natural_immunity_waning      = if (nat_waning == 0) 0 else 1 / nat_waning,
     R0                           = if (WHO_seed_switch) c(R0, 0) else R0,
-    tt_R0                        = if (WHO_seed_switch) c(0, R0_switch_time) else 0,
+    tt_R0                        = if (WHO_seed_switch) c(0, max(c(1, R0_switch_time))) else 0,
     vaccination_coverage         = inputs$vacc_cov,
     contact_matrix               = inputs$contact_matrix,
     age_vaccination_beta_modifier = inputs$age_beta_mod,
@@ -238,45 +272,17 @@ data_load_process_wrapper <- function(
     migration_represent_current_pop = 1,
     population                   = inputs$population,
     female_population            = inputs$female_population,
-    new_age_breaks               = new_age_breaks
+    new_age_breaks               = new_age_breaks,
+    repro_weight = repro_weight
   )
-
-  # --- Reproductive weight vector (for accurate birth calculation) ---
-  if (packed_params$n_age == 101) {
-    repro_weight <- rep(0, 101)
-    packed_params$repro_weight[16:50] <- 1  # Ages 15–49 exactly
-  } else {
-
-    # Assign each age to an aggregated age group
-    weight_df <- default_inputs$population %>%
-      dplyr::mutate(
-        age_group = cut(
-          dim1,
-          breaks = replace(new_age_breaks, length(new_age_breaks), Inf),
-          right = FALSE,
-          labels = seq_len(length(new_age_breaks)-1)
-        ),
-        in_repro = dim1 >= 16 & dim1 <= 50
-      ) %>%
-      dplyr::group_by(dim2, age_group) %>%
-      dplyr::summarise(
-        group_pop = sum(value),
-        repro_pop = sum(value[in_repro]),
-        repro_weight = ifelse(group_pop > 0, repro_pop / group_pop, 0),
-        .groups = "drop"
-      ) %>%
-      dplyr::filter(dim2 == min(dim2))
-
-    packed_params$repro_weight <- weight_df$repro_weight
-  }
 
   # Attach input metadata
   packed_params$input_data <- data.frame(
     iso              = iso,
     disease          = disease,
     R0               = R0,
-    year_start       = year_start,
-    year_end         = year_end,
+    year_start       = preprocessed$processed_demographic_data$input_data$year_start,
+    year_end         = preprocessed$processed_demographic_data$input_data$year_end,
     WHO_seed_switch  = WHO_seed_switch,
     aggregate_age    = aggregate_age,
     age_breaks       = if (aggregate_age) {

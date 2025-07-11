@@ -46,7 +46,8 @@ param_packager(
   cfr_severe = 0,
   population,
   new_age_breaks,
-  female_population
+  female_population,
+  repro_weight
 )
 }
 \arguments{

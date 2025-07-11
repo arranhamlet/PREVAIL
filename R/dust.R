@@ -10,7 +10,7 @@ transmission_model <- structure(
     type = c("int", "int", "int", "real_type", "real_type", "real_type", "real_type", "real_type", "real_type", "real_type", "real_type", "real_type", "real_type", "real_type", "real_type", "real_type", "int", "real_type", "real_type", "real_type", "int", "real_type", "int", "real_type", "real_type", "real_type", "int", "real_type", "real_type", "real_type", "real_type", "real_type", "real_type", "real_type", "real_type", "int", "real_type", "real_type", "int", "real_type", "real_type", "real_type", "real_type", "real_type", "real_type"),
     constant = c(TRUE, TRUE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE),
     required = c(FALSE, FALSE, FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE),
-    rank = c(0L, 0L, 0L, 3L, 3L, 3L, 0L, 0L, 1L, 0L, 3L, 0L, 1L, 1L, 1L, 1L, 0L, 2L, 4L, 1L, 0L, 3L, 0L, 1L, 0L, 2L, 0L, 1L, 0L, 0L, 0L, 0L, 0L, 1L, 1L, 0L, 4L, 3L, 0L, 1L, 4L, 2L, 1L, 1L, 1L)),
+    rank = c(0L, 0L, 0L, 3L, 3L, 3L, 0L, 0L, 1L, 0L, 3L, 0L, 1L, 1L, 1L, 1L, 0L, 2L, 4L, 1L, 0L, 3L, 0L, 1L, 0L, 2L, 0L, 1L, 0L, 0L, 0L, 0L, 0L, 1L, 1L, 0L, 4L, 3L, 0L, 1L, 4L, 2L, 2L, 1L, 1L)),
   properties = list(
     time_type = "discrete",
     has_compare = FALSE,

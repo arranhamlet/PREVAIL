@@ -113,7 +113,8 @@ case_vaccine_to_param <- function(
   # Expand routine coverage pre-1980
   processed_vaccination <- expand_pre1980_vaccination(
     processed_vaccination,
-    vaccination_pre1980,
+    vaccination_pre1980 %>%
+      subset(introduction_year %in% demog_data$input_data$year_start:demog_data$input_data$year_end),
     disease = tolower(unique(processed_case$disease_description)[1]),
     iso = iso
   )

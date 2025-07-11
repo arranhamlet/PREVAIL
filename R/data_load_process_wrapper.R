@@ -28,8 +28,6 @@ data_load_process_wrapper <- function(
     new_age_breaks = c(0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, Inf)
 ) {
 
-  stopifnot(is.numeric(new_age_breaks), length(new_age_breaks) >= 2)
-
   # ---- Load Package Data ----
   datasets <- list(
     migration              = PREVAIL::UN_WPP_migration,

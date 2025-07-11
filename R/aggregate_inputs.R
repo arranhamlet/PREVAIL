@@ -44,9 +44,18 @@ aggregate_inputs <- function(preprocessed,
     ) %>%
     dplyr::mutate(value = value / 365)
 
+  #Update vaccination
+  vaccination_coverage_expanded <- generate_array_df(
+    dim1 = preprocessed$processed_demographic_data$input_data$n_age,
+    dim2 = preprocessed$processed_demographic_data$input_data$n_vacc,
+    dim3 = preprocessed$processed_demographic_data$input_data$n_risk,
+    dim4 = max(cv_params$vaccination_coverage$dim4),
+    updates = cv_params$vaccination_coverage
+  )
+
   default_inputs <- list(
     age_beta_mod   = age_vaccination_beta_modifier,
-    vacc_cov       = cv_params$vaccination_coverage,
+    vacc_cov       = vaccination_coverage_expanded,
     N0             = preprocessed$processed_demographic_data$N0,
     crude_death    = preprocessed$processed_demographic_data$crude_death %>%
       dplyr::mutate(value = value / 365),
@@ -73,15 +82,6 @@ aggregate_inputs <- function(preprocessed,
 
   death_upd <- preprocessed$processed_demographic_data$crude_death %>%
     dplyr::mutate(value = value / 365 * weight_reformatted$value)
-
-  #Update vaccination
-  vaccination_coverage_expanded <- generate_array_df(
-    dim1 = preprocessed$processed_demographic_data$input_data$n_age,
-    dim2 = preprocessed$processed_demographic_data$input_data$n_vacc,
-    dim3 = preprocessed$processed_demographic_data$input_data$n_risk,
-    dim4 = max(cv_params$vaccination_coverage$dim4),
-    updates = cv_params$vaccination_coverage
-  )
 
   inputs <- list(
     age_beta_mod   = aggregate_age_structure(age_vaccination_beta_modifier, age_breaks = new_age_breaks, method = "weighted.mean", weights = weight_reformatted, time_var = NULL),

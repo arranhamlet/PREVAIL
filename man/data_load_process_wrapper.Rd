@@ -2,7 +2,7 @@
 % Please edit documentation in R/data_load_process_wrapper.R
 \name{data_load_process_wrapper}
 \alias{data_load_process_wrapper}
-\title{Load and Process All Model Input Data}
+\title{data_load_process_wrapper}
 \usage{
 data_load_process_wrapper(
   iso,
@@ -37,6 +37,9 @@ data_load_process_wrapper(
 A named list containing structured parameters ready for use in the PREVAIL dynamic transmission model.
 }
 \description{
+Load and Process All Model Input Data
+}
+\details{
 This wrapper function loads internal datasets and processes them into structured model input
 parameters for a specified country, disease, and vaccine. It integrates demographic, vaccination,
 and disease data, formatting them appropriately for use in the dynamic transmission model within PREVAIL.

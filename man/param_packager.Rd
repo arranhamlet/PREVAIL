@@ -45,7 +45,6 @@ param_packager(
   cfr_normal = 0,
   cfr_severe = 0,
   population,
-  new_age_breaks,
   female_population,
   repro_weight
 )

@@ -1,3 +1,5 @@
+#' data_load_process_wrapper
+#'
 #' Load and Process All Model Input Data
 #'
 #' This wrapper function loads internal datasets and processes them into structured model input
@@ -251,11 +253,13 @@ data_load_process_wrapper <- function(
     S0                           = inputs$N0,
     Rpop0                        = 0,
     I0                           = 0,
+
     tt_birth_changes             = times$mig,
     tt_death_changes             = times$mig,
     tt_migration                 = times$mig,
     tt_vaccination_coverage      = times$vac,
     tt_seeded                    = if (WHO_seed_switch) times$seed else c(0, max(times$seed)),
+
     crude_birth                  = inputs$crude_birth,
     crude_death                  = inputs$crude_death,
     aging_rate                   = aging_rate,
@@ -270,7 +274,6 @@ data_load_process_wrapper <- function(
     migration_represent_current_pop = 1,
     population                   = inputs$population,
     female_population            = inputs$female_population,
-    new_age_breaks               = new_age_breaks,
     repro_weight = repro_weight
   )
 

@@ -66,7 +66,7 @@ param_packager <- function(
     age_maternal_protection_ends = 1, repro_low = 1, repro_high = NULL,
     tt_migration = 0, migration_in_number = 0, migration_distribution_values = 0,
     migration_represent_current_pop = 0,
-    cfr_normal = 0, cfr_severe = 0, population, new_age_breaks, female_population,
+    cfr_normal = 0, cfr_severe = 0, population, female_population,
     repro_weight
 ) {
 

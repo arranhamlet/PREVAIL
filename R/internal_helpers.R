@@ -415,6 +415,7 @@ df_to_array <- function(df) {
 #' @keywords internal
 generate_array_df <- function(dim1, dim2 = NULL, dim3 = NULL, dim4 = NULL, dim5 = NULL, dim6 = NULL,
                               default_value = 0, updates = NULL) {
+
   dims <- list(dim1, dim2, dim3, dim4, dim5, dim6)
   dims <- dims[!vapply(dims, is.null, logical(1))]
   n_dims <- length(dims)

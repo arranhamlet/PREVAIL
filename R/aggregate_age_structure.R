@@ -39,7 +39,7 @@ aggregate_age_structure <- function(obj,
       dplyr::summarise(
         dim1 = data.table::first(age_group),
         value = sum(value, na.rm = TRUE),
-        .groups = "keep"
+        .groups = "drop"
       )
 
   } else if (method == "mean") {

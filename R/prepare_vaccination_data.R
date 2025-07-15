@@ -143,13 +143,14 @@ case_vaccine_to_param <- function(
     case_df <- build_seeded_case_param(processed_case, demog_data, years, ages)
     tt_seeded <- c(0, match(unique(processed_case$year), years) - 1)
   } else {
-    case_df <- data.table::data.table(dim1 = 1, dim2 = 1, dim3 = 1, dim4 = 1, value = 0)
+    case_df <- data.table::data.table(dim1 = 1, dim2 = 1, dim3 = 1, dim4 = 1, value = 10)
     tt_seeded <- 0
   }
 
   list(
     tt_vaccination = c(0, match(unique(routine_df$dim4), seq_along(years))),
-    vaccination_coverage = vacc_df,
+    vaccination_coverage = vacc_df %>%
+      mutate(dim4 = 1:nrow(vacc_df)),
     tt_seeded = tt_seeded,
     seeded = case_df
   )

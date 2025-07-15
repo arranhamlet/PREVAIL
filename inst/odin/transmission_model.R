@@ -443,6 +443,9 @@ prop_maternal_natural[] <- if(reproductive_population[i] <= 0) 0 else antibody_m
 #Interpolate vaccination coverage
 vaccination_prop <- interpolate(tt_vaccination_coverage, vaccination_coverage, "constant")
 
+update(vac_prop) <- sum(vaccination_prop)
+initial(vac_prop) <- 0
+
 # Dimensions --------------------------------------------------------------
 
 dim(S) <- c(n_age, n_vacc, n_risk)

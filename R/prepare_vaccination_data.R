@@ -150,7 +150,7 @@ case_vaccine_to_param <- function(
   list(
     tt_vaccination = c(0, match(unique(routine_df$dim4), seq_along(years))),
     vaccination_coverage = vacc_df %>%
-      mutate(dim4 = 1:nrow(vacc_df)),
+      mutate(dim4 = match(dim4, unique(dim4))),
     tt_seeded = tt_seeded,
     seeded = case_df
   )

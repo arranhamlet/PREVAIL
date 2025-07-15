@@ -60,7 +60,6 @@ aggregate_inputs <- function(preprocessed,
     ) %>%
     dplyr::mutate(value = pop * value)
 
-
   age_vaccination_beta_modifier_upd <- age_vaccination_beta_modifier %>%
     dplyr::left_join(
       weight_reformatted %>%

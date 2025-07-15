@@ -181,6 +181,26 @@ data_load_process_wrapper <- function(
   inputs <- param_inputs$inputs
   default_inputs <- param_inputs$default_inputs
 
+  print(inputs$vacc_cov %>%
+    left_join(
+      inputs$population %>%
+        rename(pop = value),
+      by = c("dim1" = "dim1", "dim4" = "dim2")
+    ) %>%
+    mutate(vac_pop = value * pop) %>%
+    pull(vac_pop) %>%
+    sum)
+
+  print(default_inputs$vacc_cov %>%
+    left_join(
+      default_inputs$population %>%
+        rename(pop = value),
+      by = c("dim1" = "dim1", "dim4" = "dim2")
+    ) %>%
+    mutate(vac_pop = value * pop) %>%
+    pull(vac_pop) %>%
+    sum)
+
   # ---- Update Aging Rate and Reproductive Age Bounds ----
   aging_rate <- if (aggregate_age) {
     age_correct_last <- new_age_breaks
@@ -292,6 +312,10 @@ data_load_process_wrapper <- function(
       paste(seq(1, 101), collapse = ";")
     }
   )
+
+  print(sum(inputs$vacc_cov$value))
+  print(sum(packed_params$vaccination_coverage))
+
 
   packed_params
 

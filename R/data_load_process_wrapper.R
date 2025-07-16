@@ -181,21 +181,23 @@ data_load_process_wrapper <- function(
   inputs <- param_inputs$inputs
   default_inputs <- param_inputs$default_inputs
 
-  print(inputs$vacc_cov %>%
+  print(inputs$vacc_cov  %>%
+          select(dim1, dim2, dim3, dim4, year, value) %>%
     left_join(
       inputs$population %>%
         rename(pop = value),
-      by = c("dim1" = "dim1", "dim4" = "dim2")
+      by = c("dim1", "year")
     ) %>%
     mutate(vac_pop = value * pop) %>%
     pull(vac_pop) %>%
     sum)
 
   print(default_inputs$vacc_cov %>%
+          select(dim1, dim2, dim3, dim4, year, value) %>%
     left_join(
       default_inputs$population %>%
         rename(pop = value),
-      by = c("dim1" = "dim1", "dim4" = "dim2")
+      by = c("dim1", "year")
     ) %>%
     mutate(vac_pop = value * pop) %>%
     pull(vac_pop) %>%

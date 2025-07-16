@@ -32,7 +32,9 @@ aggregate_inputs <- function(preprocessed,
     as.data.frame() %>%
     tibble::rownames_to_column(var = "time") %>%
     tidyr::pivot_longer(cols = -time, names_to = "age", values_to = "value") %>%
-    dplyr::mutate(time = as.integer(time), age = as.integer(age)) %>%
+    dplyr::mutate(time = as.integer(time),
+                  age = as.integer(age),
+                  year = (preprocessed$processed_demographic_data$input_data$year_start - 1) + time) %>%
     dplyr::group_by(time)
 
   crude_birth_augmented <- preprocessed$processed_demographic_data$crude_birth %>%
@@ -56,9 +58,10 @@ aggregate_inputs <- function(preprocessed,
   vaccination_people <- vaccination_coverage_expanded %>%
     dplyr::left_join(
       weight_reformatted %>%
-        rename(pop = value), by = c("dim4" = "time", "dim1" = "age")
+        rename(pop = value), by = c("year" = "year", "dim1" = "age")
     ) %>%
-    dplyr::mutate(value = pop * value)
+    dplyr::mutate(value = pop * (value/365)) %>%
+    drop_na()
 
   age_vaccination_beta_modifier_upd <- age_vaccination_beta_modifier %>%
     dplyr::left_join(
@@ -72,7 +75,8 @@ aggregate_inputs <- function(preprocessed,
 
   default_inputs <- list(
     age_beta_mod   = age_vaccination_beta_modifier,
-    vacc_cov       = vaccination_coverage_expanded,
+    vacc_cov       = vaccination_people %>%
+      dplyr::mutate(value = value/pop),
     N0             = preprocessed$processed_demographic_data$N0,
     crude_death    = preprocessed$processed_demographic_data$crude_death %>%
       dplyr::mutate(value = value / 365),
@@ -103,7 +107,7 @@ aggregate_inputs <- function(preprocessed,
   inputs <- list(
     age_beta_mod   = aggregate_age_structure(age_vaccination_beta_modifier_upd, age_breaks = new_age_breaks, method = "sum", weights = weight_reformatted, time_var = NULL),
     vacc_cov       = aggregate_age_structure(vaccination_people %>%
-                                               select(dim1:value), age_breaks = new_age_breaks, method = "sum", weights = weight_reformatted, time_var = "dim4"),
+                                               select(dim1:year), age_breaks = new_age_breaks, method = "sum", weights = weight_reformatted, time_var = "dim4"),
     N0             = aggregate_age_structure(preprocessed$processed_demographic_data$N0, age_breaks = new_age_breaks, method = "sum", time_var = NULL),
     crude_death    = aggregate_age_structure(death_upd, age_breaks = new_age_breaks, method = "sum", time_var = "dim3"),
     crude_birth    = aggregate_age_structure(crude_birth_augmented %>% dplyr::select(-population), age_breaks = new_age_breaks, method = "sum", time_var = "dim2"),
@@ -140,8 +144,8 @@ aggregate_inputs <- function(preprocessed,
     dplyr::mutate(dim1 = as.numeric(dim1), dim2 = as.numeric(dim2), dim3 = as.numeric(dim3), dim4 = as.numeric(dim4)) %>%
     dplyr::arrange(dim1, dim2, dim3, dim4) %>%
     dplyr::left_join(
-      inputs$population %>% dplyr::ungroup() %>% dplyr::select(dim1, dim2, population = value),
-      by = c("dim1", "dim4" = "dim2")
+      inputs$population %>% dplyr::select(dim1, year, population = value),
+      by = c("year", "dim1")
     ) %>%
     dplyr::mutate(value = value / population)
 

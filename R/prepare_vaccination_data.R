@@ -134,9 +134,9 @@ case_vaccine_to_param <- function(
   vacc_df <- combine_vaccination_params(routine_df, sia_df)
   data.table::setDT(vacc_df)
 
-  zero_row <- data.table::data.table(dim1 = 1, dim2 = 1, dim3 = 1, dim4 = 1, value = 0)
+  zero_row <- data.table::data.table(dim1 = 1, dim2 = 1, dim3 = 1, dim4 = 1, year = 1950, value = 0)
   vacc_df <- rbindlist(list(zero_row, vacc_df))
-  vacc_df <- vacc_df[, .(value = max(value)), by = .(dim1, dim2, dim3, dim4)]
+  vacc_df <- vacc_df[, .(value = max(value)), by = .(dim1, dim2, dim3, dim4, year)]
 
   # Build seeded case input
   if (nrow(processed_case) > 0) {

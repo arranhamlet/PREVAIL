@@ -238,6 +238,7 @@ build_routine_vaccination_param <- function(vaccination_data, schedule, ages, ye
       dim2 = targets,
       dim3 = 1,
       dim4 = match(row$year, years),
+      year = row$year,
       value = row$coverage / 100
     )
   })
@@ -308,6 +309,7 @@ build_sia_vaccination_param <- function(sia_data, ages, years) {
     dim2 = 1,
     dim3 = 1,
     dim4 = match(df$year, years),
+    year = df$year,
     value = df$coverage
   )
 }
@@ -370,7 +372,8 @@ combine_vaccination_params <- function(routine_df, sia_df = NULL) {
   combined <- dplyr::bind_rows(routine_df, sia_df)
   combined %>%
     dplyr::group_by(dim1, dim2, dim3, dim4) %>%
-    dplyr::summarise(value = pmin(sum(value), 1), .groups = "drop")
+    dplyr::summarise(year = unique(year),
+                     value = pmin(sum(value), 1), .groups = "drop")
 }
 
 #' Convert Long-Format Data Frame to Multi-Dimensional Array

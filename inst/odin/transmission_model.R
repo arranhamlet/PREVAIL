@@ -137,6 +137,9 @@ Rc_after_aging[, , ] <- Rc[i, j, k] + aging_into_Rc[i, j, k] - aging_out_of_Rc[i
 vaccinating_out_of_S[, , ] <- if(n_vacc == 1 || j >= n_vacc - 1 || S_after_aging[i, j, k] <= 0 || vaccination_prop[i, j, k] <= 0) 0 else Binomial(S_after_aging[i, j, k], max(min(vaccination_prop[i, j, k], 1), 0))
 S_after_vaccination[, , ] <- S_after_aging[i, j, k] + vaccinating_into_S[i, j, k] - vaccinating_out_of_S[i, j, k]
 
+update(S_vaccinated) <- sum(vaccinating_out_of_S)
+initial(S_vaccinated) <- 0
+
 # For E compartment
 vaccinating_out_of_E[, , ] <- if((j == 1 && n_vacc < 3) || (j %% 2 == 0 && j + 3 > n_vacc) || (j %% 2 == 1 && j > 1 && j + 2 > n_vacc) || E_after_aging[i, j, k] <= 0 || vaccination_prop[i, j, k] <= 0) 0 else Binomial(E_after_aging[i, j, k], vaccination_prop[i, j, k])
 E_after_vaccination[, , ] <- E_after_aging[i, j, k] + vaccinating_into_E[i, j, k] - vaccinating_out_of_E[i, j, k]
@@ -445,6 +448,7 @@ vaccination_prop <- interpolate(tt_vaccination_coverage, vaccination_coverage, "
 
 update(vac_prop) <- sum(vaccination_prop)
 initial(vac_prop) <- 0
+
 
 # Dimensions --------------------------------------------------------------
 

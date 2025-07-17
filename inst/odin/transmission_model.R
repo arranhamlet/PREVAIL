@@ -101,35 +101,35 @@ recovered_Is_to_Rc[, , ] <- if(recovered_Is_to_R[i, j, k] - recovered_from_Is[i,
 
 # STEP 1: AGING - Apply aging
 # For S compartment
+## For S compartment
 aging_into_S[1, 1, ] <- sum(Births)
-
-aging_into_S[2:n_age, , ] <- if(S[i - 1, j, k] <= 0) 0 else Binomial(S[i - 1, j, k], max(min(aging_rate[i-1], 1), 0))
-aging_out_of_S[1:(n_age - 1), , ] <- if(S[i, j, k] <= 0) 0 else Binomial(S[i, j, k], max(min(aging_rate[i], 1), 0))
+aging_into_S[2:n_age, , ] <- S[i - 1, j, k] * max(min(aging_rate[i-1], 1), 0)
+aging_out_of_S[1:(n_age - 1), , ] <- S[i, j, k] * max(min(aging_rate[i], 1), 0)
 S_after_aging[, , ] <- S[i, j, k] + aging_into_S[i, j, k] - aging_out_of_S[i, j, k]
 
-# For E compartment
-aging_into_E[2:n_age, , ] <- if(E[i - 1, j, k] <= 0) 0 else Binomial(E[i - 1, j, k], max(min(aging_rate[i-1], 1), 0))
-aging_out_of_E[1:(n_age - 1), , ] <- if(E[i, j, k] <= 0) 0 else Binomial(E[i, j, k], max(min(aging_rate[i], 1), 0))
+## For E compartment
+aging_into_E[2:n_age, , ] <- E[i - 1, j, k] * max(min(aging_rate[i-1], 1), 0)
+aging_out_of_E[1:(n_age - 1), , ] <- E[i, j, k] * max(min(aging_rate[i], 1), 0)
 E_after_aging[, , ] <- E[i, j, k] + aging_into_E[i, j, k] - aging_out_of_E[i, j, k]
 
-# For I compartment
-aging_into_I[2:n_age, , ] <- if(I[i - 1, j, k] <= 0) 0 else Binomial(I[i - 1, j, k], max(min(aging_rate[i-1], 1), 0))
-aging_out_of_I[1:(n_age - 1), , ] <- if(I[i, j, k] <= 0) 0 else Binomial(I[i, j, k], max(min(aging_rate[i], 1), 0))
+## For I compartment
+aging_into_I[2:n_age, , ] <- I[i - 1, j, k] * max(min(aging_rate[i-1], 1), 0)
+aging_out_of_I[1:(n_age - 1), , ] <- I[i, j, k] * max(min(aging_rate[i], 1), 0)
 I_after_aging[, , ] <- I[i, j, k] + aging_into_I[i, j, k] - aging_out_of_I[i, j, k]
 
-# For R compartment
-aging_into_R[2:n_age, , ] <- if(R[i - 1, j, k] <= 0) 0 else Binomial(R[i - 1, j, k], max(min(aging_rate[i-1], 1), 0))
-aging_out_of_R[1:(n_age - 1), , ] <- if(R[i, j, k] <= 0) 0 else Binomial(R[i, j, k], max(min(aging_rate[i], 1), 0))
+## For R compartment
+aging_into_R[2:n_age, , ] <- R[i - 1, j, k] * max(min(aging_rate[i-1], 1), 0)
+aging_out_of_R[1:(n_age - 1), , ] <- R[i, j, k] * max(min(aging_rate[i], 1), 0)
 R_after_aging[, , ] <- R[i, j, k] + aging_into_R[i, j, k] - aging_out_of_R[i, j, k]
 
-# For Is compartment
-aging_into_Is[2:n_age, , ] <- if(Is[i - 1, j, k] <= 0) 0 else Binomial(Is[i - 1, j, k], max(min(aging_rate[i-1], 1), 0))
-aging_out_of_Is[1:(n_age - 1), , ] <- if(Is[i, j, k] <= 0) 0 else Binomial(Is[i, j, k], max(min(aging_rate[i], 1), 0))
+## For Is compartment
+aging_into_Is[2:n_age, , ] <- Is[i - 1, j, k] * max(min(aging_rate[i-1], 1), 0)
+aging_out_of_Is[1:(n_age - 1), , ] <- Is[i, j, k] * max(min(aging_rate[i], 1), 0)
 Is_after_aging[, , ] <- Is[i, j, k] + aging_into_Is[i, j, k] - aging_out_of_Is[i, j, k]
 
-# For Rc compartment
-aging_into_Rc[2:n_age, , ] <- if(Rc[i - 1, j, k] <= 0) 0 else Binomial(Rc[i - 1, j, k], max(min(aging_rate[i-1], 1), 0))
-aging_out_of_Rc[1:(n_age - 1), , ] <- if(Rc[i, j, k] <= 0) 0 else Binomial(Rc[i, j, k], max(min(aging_rate[i], 1), 0))
+## For Rc compartment
+aging_into_Rc[2:n_age, , ] <- Rc[i - 1, j, k] * max(min(aging_rate[i-1], 1), 0)
+aging_out_of_Rc[1:(n_age - 1), , ] <- Rc[i, j, k] * max(min(aging_rate[i], 1), 0)
 Rc_after_aging[, , ] <- Rc[i, j, k] + aging_into_Rc[i, j, k] - aging_out_of_Rc[i, j, k]
 
 # STEP 2: VACCINATION - Apply vaccination to the results after aging

@@ -2,23 +2,34 @@
 % Please edit documentation in R/aggregate_contact_matrix.R
 \name{aggregate_contact_matrix}
 \alias{aggregate_contact_matrix}
-\title{Aggregate a Square Contact Matrix Using Population Weights}
+\title{aggregate_contact_matrix}
 \usage{
 aggregate_contact_matrix(mat, age_breaks, population, symmetric = TRUE)
 }
 \arguments{
-\item{mat}{Square matrix of contact rates (e.g., 101 x 101 for ages 0–100).}
+\item{mat}{A square numeric matrix of contact rates (e.g., 101 x 101 for ages 0–100).}
 
-\item{age_breaks}{Vector of age group cutpoints (e.g. c(0, 5, 10, ..., Inf)).}
+\item{age_breaks}{Numeric vector of lower age boundaries for groups (e.g., \code{c(0, 5, 10, ..., Inf)}).}
 
-\item{population}{Long-format data.frame with `time`, `age`, and `value` columns.}
+\item{population}{A data frame with columns \code{time}, \code{age} (integer, 1-based), and \code{value} (population count).}
 
-\item{symmetric}{Logical; if TRUE, enforces reciprocity between age groups.}
+\item{symmetric}{Logical; if \code{TRUE}, enforces reciprocity between age groups (default: \code{TRUE}).}
 }
 \value{
-Aggregated square contact matrix (n_group x n_group).
+A square numeric matrix of dimension \code{length(age_breaks) - 1},
+with sum preserved.
 }
 \description{
-Aggregates a contact matrix to custom age groups using the mean population over time
-as weights to preserve transmission dynamics.
+Aggregate and Rescale a Square Contact Matrix
+}
+\details{
+Aggregates a square contact matrix to custom age groups using population-weighted means,
+then rescales the result to preserve the total sum of the original matrix.
+
+
+The function first computes the mean population per single-year age across time,
+assigns each age to a group defined by \code{age_breaks}, and aggregates the contact matrix
+using population-weighted averages. It then rescales the aggregated matrix so that
+the total sum is equal to that of the original matrix. Optionally, it enforces symmetry
+(reciprocity) using population group weights.
 }

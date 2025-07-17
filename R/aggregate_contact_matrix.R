@@ -1,14 +1,30 @@
-#' Aggregate a Square Contact Matrix Using Population Weights
+#' aggregate_contact_matrix
 #'
-#' Aggregates a contact matrix to custom age groups using the mean population over time
-#' as weights to preserve transmission dynamics.
+#' Aggregate and Rescale a Square Contact Matrix
 #'
-#' @param mat Square matrix of contact rates (e.g., 101 x 101 for ages 0–100).
-#' @param age_breaks Vector of age group cutpoints (e.g. c(0, 5, 10, ..., Inf)).
-#' @param population Long-format data.frame with `time`, `age`, and `value` columns.
-#' @param symmetric Logical; if TRUE, enforces reciprocity between age groups.
+#' Aggregates a square contact matrix to custom age groups using population-weighted means,
+#' then rescales the result to preserve the total sum of the original matrix.
 #'
-#' @return Aggregated square contact matrix (n_group x n_group).
+#' @param mat A square numeric matrix of contact rates (e.g., 101 x 101 for ages 0–100).
+#' @param age_breaks Numeric vector of lower age boundaries for groups (e.g., \code{c(0, 5, 10, ..., Inf)}).
+#' @param population A data frame with columns \code{time}, \code{age} (integer, 1-based), and \code{value} (population count).
+#' @param symmetric Logical; if \code{TRUE}, enforces reciprocity between age groups (default: \code{TRUE}).
+#'
+#' @details
+#' The function first computes the mean population per single-year age across time,
+#' assigns each age to a group defined by \code{age_breaks}, and aggregates the contact matrix
+#' using population-weighted averages. It then rescales the aggregated matrix so that
+#' the total sum is equal to that of the original matrix. Optionally, it enforces symmetry
+#' (reciprocity) using population group weights.
+#'
+#' @return A square numeric matrix of dimension \code{length(age_breaks) - 1},
+#' with sum preserved.
+#'
+#' @importFrom dplyr group_by summarise pull
+#' @importFrom magrittr %>%
+#'
+#' @export
+
 aggregate_contact_matrix <- function(mat, age_breaks, population, symmetric = TRUE) {
 
   # Step 1: Compute average population per age over time
@@ -54,6 +70,18 @@ aggregate_contact_matrix <- function(mat, age_breaks, population, symmetric = TR
           (group_weights[i] + group_weights[j])
       }
     }
+  }
+
+  # Step 5: Normalize both rows and columns to sum to 1 (Sinkhorn-Knopp)
+  tol <- 1e-8
+  max_iter <- 100
+  for (k in seq_len(max_iter)) {
+    # Normalize rows
+    agg_mat <- sweep(agg_mat, 1, rowSums(agg_mat), "/")
+    # Normalize columns
+    agg_mat <- sweep(agg_mat, 2, colSums(agg_mat), "/")
+    # Convergence check
+    if (all(abs(rowSums(agg_mat) - 1) < tol) && all(abs(colSums(agg_mat) - 1) < tol)) break
   }
 
   return(agg_mat)

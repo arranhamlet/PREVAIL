@@ -13,14 +13,14 @@
 #'
 #' @importFrom dust2 dust_system_create dust_system_set_state_initial dust_system_simulate
 #' @export
-run_model <- function(odin_model, params, time = 1000, no_runs = 10) {
+run_model <- function(params, simulation_length = 1000, no_runs = 10) {
 
   # Create and initialize the Dust system
-  sys <- dust2::dust_system_create(odin_model(), params, n_particles = no_runs)
+  sys <- dust2::dust_system_create(transmission_model(), params, n_particles = no_runs)
   dust2::dust_system_set_state_initial(sys)
 
   # Define simulation time vector (starts at 0)
-  full_time_vector <- 0:(time - 1)
+  full_time_vector <- 0:simulation_length
 
   # Run simulation
   y <- dust2::dust_system_simulate(sys, full_time_vector)

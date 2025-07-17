@@ -977,77 +977,77 @@ public:
     for (size_t i = 1; i <= static_cast<size_t>((shared.n_age - 1)); ++i) {
       for (size_t j = 1; j <= shared.dim.aging_out_of_S.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.aging_out_of_S.dim[2]; ++k) {
-          internal.aging_out_of_S[i - 1 + (j - 1) * shared.dim.aging_out_of_S.mult[1] + (k - 1) * shared.dim.aging_out_of_S.mult[2]] = (S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]], monty::math::max(monty::math::min(shared.aging_rate[i - 1], static_cast<real_type>(1)), static_cast<real_type>(0))));
+          internal.aging_out_of_S[i - 1 + (j - 1) * shared.dim.aging_out_of_S.mult[1] + (k - 1) * shared.dim.aging_out_of_S.mult[2]] = S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] * monty::math::max(monty::math::min(shared.aging_rate[i - 1], static_cast<real_type>(1)), static_cast<real_type>(0));
         }
       }
     }
     for (size_t i = 2; i <= static_cast<size_t>(shared.n_age); ++i) {
       for (size_t j = 1; j <= shared.dim.aging_into_E.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.aging_into_E.dim[2]; ++k) {
-          internal.aging_into_E[i - 1 + (j - 1) * shared.dim.aging_into_E.mult[1] + (k - 1) * shared.dim.aging_into_E.mult[2]] = (E[i - 1 - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, E[i - 1 - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2]], monty::math::max(monty::math::min(shared.aging_rate[i - 1 - 1], static_cast<real_type>(1)), static_cast<real_type>(0))));
+          internal.aging_into_E[i - 1 + (j - 1) * shared.dim.aging_into_E.mult[1] + (k - 1) * shared.dim.aging_into_E.mult[2]] = E[i - 1 - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2]] * monty::math::max(monty::math::min(shared.aging_rate[i - 1 - 1], static_cast<real_type>(1)), static_cast<real_type>(0));
         }
       }
     }
     for (size_t i = 1; i <= static_cast<size_t>((shared.n_age - 1)); ++i) {
       for (size_t j = 1; j <= shared.dim.aging_out_of_E.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.aging_out_of_E.dim[2]; ++k) {
-          internal.aging_out_of_E[i - 1 + (j - 1) * shared.dim.aging_out_of_E.mult[1] + (k - 1) * shared.dim.aging_out_of_E.mult[2]] = (E[i - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, E[i - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2]], monty::math::max(monty::math::min(shared.aging_rate[i - 1], static_cast<real_type>(1)), static_cast<real_type>(0))));
+          internal.aging_out_of_E[i - 1 + (j - 1) * shared.dim.aging_out_of_E.mult[1] + (k - 1) * shared.dim.aging_out_of_E.mult[2]] = E[i - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2]] * monty::math::max(monty::math::min(shared.aging_rate[i - 1], static_cast<real_type>(1)), static_cast<real_type>(0));
         }
       }
     }
     for (size_t i = 2; i <= static_cast<size_t>(shared.n_age); ++i) {
       for (size_t j = 1; j <= shared.dim.aging_into_I.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.aging_into_I.dim[2]; ++k) {
-          internal.aging_into_I[i - 1 + (j - 1) * shared.dim.aging_into_I.mult[1] + (k - 1) * shared.dim.aging_into_I.mult[2]] = (I[i - 1 - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, I[i - 1 - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2]], monty::math::max(monty::math::min(shared.aging_rate[i - 1 - 1], static_cast<real_type>(1)), static_cast<real_type>(0))));
+          internal.aging_into_I[i - 1 + (j - 1) * shared.dim.aging_into_I.mult[1] + (k - 1) * shared.dim.aging_into_I.mult[2]] = I[i - 1 - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2]] * monty::math::max(monty::math::min(shared.aging_rate[i - 1 - 1], static_cast<real_type>(1)), static_cast<real_type>(0));
         }
       }
     }
     for (size_t i = 1; i <= static_cast<size_t>((shared.n_age - 1)); ++i) {
       for (size_t j = 1; j <= shared.dim.aging_out_of_I.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.aging_out_of_I.dim[2]; ++k) {
-          internal.aging_out_of_I[i - 1 + (j - 1) * shared.dim.aging_out_of_I.mult[1] + (k - 1) * shared.dim.aging_out_of_I.mult[2]] = (I[i - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, I[i - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2]], monty::math::max(monty::math::min(shared.aging_rate[i - 1], static_cast<real_type>(1)), static_cast<real_type>(0))));
+          internal.aging_out_of_I[i - 1 + (j - 1) * shared.dim.aging_out_of_I.mult[1] + (k - 1) * shared.dim.aging_out_of_I.mult[2]] = I[i - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2]] * monty::math::max(monty::math::min(shared.aging_rate[i - 1], static_cast<real_type>(1)), static_cast<real_type>(0));
         }
       }
     }
     for (size_t i = 2; i <= static_cast<size_t>(shared.n_age); ++i) {
       for (size_t j = 1; j <= shared.dim.aging_into_R.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.aging_into_R.dim[2]; ++k) {
-          internal.aging_into_R[i - 1 + (j - 1) * shared.dim.aging_into_R.mult[1] + (k - 1) * shared.dim.aging_into_R.mult[2]] = (R[i - 1 - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, R[i - 1 - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2]], monty::math::max(monty::math::min(shared.aging_rate[i - 1 - 1], static_cast<real_type>(1)), static_cast<real_type>(0))));
+          internal.aging_into_R[i - 1 + (j - 1) * shared.dim.aging_into_R.mult[1] + (k - 1) * shared.dim.aging_into_R.mult[2]] = R[i - 1 - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2]] * monty::math::max(monty::math::min(shared.aging_rate[i - 1 - 1], static_cast<real_type>(1)), static_cast<real_type>(0));
         }
       }
     }
     for (size_t i = 1; i <= static_cast<size_t>((shared.n_age - 1)); ++i) {
       for (size_t j = 1; j <= shared.dim.aging_out_of_R.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.aging_out_of_R.dim[2]; ++k) {
-          internal.aging_out_of_R[i - 1 + (j - 1) * shared.dim.aging_out_of_R.mult[1] + (k - 1) * shared.dim.aging_out_of_R.mult[2]] = (R[i - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, R[i - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2]], monty::math::max(monty::math::min(shared.aging_rate[i - 1], static_cast<real_type>(1)), static_cast<real_type>(0))));
+          internal.aging_out_of_R[i - 1 + (j - 1) * shared.dim.aging_out_of_R.mult[1] + (k - 1) * shared.dim.aging_out_of_R.mult[2]] = R[i - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2]] * monty::math::max(monty::math::min(shared.aging_rate[i - 1], static_cast<real_type>(1)), static_cast<real_type>(0));
         }
       }
     }
     for (size_t i = 2; i <= static_cast<size_t>(shared.n_age); ++i) {
       for (size_t j = 1; j <= shared.dim.aging_into_Is.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.aging_into_Is.dim[2]; ++k) {
-          internal.aging_into_Is[i - 1 + (j - 1) * shared.dim.aging_into_Is.mult[1] + (k - 1) * shared.dim.aging_into_Is.mult[2]] = (Is[i - 1 - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, Is[i - 1 - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2]], monty::math::max(monty::math::min(shared.aging_rate[i - 1 - 1], static_cast<real_type>(1)), static_cast<real_type>(0))));
+          internal.aging_into_Is[i - 1 + (j - 1) * shared.dim.aging_into_Is.mult[1] + (k - 1) * shared.dim.aging_into_Is.mult[2]] = Is[i - 1 - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2]] * monty::math::max(monty::math::min(shared.aging_rate[i - 1 - 1], static_cast<real_type>(1)), static_cast<real_type>(0));
         }
       }
     }
     for (size_t i = 1; i <= static_cast<size_t>((shared.n_age - 1)); ++i) {
       for (size_t j = 1; j <= shared.dim.aging_out_of_Is.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.aging_out_of_Is.dim[2]; ++k) {
-          internal.aging_out_of_Is[i - 1 + (j - 1) * shared.dim.aging_out_of_Is.mult[1] + (k - 1) * shared.dim.aging_out_of_Is.mult[2]] = (Is[i - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, Is[i - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2]], monty::math::max(monty::math::min(shared.aging_rate[i - 1], static_cast<real_type>(1)), static_cast<real_type>(0))));
+          internal.aging_out_of_Is[i - 1 + (j - 1) * shared.dim.aging_out_of_Is.mult[1] + (k - 1) * shared.dim.aging_out_of_Is.mult[2]] = Is[i - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2]] * monty::math::max(monty::math::min(shared.aging_rate[i - 1], static_cast<real_type>(1)), static_cast<real_type>(0));
         }
       }
     }
     for (size_t i = 2; i <= static_cast<size_t>(shared.n_age); ++i) {
       for (size_t j = 1; j <= shared.dim.aging_into_Rc.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.aging_into_Rc.dim[2]; ++k) {
-          internal.aging_into_Rc[i - 1 + (j - 1) * shared.dim.aging_into_Rc.mult[1] + (k - 1) * shared.dim.aging_into_Rc.mult[2]] = (Rc[i - 1 - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, Rc[i - 1 - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2]], monty::math::max(monty::math::min(shared.aging_rate[i - 1 - 1], static_cast<real_type>(1)), static_cast<real_type>(0))));
+          internal.aging_into_Rc[i - 1 + (j - 1) * shared.dim.aging_into_Rc.mult[1] + (k - 1) * shared.dim.aging_into_Rc.mult[2]] = Rc[i - 1 - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2]] * monty::math::max(monty::math::min(shared.aging_rate[i - 1 - 1], static_cast<real_type>(1)), static_cast<real_type>(0));
         }
       }
     }
     for (size_t i = 1; i <= static_cast<size_t>((shared.n_age - 1)); ++i) {
       for (size_t j = 1; j <= shared.dim.aging_out_of_Rc.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.aging_out_of_Rc.dim[2]; ++k) {
-          internal.aging_out_of_Rc[i - 1 + (j - 1) * shared.dim.aging_out_of_Rc.mult[1] + (k - 1) * shared.dim.aging_out_of_Rc.mult[2]] = (Rc[i - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, Rc[i - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2]], monty::math::max(monty::math::min(shared.aging_rate[i - 1], static_cast<real_type>(1)), static_cast<real_type>(0))));
+          internal.aging_out_of_Rc[i - 1 + (j - 1) * shared.dim.aging_out_of_Rc.mult[1] + (k - 1) * shared.dim.aging_out_of_Rc.mult[2]] = Rc[i - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2]] * monty::math::max(monty::math::min(shared.aging_rate[i - 1], static_cast<real_type>(1)), static_cast<real_type>(0));
         }
       }
     }
@@ -1434,7 +1434,7 @@ public:
     for (size_t i = 2; i <= static_cast<size_t>(shared.n_age); ++i) {
       for (size_t j = 1; j <= shared.dim.aging_into_S.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.aging_into_S.dim[2]; ++k) {
-          internal.aging_into_S[i - 1 + (j - 1) * shared.dim.aging_into_S.mult[1] + (k - 1) * shared.dim.aging_into_S.mult[2]] = (S[i - 1 - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, S[i - 1 - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]], monty::math::max(monty::math::min(shared.aging_rate[i - 1 - 1], static_cast<real_type>(1)), static_cast<real_type>(0))));
+          internal.aging_into_S[i - 1 + (j - 1) * shared.dim.aging_into_S.mult[1] + (k - 1) * shared.dim.aging_into_S.mult[2]] = S[i - 1 - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] * monty::math::max(monty::math::min(shared.aging_rate[i - 1 - 1], static_cast<real_type>(1)), static_cast<real_type>(0));
         }
       }
     }

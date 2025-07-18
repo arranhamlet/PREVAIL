@@ -1,0 +1,27 @@
+---
+title: "Demography"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Demography}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette introduces how demographic processes are represented and customized in the PREVAIL model. 
+
+Demography is a critical foundation for infectious disease models like PREVAIL because the underlying population structure directly shapes both current immunity profiles and future epidemic projections. Age distribution, birth rates, death rates, and migration all influence how susceptible, immune, and at-risk populations evolve over time. Just as importantly, demographic structure determines the configuration of contact matrices, which define how different age groups interact and transmit infection within the population. Accurately capturing these dynamics allows the model to reflect realistic patterns of immunity buildup, population turnover, and the flow of infection between groups. This is especially important for long-term projections or settings with rapid demographic change, where shifts in both population structure and contact patterns can substantially alter the risk of outbreaks and the effectiveness of interventions.
+
+While the model has built in data to handle each of these aspects, if the user has their own data we can flexibly integrate this into the model design. This hopefully allows the user to end up with better estimates of population level immunity, and the impact of different scenarios. We explain how users can define and modify the age structure (from single-year to multi-year age groups), specify age-specific or overall rates for migration, deaths, and births, and contact matricies. Each of these have substantial implications for simulation outputs. By the end of this section, you will be able to flexibly adapt demographic assumptions—such as age groupings, population movement, and vital rates—to match your data sources or scenario needs, ensuring that model results accurately reflect your setting of interest.
+
+
+

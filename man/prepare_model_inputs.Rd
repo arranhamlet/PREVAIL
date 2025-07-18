@@ -20,7 +20,6 @@ prepare_model_inputs(
   year_start = "",
   year_end = "",
   n_age = 1,
-  number_of_vaccines = 0,
   n_risk = 1
 )
 }
@@ -55,9 +54,9 @@ prepare_model_inputs(
 
 \item{n_age}{Number of age groups in the model.}
 
-\item{number_of_vaccines}{Number of vaccine doses to simulate (used to compute strata).}
-
 \item{n_risk}{Number of risk groups in the model.}
+
+\item{number_of_vaccines}{Number of vaccine doses to simulate (used to compute strata).}
 }
 \value{
 A named list containing:

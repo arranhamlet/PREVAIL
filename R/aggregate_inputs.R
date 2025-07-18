@@ -5,10 +5,10 @@
 #'
 #' @param preprocessed A list from prepare_model_inputs() including demographic data.
 #' @param cv_params Output from case_vaccine_to_param().
-#' @param seed_data Data frame of seeding values (e.g. for WHO).
+#' @param cv_params$seed_data Data frame of seeding values (e.g. for WHO).
 #' @param new_age_breaks Numeric vector of age breakpoints.
 #' @param aggregate_age Logical. If TRUE, aggregates into new_age_breaks.
-#' @param age_vaccination_beta_modifier A data frame of protection modifiers by dose and age.
+#' @param cv_params$age_vaccination_beta_modifier A data frame of protection modifiers by dose and age.
 #'
 #' @return A list with two elements:
 #'   \itemize{
@@ -16,15 +16,13 @@
 #'     \item inputs: Aggregated model inputs (if aggregate_age is TRUE), else same as default.
 #'   }
 #' @importFrom dplyr mutate select rename left_join pull group_by ungroup arrange case_when
-#' @importFrom tidyr pivot_longer replace_na
+#' @importFrom tidyr pivot_longer replace_na drop_na
 #' @importFrom tibble rownames_to_column
 #' @keywords internal
 aggregate_inputs <- function(preprocessed,
                              cv_params,
-                             seed_data,
                              new_age_breaks,
-                             aggregate_age,
-                             age_vaccination_beta_modifier) {
+                             aggregate_age) {
 
   n_age <- preprocessed$processed_demographic_data$input_data$n_age
 
@@ -61,9 +59,9 @@ aggregate_inputs <- function(preprocessed,
         rename(pop = value), by = c("year" = "year", "dim1" = "age")
     ) %>%
     dplyr::mutate(value = pop * (value/365)) %>%
-    drop_na()
+    tidyr::drop_na()
 
-  age_vaccination_beta_modifier_upd <- age_vaccination_beta_modifier %>%
+  cv_params$age_vaccination_beta_modifier_upd <- cv_params$age_vaccination_beta_modifier %>%
     dplyr::left_join(
       weight_reformatted %>%
         group_by(age) %>%
@@ -74,7 +72,7 @@ aggregate_inputs <- function(preprocessed,
     select(-pop)
 
   default_inputs <- list(
-    age_beta_mod   = age_vaccination_beta_modifier,
+    age_beta_mod   = cv_params$age_vaccination_beta_modifier,
     vacc_cov       = vaccination_people %>%
       dplyr::mutate(value = value/pop),
     N0             = preprocessed$processed_demographic_data$N0,
@@ -85,7 +83,7 @@ aggregate_inputs <- function(preprocessed,
     mig_in         = preprocessed$processed_demographic_data$migration_in_number %>%
       dplyr::mutate(value = value / 365),
     mig_dist       = preprocessed$processed_demographic_data$migration_distribution_values,
-    seeded         = seed_data,
+    seeded         = cv_params$seed_data,
     contact_matrix = preprocessed$processed_demographic_data$contact_matrix,
     population     = weight_reformatted %>%
       dplyr::rename(dim1 = age, dim2 = time),
@@ -105,7 +103,7 @@ aggregate_inputs <- function(preprocessed,
     dplyr::mutate(value = value / 365 * weight_reformatted$value)
 
   inputs <- list(
-    age_beta_mod   = aggregate_age_structure(age_vaccination_beta_modifier_upd, age_breaks = new_age_breaks, method = "sum", weights = weight_reformatted, time_var = NULL),
+    age_beta_mod   = aggregate_age_structure(cv_params$age_vaccination_beta_modifier_upd, age_breaks = new_age_breaks, method = "sum", weights = weight_reformatted, time_var = NULL),
     vacc_cov       = aggregate_age_structure(vaccination_people %>%
                                                select(dim1:year), age_breaks = new_age_breaks, method = "sum", weights = weight_reformatted, time_var = "dim4"),
     N0             = aggregate_age_structure(preprocessed$processed_demographic_data$N0, age_breaks = new_age_breaks, method = "sum", time_var = NULL),
@@ -113,7 +111,7 @@ aggregate_inputs <- function(preprocessed,
     crude_birth    = aggregate_age_structure(crude_birth_augmented %>% dplyr::select(-population), age_breaks = new_age_breaks, method = "sum", time_var = "dim2"),
     mig_in         = aggregate_age_structure(preprocessed$processed_demographic_data$migration_in_number %>% dplyr::mutate(value = value / 365), age_breaks = new_age_breaks, method = "sum", time_var = "dim4"),
     mig_dist       = aggregate_age_structure(preprocessed$processed_demographic_data$migration_distribution_values, age_breaks = new_age_breaks, method = "weighted.mean", weights = weight_reformatted, time_var = "dim2"),
-    seeded         = aggregate_age_structure(seed_data, age_breaks = new_age_breaks, method = "sum", time_var = "dim4"),
+    seeded         = aggregate_age_structure(cv_params$seed_data, age_breaks = new_age_breaks, method = "sum", time_var = "dim4"),
     contact_matrix = aggregate_contact_matrix(preprocessed$processed_demographic_data$contact_matrix, age_breaks = new_age_breaks, population = weight_reformatted, symmetric = TRUE),
     population     = aggregate_age_structure(weight_reformatted %>% dplyr::rename(dim1 = age, dim2 = time), age_breaks = new_age_breaks, method = "sum", time_var = "dim2"),
     female_population = aggregate_age_structure(preprocessed$processed_demographic_data$female_population %>% dplyr::rename(value = population), age_breaks = new_age_breaks, method = "sum", time_var = "dim2")

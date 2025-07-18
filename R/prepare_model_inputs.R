@@ -53,9 +53,17 @@ prepare_model_inputs <- function(
   year_start = "",
   year_end = "",
   n_age = 1,
-  number_of_vaccines = 0,
   n_risk = 1
 ) {
+
+  #Establish the number of vaccines
+  number_of_vaccines <- switch(
+    disease,
+    "measles"    = 2,
+    "diphtheria" = 3,
+    "pertussis"  = 3,
+    0
+  )
 
   # Step 1: Process demographic data
   demographic <- process_demography(

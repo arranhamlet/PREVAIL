@@ -75,7 +75,7 @@ expand_pre1980_vaccination <- function(processed_vaccination, vaccination_pre198
 #' @param processed_case WHO case reports processed for the country of interest.
 #' @param vaccination_schedule Full WHO vaccine schedule data frame.
 #' @param vaccination_pre1980 Data frame of historical vaccination introduction assumptions.
-#'
+#' @param vaccine_parameters Data frame of vaccination parameters
 #' @return A named list of parameters including coverage arrays and seeding inputs.
 #'
 #' @importFrom data.table data.table setDT rbindlist
@@ -87,7 +87,10 @@ case_vaccine_to_param <- function(
     processed_vaccination_sia,
     processed_case,
     vaccination_schedule,
-    vaccination_pre1980
+    vaccination_pre1980,
+    vaccine_parameters,
+    disease_parameters,
+    WHO_seed_switch
 ) {
 
   iso <- demog_data$input_data$iso
@@ -147,11 +150,98 @@ case_vaccine_to_param <- function(
     tt_seeded <- 0
   }
 
+  # ---- Build Age-Vaccination Modifier Structure ----
+  n_vacc <- demog_data$input_data$n_vacc
+  vacc_order <- seq(2, n_vacc, by = 2)
+
+  age_vaccination_beta_modifier <- purrr::map_dfr(vacc_order, function(j) {
+    dose_details <- vaccine_parameters %>%
+      dplyr::mutate(order = abs(j - dose)) %>%
+      dplyr::filter(order == min(order))
+
+    n_age <- demog_data$input_data$n_age
+
+    short_term <- base::expand.grid(
+      dim1 = seq_len(n_age),
+      dim2 = j,
+      dim3 = 1,
+      value = dose_details$value[dose_details$parameter == "short_term_protection"]
+    )
+
+    long_term <- base::expand.grid(
+      dim1 = seq_len(n_age),
+      dim2 = j + 1,
+      dim3 = 1,
+      value = dose_details$value[dose_details$parameter == "long_term_protection"]
+    )
+
+    dplyr::bind_rows(short_term, long_term)
+  })
+
+
+  # ---- Natural Immunity Waning ----
+  nat_waning <- disease_parameters %>%
+    dplyr::filter(parameter == "natural immunity waning") %>%
+    dplyr::pull(value) %>%
+    tidyr::replace_na(0) %>%
+    base::gsub("NA", 0, .) %>%
+    base::as.numeric() * 365
+
+  seed_time <- base::sort(base::floor(tt_seeded * 365))
+
+  # ---- WHO Seeding ----
+  if (WHO_seed_switch) {
+
+    # Base seed entries: all except dim4 = 1, and doubled for WHO style
+    base_seed <- case_df %>%
+      dplyr::filter(dim4 != 1) %>%
+      dplyr::mutate(dim4 = (dim4 * 2) - 2)
+
+    # Duplicate with value = 0 and dim4 shifted forward
+    zero_seed <- base_seed %>%
+      dplyr::mutate(value = 0, dim4 = dim4 + 1)
+
+    # Insert "patch" value for initial seeding
+    zero_seed <- dplyr::bind_rows(
+      zero_seed,
+      zero_seed %>%
+        dplyr::filter(dim4 == 3) %>%
+        dplyr::mutate(dim4 = 1)
+    ) %>%
+      dplyr::mutate(value = dplyr::case_when(
+        dim4 == 1 & dim1 == 1 ~ 10,
+        TRUE ~ value
+      ))
+
+    seed_data <- dplyr::bind_rows(base_seed, zero_seed) %>%
+      dplyr::arrange(dim4)
+
+    # Adjust timepoints to match WHO-style seeding schedule
+    original_times <- seed_time
+    replicated <- base::unlist(base::lapply(original_times[original_times != 0], function(e) c(e, e + 1)))
+    seed_time <- c(0, base::sort(replicated), base::max(replicated) + 364, base::max(replicated) + 365)
+
+  } else {
+
+    # Minimal fallback if WHO seed switch is off
+    seed_time <- c(base::min(seed_time), base::max(seed_time) + 1)
+
+    seed_data <- base::data.frame(
+      dim1 = 1, dim2 = 1, dim3 = 1,
+      dim4 = seq_along(seed_time),
+      value = 10
+    )
+  }
+
   list(
     tt_vaccination = c(0, match(unique(routine_df$dim4), seq_along(years))),
     vaccination_coverage = vacc_df %>%
       mutate(dim4 = match(dim4, unique(dim4))),
     tt_seeded = tt_seeded,
-    seeded = case_df
+    seeded = case_df,
+    nat_waning = nat_waning,
+    age_vaccination_beta_modifier = age_vaccination_beta_modifier,
+    seed_time = seed_time,
+    seed_data = seed_data
   )
 }

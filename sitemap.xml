@@ -1,6 +1,7 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://arranhamlet.github.io/PREVAIL/404.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/articles/Getting_started.html</loc></url>
+<url><loc>https://arranhamlet.github.io/PREVAIL/articles/demography.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/articles/index.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/authors.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/index.html</loc></url>
@@ -24,12 +25,14 @@
 <url><loc>https://arranhamlet.github.io/PREVAIL/reference/build_routine_vaccination_param.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/reference/build_seeded_case_param.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/reference/build_sia_vaccination_param.html</loc></url>
+<url><loc>https://arranhamlet.github.io/PREVAIL/reference/calc_aging_and_repro.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/reference/calculate_current_susceptibility.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/reference/case_vaccine_to_param.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/reference/collapse_age_bins.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/reference/combine_vaccination_params.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/reference/compare_weighted_inputs.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/reference/contact_matricies.html</loc></url>
+<url><loc>https://arranhamlet.github.io/PREVAIL/reference/custom_data_process_wrapper.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/reference/data_load_process_wrapper.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/reference/demographic_check.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/reference/df_to_array.html</loc></url>

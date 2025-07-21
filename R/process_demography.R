@@ -63,7 +63,9 @@ process_demography <- function(
   pop_cols <- paste0("x", all_ages)
   fem_cols <- paste0("x", female_ages)
 
-  pop_all_raw <- population_all %>% dplyr::select(dplyr::all_of(pop_cols)) %>% as.matrix()
+  mort_pop_ages <- intersect(mortality$year, population_all$year)
+
+  pop_all_raw <- population_all %>% subset(year %in% mort_pop_ages) %>% dplyr::select(dplyr::all_of(pop_cols)) %>% as.matrix()
   pop_all <- collapse_age_bins(pop_all_raw, n_age)
 
   age_groups <- sapply(split(all_ages, sort(all_ages %% n_age)), min)
@@ -78,7 +80,7 @@ process_demography <- function(
   reformatted_contact_matrix <- symmetrize_contact_matrix(reformatted_contact_matrix, pop = pop_all[nrow(pop_all), ])
   reformatted_contact_matrix <- project_to_symmetric_doubly_stochastic(reformatted_contact_matrix)
 
-  mort_mat <- mortality %>% subset(year %in% unique(population_all$year)) %>% dplyr::select(dplyr::all_of(pop_cols)) %>% as.matrix()
+  mort_mat <- mortality %>% subset(year %in% mort_pop_ages) %>% dplyr::select(dplyr::all_of(pop_cols)) %>% as.matrix()
   mort_mat <- collapse_age_bins(mort_mat, n_age)
   mortality_rate <- pmin(mort_mat / pop_all, 1)
   mortality_rate[!is.finite(mortality_rate)] <- 1

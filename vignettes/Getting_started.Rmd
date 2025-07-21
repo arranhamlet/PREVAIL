@@ -161,6 +161,7 @@ Here we will look at a single run of the model.
 ```{r, eval = FALSE}
 model_run <- run_model_unpack_results(
   params = params,
+  simulation_length = (params$input_data$year_end - params$input_data$year_start) * 365,
   no_runs = 1
 )
 ```

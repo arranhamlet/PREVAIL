@@ -14,21 +14,26 @@ reformat_demographic_data(
 )
 }
 \arguments{
-\item{custom_data}{A data frame containing demographic data. Must include columns \code{year} and \code{value}. Optionally includes \code{age}, \code{area}, and \code{iso3}.}
+\item{custom_data}{A data frame containing demographic data. Must include \code{year} and \code{value}. Optionally includes \code{age}, \code{area}, and \code{iso3}.}
 
-\item{age_required}{A vector of required ages (numeric or character). If \code{NA}, age expansion is skipped.}
+\item{age_required}{Vector of required ages. If \code{NA}, age expansion is skipped.}
 
-\item{years}{Optional. A vector of years to ensure are present. Any missing (year, age) combinations are filled with NA values.}
+\item{years}{Vector of years to ensure are present (default: unique years in data).}
 
-\item{iso}{A character string for area/iso3 fields if missing. Default is "custom".}
+\item{iso}{Character string for area/iso3 if missing. Default is "custom".}
 
-\item{value_allocation}{How to allocate values across age groups: \code{"maintain"} (keep value per group) or \code{"split"} (divide value equally). Default is "maintain".}
+\item{value_allocation}{For group age ranges: \code{"maintain"} (default, keep value per group), or \code{"split"} (divide value evenly across ages).}
 
-\item{fill_method}{How to fill NA values in the \code{value} column: \code{"none"} (leave as NA), \code{"closest"} (fill with closest value by year for the same age), \code{"mean"} (fill with mean of available values), or \code{"median"} (fill with median of available values). Default is "none".}
+\item{fill_method}{Method for filling missing values: \code{"none"} (leave as NA), \code{"closest"} (fill by nearest year/age, or nearest year for unstratified), \code{"mean"} (fill by group-year mean), or \code{"median"} (by group-year median). Default is "none".}
 }
 \value{
-A standardized data frame, either long (with \code{year}, \code{age}, \code{value}) or wide (ages as columns).
+A tidy data frame: wide format if age present, else long format.
 }
 \description{
-Reformat demographic data for use in the PREVAIL transmission model. Checks and standardizes columns, expands or assigns ages as needed, allocates values across age groups, expands to missing years, and fills NA values according to the specified method. Pivots to wide format if appropriate.
+Expands, standardizes, and fills demographic data for use in the PREVAIL transmission model. Handles age expansion, year grid completion, and flexible missing data imputation (mean, median, or nearest neighbor).
+}
+\examples{
+df <- data.frame(year = 2000:2002, value = c(100, 110, 120))
+reformat_demographic_data(df, age_required = 0:4, years = 2000:2005, fill_method = "closest")
+
 }

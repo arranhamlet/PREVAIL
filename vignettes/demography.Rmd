@@ -15,13 +15,149 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+library(tidyverse)
 ```
 
 This vignette introduces how demographic processes are represented and customized in the PREVAIL model. 
 
-Demography is a critical foundation for infectious disease models like PREVAIL because the underlying population structure directly shapes both current immunity profiles and future epidemic projections. Age distribution, birth rates, death rates, and migration all influence how susceptible, immune, and at-risk populations evolve over time. Just as importantly, demographic structure determines the configuration of contact matrices, which define how different age groups interact and transmit infection within the population. Accurately capturing these dynamics allows the model to reflect realistic patterns of immunity buildup, population turnover, and the flow of infection between groups. This is especially important for long-term projections or settings with rapid demographic change, where shifts in both population structure and contact patterns can substantially alter the risk of outbreaks and the effectiveness of interventions.
+<br />
+Demography is a critical foundation for infectious disease models like PREVAIL because the underlying population structure directly shapes both current immunity profiles and future epidemic projections. Age distribution, birth rates, death rates, and migration all influence how susceptible, immune, and at-risk populations evolve over time. Just as importantly, demographic structure determines the configuration of contact matrices, which define how different age groups interact and transmit infection within the population. Accurately capturing these dynamics allows the model to reflect realistic patterns of immunity buildup, population turnover, and the flow of infection between groups. This is especially important for long-term projections or settings with rapid demographic change, where shifts in both 
+population structure and contact patterns can substantially alter the risk of outbreaks and the effectiveness of interventions.
+
+<br />
 
 While the model has built in data to handle each of these aspects, if the user has their own data we can flexibly integrate this into the model design. This hopefully allows the user to end up with better estimates of population level immunity, and the impact of different scenarios. We explain how users can define and modify the age structure (from single-year to multi-year age groups), specify age-specific or overall rates for migration, deaths, and births, and contact matricies. Each of these have substantial implications for simulation outputs. By the end of this section, you will be able to flexibly adapt demographic assumptions—such as age groupings, population movement, and vital rates—to match your data sources or scenario needs, ensuring that model results accurately reflect your setting of interest.
+
+<br />
+
+# 1. Prepare your custom data
+
+Firstly we need to load our required packages, we're using the **pacman** package here, which will also install these packages if missing.
+
+```{r, eval = FALSE}
+#If pacman is not already present, install
+if(!require("pacman")) install.packages("pacman")
+
+#Install missing packages, and load 
+pacman::p_load(
+  PREVAIL,
+  tidyverse
+)
+```
+
+To use our own custom data, we need to make sure that it is in the format required. This will depend on whether it is a parameter that is age *independent* (`migration`) or age *dependent* (`fertility`, `mortality`, `population`).
+
+For parameters that are age *independent*, we only require a data.frame with two columns, `year` and `value`. 
+
+```{r, eval = T}
+custom_migration_df <- data.frame(
+  year = 1950:2023,
+  value = sample(x = -5:5, size = 74, replace = TRUE)
+)
+
+head(custom_migration_df)
+```
+
+For parameters that are age *dependent*, we can also include a column called `age` for age specific values. However, if this information is missing, then we can auto-fill it later.
+
+```{r, eval = T}
+custom_mortality_df <- expand.grid(
+  year = 1950:2023,
+  age = 0:100
+) %>%
+  group_by(year, age) %>%
+  mutate(value = sample(0:5, size = 1))
+
+head(custom_mortality_df)
+```
+
+This information is expanded within the function `custom_data_process_wrapper()`, which is what we use to incorporate our custom data. This function is very similar to `data_load_process_wrapper()` but allows us to customise datasets used, rather than only allowing the defaults.
+
+### Reformatting demographic data
+
+Inside of the function `custom_data_process_wrapper()` is the function `reformat_demographic_data()` which checks our custom data, re-formats, and expands it to the format expected by the functions that prepare our data and run our model. 
+
+The function, `reformat_demographic_data()` has several different approaches to how it deals with missing data, which in `custom_data_process_wrapper()` are dependent on the specific dataset it is trying to format. Generally, it will fill in missing data that is required for the model by using the closest year and age available. Where no age data is present, it will use the year value across each age group (no age dependence), and where no year data is available it will use the closest years values.
+
+This auto-fill applies if we have limited data on years, and limited data on ages. For example, if we only had data on years 1970 to 2015, and ages 20-50, then we would still be able to include this.
+
+```{r, eval = T}
+custom_mortality <- expand.grid(
+  year = 1970:2015,
+  age = 20:50
+) %>%
+  group_by(year, age) %>%
+  mutate(value = sample(0:5, size = 1))
+
+head(custom_mortality)
+```
+
+# 2. Customising our demographic parameters
+
+Here we use `custom_data_process_wrapper()` instead of `data_load_process_wrapper()`. However, the approach is generally the same, as it takes all of the arguments used in `data_load_process_wrapper()`, and a few others, all of which have a default value of `NA` (which tells the model to use the inbuilt data).
+
+* custom_migration 
+* custom_fertility
+* custom_mortality
+* custom_population
+* custom_contact_matricies
+* custom_routine_vaccination
+* custom_sia_vaccination
+* custom_disease_data
+* custom_vaccination_schedule
+* custom_disease_parameters
+* custom_vaccine_parameters
+
+Here we will be focusing on the demographic inputs:
+
+* custom_migration 
+* custom_fertility
+* custom_mortality
+* custom_population
+* custom_contact_matricies
+
+### Running the function
+
+To run the model with custom data, you add in your custom data.frame at the appropriate point. So to run the model with our custom_mortality data.frame, we would fill in our initial arguments as usual, and then specify `custom_mortality = custom_mortality_df`.
+
+```{r, eval = F}
+custom_params <- custom_data_process_wrapper(
+    iso = "GBR",
+    disease = "measles",
+    R0 = 15,
+    custom_mortality = custom_mortality_df
+)
+```
+
+and if we wanted to run the model with our custom mortality and migration it would be:
+
+```{r, eval = F}
+custom_params <- custom_data_process_wrapper(
+    iso = "GBR",
+    disease = "measles",
+    R0 = 15,
+    custom_mortality = custom_mortality_df,
+    custom_migration = custom_migration_df
+)
+```
+
+This provides our custom parameters for use in `model_run()`.
+
+*Note: This function is slower than `data_load_process_wrapper()`, so allow for a longer when running it, especially when you have multiple custom datasets.*
+
+# 3. Running the model with custom parameters
+
+As described in the vignette, Getting Started with PREVAIL, to run the model we then just have to supply the parameters required.
+
+```{r, eval = FALSE}
+custom_model_run <- run_model_unpack_results(
+  params = custom_params,
+  no_runs = 1
+)
+```
+
+From this, you can then run the additional plotting functions, extract current susceptibility and look at onward scenarios as previously described.
 
 
 

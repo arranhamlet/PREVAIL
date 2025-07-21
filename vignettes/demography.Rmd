@@ -16,7 +16,8 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-library(tidyverse)
+library(dplyr)
+library(magrittr)
 ```
 
 This vignette introduces how demographic processes are represented and customized in the PREVAIL model. 
@@ -66,8 +67,8 @@ custom_mortality_df <- expand.grid(
   year = 1950:2023,
   age = 0:100
 ) %>%
-  group_by(year, age) %>%
-  mutate(value = sample(0:5, size = 1))
+  dplyr::group_by(year, age) %>%
+  dplyr::mutate(value = sample(0:5, size = 1))
 
 head(custom_mortality_df)
 ```
@@ -87,8 +88,8 @@ custom_mortality <- expand.grid(
   year = 1970:2015,
   age = 20:50
 ) %>%
-  group_by(year, age) %>%
-  mutate(value = sample(0:5, size = 1))
+  dplyr::group_by(year, age) %>%
+  dplyr::mutate(value = sample(0:5, size = 1))
 
 head(custom_mortality)
 ```

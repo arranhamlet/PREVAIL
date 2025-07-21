@@ -66,12 +66,12 @@
     
 <p>This vignette introduces how demographic processes are represented
 and customized in the PREVAIL model.</p>
-<p>Demography is a critical foundation for infectious disease models
-like PREVAIL because the underlying population structure directly shapes
-both current immunity profiles and future epidemic projections. Age
-distribution, birth rates, death rates, and migration all influence how
-susceptible, immune, and at-risk populations evolve over time. Just as
-importantly, demographic structure determines the configuration of
+<p><br> Demography is a critical foundation for infectious disease
+models like PREVAIL because the underlying population structure directly
+shapes both current immunity profiles and future epidemic projections.
+Age distribution, birth rates, death rates, and migration all influence
+how susceptible, immune, and at-risk populations evolve over time. Just
+as importantly, demographic structure determines the configuration of
 contact matrices, which define how different age groups interact and
 transmit infection within the population. Accurately capturing these
 dynamics allows the model to reflect realistic patterns of immunity
@@ -80,6 +80,7 @@ This is especially important for long-term projections or settings with
 rapid demographic change, where shifts in both population structure and
 contact patterns can substantially alter the risk of outbreaks and the
 effectiveness of interventions.</p>
+<p><br></p>
 <p>While the model has built in data to handle each of these aspects, if
 the user has their own data we can flexibly integrate this into the
 model design. This hopefully allows the user to end up with better
@@ -92,7 +93,187 @@ the end of this section, you will be able to flexibly adapt demographic
 assumptions—such as age groupings, population movement, and vital
 rates—to match your data sources or scenario needs, ensuring that model
 results accurately reflect your setting of interest.</p>
-  </main>
+<p><br></p>
+<div class="section level2">
+<h2 id="prepare-your-custom-data">1. Prepare your custom data<a class="anchor" aria-label="anchor" href="#prepare-your-custom-data"></a>
+</h2>
+<p>Firstly we need to load our required packages, we’re using the
+<strong>pacman</strong> package here, which will also install these
+packages if missing.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#If pacman is not already present, install</span></span>
+<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://github.com/trinker/pacman" class="external-link">"pacman"</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pacman"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#Install missing packages, and load </span></span>
+<span><span class="fu">pacman</span><span class="fu">::</span><span class="fu">p_load</span><span class="op">(</span></span>
+<span>  <span class="va">PREVAIL</span>,</span>
+<span>  <span class="va">tidyverse</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>To use our own custom data, we need to make sure that it is in the
+format required. This will depend on whether it is a parameter that is
+age <em>independent</em> (<code>migration</code>) or age
+<em>dependent</em> (<code>fertility</code>, <code>mortality</code>,
+<code>population</code>).</p>
+<p>For parameters that are age <em>independent</em>, we only require a
+data.frame with two columns, <code>year</code> and
+<code>value</code>.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">custom_migration_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  year <span class="op">=</span> <span class="fl">1950</span><span class="op">:</span><span class="fl">2023</span>,</span>
+<span>  value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span>x <span class="op">=</span> <span class="op">-</span><span class="fl">5</span><span class="op">:</span><span class="fl">5</span>, size <span class="op">=</span> <span class="fl">74</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">custom_migration_df</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   year value</span></span>
+<span><span class="co">#&gt; 1 1950     1</span></span>
+<span><span class="co">#&gt; 2 1951    -1</span></span>
+<span><span class="co">#&gt; 3 1952     0</span></span>
+<span><span class="co">#&gt; 4 1953    -2</span></span>
+<span><span class="co">#&gt; 5 1954     0</span></span>
+<span><span class="co">#&gt; 6 1955     3</span></span></code></pre></div>
+<p>For parameters that are age <em>dependent</em>, we can also include a
+column called <code>age</code> for age specific values. However, if this
+information is missing, then we can auto-fill it later.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">custom_mortality_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span></span>
+<span>  year <span class="op">=</span> <span class="fl">1950</span><span class="op">:</span><span class="fl">2023</span>,</span>
+<span>  age <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">100</span></span>
+<span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">age</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">5</span>, size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">custom_mortality_df</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># Groups:   year, age [6]</span></span></span>
+<span><span class="co">#&gt;    year   age value</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">1</span>950     0     3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">1</span>951     0     2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>  <span style="text-decoration: underline;">1</span>952     0     2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>  <span style="text-decoration: underline;">1</span>953     0     4</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>  <span style="text-decoration: underline;">1</span>954     0     0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>  <span style="text-decoration: underline;">1</span>955     0     2</span></span></code></pre></div>
+<p>This information is expanded within the function
+<code><a href="../reference/custom_data_process_wrapper.html">custom_data_process_wrapper()</a></code>, which is what we use to
+incorporate our custom data. This function is very similar to
+<code><a href="../reference/data_load_process_wrapper.html">data_load_process_wrapper()</a></code> but allows us to customise
+datasets used, rather than only allowing the defaults.</p>
+<div class="section level4">
+<h4 id="reformatting-demographic-data">Reformatting demographic data<a class="anchor" aria-label="anchor" href="#reformatting-demographic-data"></a>
+</h4>
+<p>Inside of the function <code><a href="../reference/custom_data_process_wrapper.html">custom_data_process_wrapper()</a></code> is
+the function <code><a href="../reference/reformat_demographic_data.html">reformat_demographic_data()</a></code> which checks our
+custom data, re-formats, and expands it to the format expected by the
+functions that prepare our data and run our model.</p>
+<p>The function, <code><a href="../reference/reformat_demographic_data.html">reformat_demographic_data()</a></code> has several
+different approaches to how it deals with missing data, which in
+<code><a href="../reference/custom_data_process_wrapper.html">custom_data_process_wrapper()</a></code> are dependent on the specific
+dataset it is trying to format. Generally, it will fill in missing data
+that is required for the model by using the closest year and age
+available. Where no age data is present, it will use the year value
+across each age group (no age dependence), and where no year data is
+available it will use the closest years values.</p>
+<p>This auto-fill applies if we have limited data on years, and limited
+data on ages. For example, if we only had data on years 1970 to 2015,
+and ages 20-50, then we would still be able to include this.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">custom_mortality</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span></span>
+<span>  year <span class="op">=</span> <span class="fl">1970</span><span class="op">:</span><span class="fl">2015</span>,</span>
+<span>  age <span class="op">=</span> <span class="fl">20</span><span class="op">:</span><span class="fl">50</span></span>
+<span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">age</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">5</span>, size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">custom_mortality</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># Groups:   year, age [6]</span></span></span>
+<span><span class="co">#&gt;    year   age value</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">1</span>970    20     5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">1</span>971    20     5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>  <span style="text-decoration: underline;">1</span>972    20     5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>  <span style="text-decoration: underline;">1</span>973    20     0</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>  <span style="text-decoration: underline;">1</span>974    20     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>  <span style="text-decoration: underline;">1</span>975    20     2</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="customising-our-demographic-parameters">2. Customising our demographic parameters<a class="anchor" aria-label="anchor" href="#customising-our-demographic-parameters"></a>
+</h2>
+<p>Here we use <code><a href="../reference/custom_data_process_wrapper.html">custom_data_process_wrapper()</a></code> instead of
+<code><a href="../reference/data_load_process_wrapper.html">data_load_process_wrapper()</a></code>. However, the approach is
+generally the same, as it takes all of the arguments used in
+<code><a href="../reference/data_load_process_wrapper.html">data_load_process_wrapper()</a></code>, and a few others, all of which
+have a default value of <code>NA</code> (which tells the model to use
+the inbuilt data).</p>
+<ul>
+<li>custom_migration</li>
+<li>custom_fertility</li>
+<li>custom_mortality</li>
+<li>custom_population</li>
+<li>custom_contact_matricies</li>
+<li>custom_routine_vaccination</li>
+<li>custom_sia_vaccination</li>
+<li>custom_disease_data</li>
+<li>custom_vaccination_schedule</li>
+<li>custom_disease_parameters</li>
+<li>custom_vaccine_parameters</li>
+</ul>
+<p>Here we will be focusing on the demographic inputs:</p>
+<ul>
+<li>custom_migration</li>
+<li>custom_fertility</li>
+<li>custom_mortality</li>
+<li>custom_population</li>
+<li>custom_contact_matricies</li>
+</ul>
+<div class="section level4">
+<h4 id="running-the-function">Running the function<a class="anchor" aria-label="anchor" href="#running-the-function"></a>
+</h4>
+<p>To run the model with custom data, you add in your custom data.frame
+at the appropriate point. So to run the model with our custom_mortality
+data.frame, we would fill in our initial arguments as usual, and then
+specify <code>custom_mortality = custom_mortality_df</code>.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">custom_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/custom_data_process_wrapper.html">custom_data_process_wrapper</a></span><span class="op">(</span></span>
+<span>    iso <span class="op">=</span> <span class="st">"GBR"</span>,</span>
+<span>    disease <span class="op">=</span> <span class="st">"measles"</span>,</span>
+<span>    R0 <span class="op">=</span> <span class="fl">15</span>,</span>
+<span>    custom_mortality <span class="op">=</span> <span class="va">custom_mortality_df</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>and if we wanted to run the model with our custom mortality and
+migration it would be:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">custom_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/custom_data_process_wrapper.html">custom_data_process_wrapper</a></span><span class="op">(</span></span>
+<span>    iso <span class="op">=</span> <span class="st">"GBR"</span>,</span>
+<span>    disease <span class="op">=</span> <span class="st">"measles"</span>,</span>
+<span>    R0 <span class="op">=</span> <span class="fl">15</span>,</span>
+<span>    custom_mortality <span class="op">=</span> <span class="va">custom_mortality_df</span>,</span>
+<span>    custom_migration <span class="op">=</span> <span class="va">custom_migration_df</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>This provides our custom parameters for use in
+<code>model_run()</code>.</p>
+<p><em>Note: This function is slower than
+<code><a href="../reference/data_load_process_wrapper.html">data_load_process_wrapper()</a></code>, so allow for a longer when
+running it, especially when you have multiple custom datasets.</em></p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="running-the-model-with-custom-parameters">3. Running the model with custom parameters<a class="anchor" aria-label="anchor" href="#running-the-model-with-custom-parameters"></a>
+</h2>
+<p>As described in the vignette, Getting Started with PREVAIL, to run
+the model we then just have to supply the parameters required.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">custom_model_run</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model_unpack_results.html">run_model_unpack_results</a></span><span class="op">(</span></span>
+<span>  params <span class="op">=</span> <span class="va">custom_params</span>,</span>
+<span>  no_runs <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>From this, you can then run the additional plotting functions,
+extract current susceptibility and look at onward scenarios as
+previously described.</p>
+</div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 

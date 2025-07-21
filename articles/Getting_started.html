@@ -196,6 +196,7 @@ outcomes.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model_run</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model_unpack_results.html">run_model_unpack_results</a></span><span class="op">(</span></span>
 <span>  params <span class="op">=</span> <span class="va">params</span>,</span>
+<span>  simulation_length <span class="op">=</span> <span class="op">(</span><span class="va">params</span><span class="op">$</span><span class="va">input_data</span><span class="op">$</span><span class="va">year_end</span> <span class="op">-</span> <span class="va">params</span><span class="op">$</span><span class="va">input_data</span><span class="op">$</span><span class="va">year_start</span><span class="op">)</span> <span class="op">*</span> <span class="fl">365</span>,</span>
 <span>  no_runs <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>

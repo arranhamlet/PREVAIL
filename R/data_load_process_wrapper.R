@@ -53,7 +53,6 @@ data_load_process_wrapper <- function(
     disease = disease,
     vaccine = disease,
     n_age = 101,
-    number_of_vaccines = number_of_vaccines,
     migration = datasets$migration,
     fertility = datasets$fertility,
     mortality = datasets$mortality,

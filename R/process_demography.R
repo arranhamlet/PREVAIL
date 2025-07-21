@@ -26,6 +26,7 @@
 #' @importFrom dplyr filter select mutate bind_rows across case_when left_join all_of
 #' @importFrom tidyr expand_grid pivot_longer
 #' @importFrom purrr map_dfr
+#' @importFrom lubridate year
 #' @importFrom tibble rownames_to_column
 #' @importFrom stats setNames
 #' @importFrom reshape2 melt
@@ -47,7 +48,7 @@ process_demography <- function(
 
   n_vacc <- if (number_of_vaccines == 0) 1 else number_of_vaccines * 2 + 1
 
-  years_all <- get_years(migration$year, start = year_start, end = year_end)
+  years_all <- get_years(1950:lubridate::year(base::Sys.Date()), start = year_start, end = year_end)
   time_run_for <- length(years_all)
   time_all <- 0:(time_run_for - 1)
 
@@ -77,7 +78,7 @@ process_demography <- function(
   reformatted_contact_matrix <- symmetrize_contact_matrix(reformatted_contact_matrix, pop = pop_all[nrow(pop_all), ])
   reformatted_contact_matrix <- project_to_symmetric_doubly_stochastic(reformatted_contact_matrix)
 
-  mort_mat <- mortality %>% dplyr::select(dplyr::all_of(pop_cols)) %>% as.matrix()
+  mort_mat <- mortality %>% subset(year %in% unique(population_all$year)) %>% dplyr::select(dplyr::all_of(pop_cols)) %>% as.matrix()
   mort_mat <- collapse_age_bins(mort_mat, n_age)
   mortality_rate <- pmin(mort_mat / pop_all, 1)
   mortality_rate[!is.finite(mortality_rate)] <- 1
@@ -101,7 +102,10 @@ process_demography <- function(
     dplyr::left_join(fem_mat, by = c("dim1", "dim2")) %>%
     dplyr::mutate(value = value * population)
 
-  mig_rates <- migration[["migration_rate_1000"]]
+  #Add in a rename incase of custom values
+  mig_rates <-   migration %>%
+    {if ("value" %in% names(.)) dplyr::rename(., migration_rate_1000 = value) else .} %>%
+    pull(migration_rate_1000)
 
   migration_in_number <- purrr::map_dfr(seq_len(nrow(pop_all)), function(i) {
     mig_vals <- round(pop_all[i, ] * mig_rates[i])

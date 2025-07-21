@@ -81,11 +81,14 @@ custom_data_process_wrapper <- function(
     vaccine_parameters     = PREVAIL::vaccine_parameters %>% dplyr::filter(disease == !!disease)
   )
 
+  #Get years
+  years_all <- get_years(1950:2024, start = year_start, end = year_end)
+
   # ---- Override with Custom Inputs if Provided ----
-  if (all(!is.na(custom_migration)))            datasets$migration            <- reformat_demographic_data(custom_data = custom_migration, age_required = NA, iso = iso)
-  if (all(!is.na(custom_fertility)))            datasets$fertility            <- reformat_demographic_data(custom_data = custom_fertility, age_required = 15:49, iso = iso)
-  if (all(!is.na(custom_mortality)))            datasets$mortality            <- reformat_demographic_data(custom_data = custom_mortality, age_required = 0:100, iso = iso)
-  if (all(!is.na(custom_population)))           datasets$population_all       <- reformat_demographic_data(custom_data = custom_population, age_required = 0:100, iso = iso)
+  if (all(!is.na(custom_migration)))            datasets$migration            <- reformat_demographic_data(custom_data = custom_migration, age_required = NA, iso = iso, years = years_all, fill_method = "closest", value_allocation = "maintain")
+  if (all(!is.na(custom_fertility)))            datasets$fertility            <- reformat_demographic_data(custom_data = custom_fertility, age_required = 15:49, iso = iso, years = years_all, fill_method = "closest", value_allocation = "maintain")
+  if (all(!is.na(custom_mortality)))            datasets$mortality            <- reformat_demographic_data(custom_data = custom_mortality, age_required = 0:100, iso = iso, years = years_all, fill_method = "closest", value_allocation = "maintain")
+  if (all(!is.na(custom_population)))           datasets$population_all       <- reformat_demographic_data(custom_data = custom_population, age_required = 0:100, iso = iso, years = years_all, fill_method = "closest", value_allocation = "split")
   if (all(!is.na(custom_contact_matricies)))    datasets$contact_matricies    <- custom_contact_matricies
   if (all(!is.na(custom_routine_vaccination)))  datasets$routine_vaccination  <- custom_routine_vaccination
   if (all(!is.na(custom_sia_vaccination)))      datasets$sia_vaccination      <- custom_sia_vaccination

@@ -20,7 +20,6 @@
 #'
 #' @importFrom dplyr mutate group_by summarise select %>%
 #' @importFrom magrittr %>%
-#' @importFrom base cut
 #'
 #' @export
 calc_aging_and_repro <- function(aggregate_age, new_age_breaks, inputs, default_inputs) {

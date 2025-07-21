@@ -261,9 +261,12 @@ build_routine_vaccination_param <- function(vaccination_data, schedule, ages, ye
 build_seeded_case_param <- function(processed_case, demog_data, years, ages) {
   df <- fill_missing_years_general(processed_case, "year", "cases") %>%
     dplyr::filter(year <= max(years))
+
+  years_adjusted <- unique(df$year)
+
   purrr::map_dfr(seq_len(nrow(df)), function(i) {
     row <- df[i, ]
-    popdist <- demog_data$population_data[which(row$year == years), ]
+    popdist <- demog_data$population_data[which(row$year == years_adjusted), ]
     popdist <- popdist / sum(popdist)
     names(popdist) <- ages + 1
     if (row$cases == 0) {
@@ -301,14 +304,18 @@ build_seeded_case_param <- function(processed_case, demog_data, years, ages) {
 #' @importFrom dplyr group_by summarise
 #' @keywords internal
 build_sia_vaccination_param <- function(sia_data, ages, years) {
+
   df <- fill_missing_years_general(sia_data, "year", "coverage") %>%
     dplyr::group_by(disease, vaccination_name, age, year) %>%
     dplyr::summarise(coverage = max(coverage), .groups = "drop")
+
+  years_adjusted <- unique(df$year)
+
   data.frame(
     dim1 = match(df$age, ages),
     dim2 = 1,
     dim3 = 1,
-    dim4 = match(df$year, years),
+    dim4 = match(df$year, years_adjusted),
     year = df$year,
     value = df$coverage
   )

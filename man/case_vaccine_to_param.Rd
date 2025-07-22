@@ -32,6 +32,10 @@ case_vaccine_to_param(
 \item{vaccination_pre1980}{Data frame of historical vaccination introduction assumptions.}
 
 \item{vaccine_parameters}{Data frame of vaccination parameters.}
+
+\item{custom_routine_vaccination}{Data frame or NA indicating custom routine vaccination.}
+
+\item{custom_sia_vaccination}{Data frame or NA indicating custom sia vaccination.}
 }
 \value{
 A named list of parameters including coverage arrays and seeding inputs.

@@ -134,32 +134,32 @@ Rc_after_aging[, , ] <- Rc[i, j, k] + aging_into_Rc[i, j, k] - aging_out_of_Rc[i
 
 # STEP 2: VACCINATION - Apply vaccination to the results after aging
 # For S compartment
-vaccinating_out_of_S[, , ] <- if(n_vacc == 1 || j >= n_vacc - 1 || S_after_aging[i, j, k] <= 0 || vaccination_prop[i, j, k] <= 0) 0 else Binomial(S_after_aging[i, j, k], max(min(vaccination_prop[i, j, k], 1), 0))
+vaccinating_out_of_S[, , ] <- if(n_vacc == 1 || j >= n_vacc - 1 || S_after_aging[i, j, k] <= 0 || vaccination_prop[i, j, k] <= 0) 0 else if(stochastic_vaccination == 1) Binomial(S_after_aging[i, j, k], max(min(vaccination_prop[i, j, k], 1), 0)) else S_after_aging[i, j, k] * max(min(vaccination_prop[i, j, k], 1), 0)
 S_after_vaccination[, , ] <- S_after_aging[i, j, k] + vaccinating_into_S[i, j, k] - vaccinating_out_of_S[i, j, k]
 
 update(S_vaccinated) <- sum(vaccinating_out_of_S)
 initial(S_vaccinated) <- 0
 
 # For E compartment
-vaccinating_out_of_E[, , ] <- if((j == 1 && n_vacc < 3) || (j %% 2 == 0 && j + 3 > n_vacc) || (j %% 2 == 1 && j > 1 && j + 2 > n_vacc) || E_after_aging[i, j, k] <= 0 || vaccination_prop[i, j, k] <= 0) 0 else Binomial(E_after_aging[i, j, k], vaccination_prop[i, j, k])
+vaccinating_out_of_E[, , ] <- if((j == 1 && n_vacc < 3) || (j %% 2 == 0 && j + 3 > n_vacc) || (j %% 2 == 1 && j > 1 && j + 2 > n_vacc) || E_after_aging[i, j, k] <= 0 || vaccination_prop[i, j, k] <= 0) 0 else if(stochastic_vaccination == 1) Binomial(E_after_aging[i, j, k], max(min(vaccination_prop[i, j, k], 1), 0)) else E_after_aging[i, j, k] * max(min(vaccination_prop[i, j, k], 1), 0)
 E_after_vaccination[, , ] <- E_after_aging[i, j, k] + vaccinating_into_E[i, j, k] - vaccinating_out_of_E[i, j, k]
 
 
 # For I compartment
-vaccinating_out_of_I[, , ] <- if((j == 1 && n_vacc < 3) || (j %% 2 == 0 && j + 3 > n_vacc) || (j %% 2 == 1 && j > 1 && j + 2 > n_vacc) || I_after_aging[i, j, k] <= 0 || vaccination_prop[i, j, k] <= 0) 0 else Binomial(I_after_aging[i, j, k], vaccination_prop[i, j, k])
+vaccinating_out_of_I[, , ] <- if((j == 1 && n_vacc < 3) || (j %% 2 == 0 && j + 3 > n_vacc) || (j %% 2 == 1 && j > 1 && j + 2 > n_vacc) || I_after_aging[i, j, k] <= 0 || vaccination_prop[i, j, k] <= 0) 0 else if(stochastic_vaccination == 1) Binomial(I_after_aging[i, j, k], max(min(vaccination_prop[i, j, k], 1), 0)) else I_after_aging[i, j, k] * max(min(vaccination_prop[i, j, k], 1), 0)
 I_after_vaccination[, , ] <- I_after_aging[i, j, k] + vaccinating_into_I[i, j, k] - vaccinating_out_of_I[i, j, k]
 
 # For R compartment
-vaccinating_out_of_R[, , ] <- if((j == 1 && n_vacc < 3) || (j %% 2 == 0 && j + 3 > n_vacc) || (j %% 2 == 1 && j > 1 && j + 2 > n_vacc) || R_after_aging[i, j, k] <= 0 || vaccination_prop[i, j, k] <= 0) 0 else Binomial(R_after_aging[i, j, k], vaccination_prop[i, j, k])
+vaccinating_out_of_R[, , ] <- if((j == 1 && n_vacc < 3) || (j %% 2 == 0 && j + 3 > n_vacc) || (j %% 2 == 1 && j > 1 && j + 2 > n_vacc) || R_after_aging[i, j, k] <= 0 || vaccination_prop[i, j, k] <= 0) 0 else if(stochastic_vaccination == 1) Binomial(R_after_aging[i, j, k], max(min(vaccination_prop[i, j, k], 1), 0)) else R_after_aging[i, j, k] * max(min(vaccination_prop[i, j, k], 1), 0)
 R_after_vaccination[, , ] <- R_after_aging[i, j, k] + vaccinating_into_R[i, j, k] - vaccinating_out_of_R[i, j, k]
 
 
 # For Is compartment
-vaccinating_out_of_Is[, , ] <- if((j == 1 && n_vacc < 3) || (j %% 2 == 0 && j + 3 > n_vacc) || (j %% 2 == 1 && j > 1 && j + 2 > n_vacc) || Is_after_aging[i, j, k] <= 0 || vaccination_prop[i, j, k] <= 0) 0 else Binomial(Is_after_aging[i, j, k], vaccination_prop[i, j, k])
+vaccinating_out_of_Is[, , ] <- if((j == 1 && n_vacc < 3) || (j %% 2 == 0 && j + 3 > n_vacc) || (j %% 2 == 1 && j > 1 && j + 2 > n_vacc) || Is_after_aging[i, j, k] <= 0 || vaccination_prop[i, j, k] <= 0) 0 else if(stochastic_vaccination == 1) Binomial(Is_after_aging[i, j, k], max(min(vaccination_prop[i, j, k], 1), 0)) else Is_after_aging[i, j, k] * max(min(vaccination_prop[i, j, k], 1), 0)
 Is_after_vaccination[, , ] <- Is_after_aging[i, j, k] + vaccinating_into_Is[i, j, k] - vaccinating_out_of_Is[i, j, k]
 
 # For Rc compartment
-vaccinating_out_of_Rc[, , ] <- if((j == 1 && n_vacc < 3) || (j %% 2 == 0 && j + 3 > n_vacc) || (j %% 2 == 1 && j > 1 && j + 2 > n_vacc) || Rc_after_aging[i, j, k] <= 0 || vaccination_prop[i, j, k] <= 0) 0 else Binomial(Rc_after_aging[i, j, k], vaccination_prop[i, j, k])
+vaccinating_out_of_Rc[, , ] <- if((j == 1 && n_vacc < 3) || (j %% 2 == 0 && j + 3 > n_vacc) || (j %% 2 == 1 && j > 1 && j + 2 > n_vacc) || Rc_after_aging[i, j, k] <= 0 || vaccination_prop[i, j, k] <= 0) 0 else if(stochastic_vaccination == 1) Binomial(Rc_after_aging[i, j, k], max(min(vaccination_prop[i, j, k], 1), 0)) else Rc_after_aging[i, j, k] * max(min(vaccination_prop[i, j, k], 1), 0)
 Rc_after_vaccination[, , ] <- Rc_after_aging[i, j, k] + vaccinating_into_Rc[i, j, k] - vaccinating_out_of_Rc[i, j, k]
 
 #Vaccinating into fixed
@@ -431,7 +431,10 @@ birth_rate[] <- if(reproductive_population[i] <= 0) 0 else sum(Npop_background_d
 birth_int <- interpolate(tt_birth_changes, crude_birth, "constant")
 
 #Calculate the number of births
-Births[] <-  if(reproductive_population[i] <= 0) 0 else if(simp_birth_death == 1) Binomial(reproductive_population[i], max(min(birth_rate[i]/2, 1), 0)) else Binomial(reproductive_population[i], max(min(birth_int[i]/2, 1), 0))
+stochastic_birth <- parameter(0)
+stochastic_vaccination <- parameter(0)
+
+Births[] <-  if(reproductive_population[i] <= 0) 0 else if(simp_birth_death == 1) Binomial(reproductive_population[i], max(min(birth_rate[i]/2, 1), 0)) else if(stochastic_birth == 1) Binomial(reproductive_population[i], max(min(birth_int[i]/2, 1), 0)) else reproductive_population[i] * max(min(birth_int[i]/2, 1), 0)
 
 # Mothers who confer vaccine derived maternal antibodies
 vaccinated_mums[] <- if(n_vacc <= 1) 0 else sum(S[repro_low:repro_high, 2:n_vacc, i]) + sum(E[repro_low:repro_high, 2:n_vacc, i]) + sum(I[repro_low:repro_high, 2:n_vacc, i]) + sum(R[repro_low:repro_high, 2:n_vacc, i]) + sum(Is[repro_low:repro_high, 2:n_vacc, i]) + sum(Rc[repro_low:repro_high, 2:n_vacc, i])

@@ -76,8 +76,8 @@ expand_pre1980_vaccination <- function(processed_vaccination, vaccination_pre198
 #' @param vaccination_schedule Full WHO vaccine schedule data frame.
 #' @param vaccination_pre1980 Data frame of historical vaccination introduction assumptions.
 #' @param vaccine_parameters Data frame of vaccination parameters.
-#' @custom_routine_vaccination Data frame or NA indicating custom routine vaccination.
-#' @custom_sia_vaccination Data frame or NA indicating custom sia vaccination.
+#' @param custom_routine_vaccination Data frame or NA indicating custom routine vaccination.
+#' @param custom_sia_vaccination Data frame or NA indicating custom sia vaccination.
 #' @return A named list of parameters including coverage arrays and seeding inputs.
 #'
 #' @importFrom data.table data.table setDT rbindlist

@@ -14,10 +14,6 @@ aggregate_inputs(preprocessed, cv_params, new_age_breaks, aggregate_age)
 \item{new_age_breaks}{Numeric vector of age breakpoints.}
 
 \item{aggregate_age}{Logical. If TRUE, aggregates into new_age_breaks.}
-
-\item{cv_params$seed_data}{Data frame of seeding values (e.g. for WHO).}
-
-\item{cv_params$age_vaccination_beta_modifier}{A data frame of protection modifiers by dose and age.}
 }
 \value{
 A list with two elements:

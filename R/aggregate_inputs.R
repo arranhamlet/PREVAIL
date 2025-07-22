@@ -5,10 +5,8 @@
 #'
 #' @param preprocessed A list from prepare_model_inputs() including demographic data.
 #' @param cv_params Output from case_vaccine_to_param().
-#' @param cv_params$seed_data Data frame of seeding values (e.g. for WHO).
 #' @param new_age_breaks Numeric vector of age breakpoints.
 #' @param aggregate_age Logical. If TRUE, aggregates into new_age_breaks.
-#' @param cv_params$age_vaccination_beta_modifier A data frame of protection modifiers by dose and age.
 #'
 #' @return A list with two elements:
 #'   \itemize{

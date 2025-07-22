@@ -19,7 +19,6 @@
 #' @param year_start First year to include (default: from migration data).
 #' @param year_end Final year to include (default: from migration data).
 #' @param n_age Number of age groups in the model.
-#' @param number_of_vaccines Number of vaccine doses to simulate (used to compute strata).
 #' @param n_risk Number of risk groups in the model.
 #'
 #' @return A named list containing:

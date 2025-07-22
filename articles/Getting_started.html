@@ -426,12 +426,13 @@ which are the outputs of <code><a href="../reference/summary_plots.html">summary
 </h3>
 <p>To compare outputs across different intervention or transmission
 settings, we use the <code><a href="../reference/scenario_compare.html">scenario_compare()</a></code> function. This
-provides a unified summary of model dynamics and population
-susceptibility across two model scenarios.</p>
+takes the outputs of <code><a href="../reference/summary_plots.html">summary_plots()</a></code> and provides a unified
+summary of model dynamics and population susceptibility across two model
+scenarios.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">comparison</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/scenario_compare.html">scenario_compare</a></span><span class="op">(</span></span>
-<span>  scenario_1 <span class="op">=</span> <span class="va">scenario_baseline</span>,</span>
-<span>  scenario_2 <span class="op">=</span> <span class="va">scenario_intervention</span></span>
+<span>  scenario_1 <span class="op">=</span> <span class="va">reduction_plots</span>,</span>
+<span>  scenario_2 <span class="op">=</span> <span class="va">maintenance_plots</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>The function returns a list with the following components:</p>
 <ol style="list-style-type: decimal">

@@ -252,11 +252,10 @@ case_vaccine_to_param <- function(
   list(
     tt_vaccination = sort(replace(unique(match(vacc_df$year, years)), 1, 0)),
     vaccination_coverage = vacc_df,
-    tt_seeded = tt_seeded,
+    tt_seeded = seed_time,
     seeded = case_df,
     nat_waning = nat_waning,
     age_vaccination_beta_modifier = age_vaccination_beta_modifier,
-    seed_time = seed_time,
     seed_data = seed_data
   )
 }

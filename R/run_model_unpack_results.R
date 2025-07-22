@@ -50,7 +50,6 @@
 #' }
 #'
 #' @export
-
 run_model_unpack_results <- function(params, simulation_length, no_runs = 10) {
 
   # Create and initialize the Dust system

@@ -370,14 +370,14 @@ model and produce summary plots using our new parameters.
 
 ```{r, eval = F}
 run_reduction <- run_model_unpack_results(
-  reduction_params,
+  params = reduction_params,
   simulation_length = 10 * 365,
   no_runs  = 5
 )
 
 #Future results
 run_maintenance <- run_model_unpack_results(
-  maintenance_params,
+  params = maintenance_params,
   simulation_length = 10 * 365,
   no_runs  = 5
 )

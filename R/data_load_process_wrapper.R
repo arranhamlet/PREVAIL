@@ -82,7 +82,7 @@ data_load_process_wrapper <- function(
   times <- list(
     mig  = base::sort(with(preprocessed$processed_demographic_data, base::floor(c(tt_migration, base::max(tt_migration) + 1) * 365))),
     vac  = base::sort(with(cv_params, base::floor(c(tt_vaccination, base::max(tt_vaccination) + 1) * 365))),
-    seed = base::sort(base::floor(cv_params$tt_seeded * 365))
+    seed = base::sort(base::floor(cv_params$tt_seeded))
   )
 
   # ---- Optional Aggregation to New Age Structure ----

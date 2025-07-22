@@ -54,14 +54,16 @@ demographic_check <- function(reference_population,
   # -------------------------
   population_year <- population_aggregate %>%
     collapse::fgroup_by(year) %>%
-    collapse::fsummarise(population = collapse::fsum(value))
+    collapse::fsummarise(population = collapse::fsum(value)) %>%
+    mutate(year = year + 1)
 
   # Build comparison table
   population_comparison <- data.frame(
     year = seq_len(ncol(reference_population)),
-    reference = colSums(reference_population),
-    model = population_year$population
+    reference = colSums(reference_population)
   ) %>%
+    dplyr::left_join(population_year %>%
+                       rename(model = population), by = "year") %>%
     dplyr::filter(reference != 0) %>%
     tidyr::pivot_longer(cols = c("reference", "model"),
                         names_to = "label", values_to = "value") %>%

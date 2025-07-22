@@ -51,7 +51,12 @@ aggregate_inputs <- function(preprocessed,
     dim3 = preprocessed$processed_demographic_data$input_data$n_risk,
     dim4 = max(cv_params$vaccination_coverage$dim4),
     updates = cv_params$vaccination_coverage
-  )
+  ) %>%
+    group_by(dim4) %>%
+    mutate(
+      year = ifelse(is.na(year), unique(na.omit(year)), year)
+    ) %>%
+    ungroup()
 
   vaccination_people <- vaccination_coverage_expanded %>%
     dplyr::left_join(

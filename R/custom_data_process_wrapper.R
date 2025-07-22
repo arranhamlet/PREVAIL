@@ -90,8 +90,8 @@ custom_data_process_wrapper <- function(
   if (all(!is.na(custom_mortality)))            datasets$mortality            <- reformat_demographic_data(custom_data = custom_mortality, age_required = 0:100, iso = iso, years = years_all, fill_method = "closest", value_allocation = "maintain")
   if (all(!is.na(custom_population)))           datasets$population_all       <- reformat_demographic_data(custom_data = custom_population, age_required = 0:100, iso = iso, years = years_all, fill_method = "closest", value_allocation = "split")
   if (all(!is.na(custom_contact_matricies)))    datasets$contact_matricies    <- custom_contact_matricies
-  if (all(!is.na(custom_routine_vaccination)))  datasets$routine_vaccination  <- custom_routine_vaccination
-  if (all(!is.na(custom_sia_vaccination)))      datasets$sia_vaccination      <- custom_sia_vaccination
+  if (all(!is.na(custom_routine_vaccination)))  datasets$routine_vaccination  <- reformat_vaccination(custom_routine_vaccination, iso = iso, disease = disease)
+  if (all(!is.na(custom_sia_vaccination)))      datasets$sia_vaccination      <- reformat_vaccination(custom_sia_vaccination, iso = iso, disease = disease)
   if (all(!is.na(custom_disease_data)))         datasets$disease_data         <- custom_disease_data
   if (all(!is.na(custom_vaccination_schedule))) datasets$vaccination_schedule <- custom_vaccination_schedule
   if (all(!is.na(custom_disease_parameters)))   datasets$disease_parameters   <- custom_disease_parameters
@@ -125,7 +125,9 @@ custom_data_process_wrapper <- function(
     vaccination_pre1980 = datasets$pre1980,
     vaccine_parameters = datasets$vaccine_parameters,
     disease_parameters = datasets$disease_parameters,
-    WHO_seed_switch = WHO_seed_switch
+    WHO_seed_switch = WHO_seed_switch,
+    custom_routine_vaccination = custom_routine_vaccination,
+    custom_sia_vaccination = custom_sia_vaccination
   )
 
   # ---- Time Scaling and Change Points ----

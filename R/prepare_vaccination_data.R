@@ -75,7 +75,9 @@ expand_pre1980_vaccination <- function(processed_vaccination, vaccination_pre198
 #' @param processed_case WHO case reports processed for the country of interest.
 #' @param vaccination_schedule Full WHO vaccine schedule data frame.
 #' @param vaccination_pre1980 Data frame of historical vaccination introduction assumptions.
-#' @param vaccine_parameters Data frame of vaccination parameters
+#' @param vaccine_parameters Data frame of vaccination parameters.
+#' @custom_routine_vaccination Data frame or NA indicating custom routine vaccination.
+#' @custom_sia_vaccination Data frame or NA indicating custom sia vaccination.
 #' @return A named list of parameters including coverage arrays and seeding inputs.
 #'
 #' @importFrom data.table data.table setDT rbindlist
@@ -90,7 +92,9 @@ case_vaccine_to_param <- function(
     vaccination_pre1980,
     vaccine_parameters,
     disease_parameters,
-    WHO_seed_switch
+    WHO_seed_switch,
+    custom_routine_vaccination,
+    custom_sia_vaccination
 ) {
 
   iso <- demog_data$input_data$iso
@@ -114,20 +118,26 @@ case_vaccine_to_param <- function(
   }
 
   # Expand routine coverage pre-1980
-  processed_vaccination <- expand_pre1980_vaccination(
-    processed_vaccination,
-    vaccination_pre1980 %>%
-      subset(introduction_year %in% demog_data$input_data$year_start:demog_data$input_data$year_end),
-    disease = tolower(unique(processed_case$disease_description)[1]),
-    iso = iso
-  )
-
+  if(all(is.na(custom_routine_vaccination))){
+    processed_vaccination <- expand_pre1980_vaccination(
+      processed_vaccination,
+      vaccination_pre1980 %>%
+        subset(introduction_year %in% demog_data$input_data$year_start:demog_data$input_data$year_end),
+      disease = tolower(unique(processed_case$disease_description)[1]),
+      iso = iso
+    )
+  }
   # Filter and build vaccination input
   schedule <- filter_vaccine_schedule(vaccination_schedule, vaccination_type, iso)
   routine_df <- build_routine_vaccination_param(processed_vaccination, schedule, ages, years)
 
+  #Correct for the routine data being recorded in %
+  if(all(is.na(custom_routine_vaccination))){
+    routine_df$value <- routine_df$value/100
+  }
+
   # Build SIA input if needed
-  sia_df <- if (nrow(processed_vaccination_sia) > 0) {
+  sia_df <- if(nrow(processed_vaccination_sia) > 0) {
     build_sia_vaccination_param(processed_vaccination_sia, ages, years)
   } else {
     NULL
@@ -137,14 +147,15 @@ case_vaccine_to_param <- function(
   vacc_df <- combine_vaccination_params(routine_df, sia_df)
   data.table::setDT(vacc_df)
 
-  zero_row <- data.table::data.table(dim1 = 1, dim2 = 1, dim3 = 1, dim4 = 1, year = 1950, value = 0)
+  zero_row <- rbind(data.table::data.table(dim1 = 1, dim2 = 1, dim3 = 1, dim4 = 0, year = 1950, value = 0))
+
   vacc_df <- rbindlist(list(zero_row, vacc_df))
   vacc_df <- vacc_df[, .(value = max(value)), by = .(dim1, dim2, dim3, dim4, year)]
 
   # Build seeded case input
   if (nrow(processed_case) > 0) {
     case_df <- build_seeded_case_param(processed_case, demog_data, years, ages)
-    tt_seeded <- c(0, match(unique(processed_case$year), years) - 1)
+    tt_seeded <- sort(c(0, match(unique(processed_case$year), years) - 1))
   } else {
     case_df <- data.table::data.table(dim1 = 1, dim2 = 1, dim3 = 1, dim4 = 1, value = 10)
     tt_seeded <- 0
@@ -233,10 +244,14 @@ case_vaccine_to_param <- function(
     )
   }
 
+  #Recalibrate dim4
+  vacc_df <- vacc_df %>%
+    arrange(dim4, year, dim1, dim2, dim3) %>%
+    mutate(dim4 = dplyr::dense_rank(year))
+
   list(
-    tt_vaccination = c(0, match(unique(routine_df$dim4), seq_along(years))),
-    vaccination_coverage = vacc_df %>%
-      mutate(dim4 = match(dim4, unique(dim4))),
+    tt_vaccination = sort(replace(unique(match(vacc_df$year, years)), 1, 0)),
+    vaccination_coverage = vacc_df,
     tt_seeded = tt_seeded,
     seeded = case_df,
     nat_waning = nat_waning,

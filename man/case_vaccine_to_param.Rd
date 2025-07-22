@@ -13,7 +13,9 @@ case_vaccine_to_param(
   vaccination_pre1980,
   vaccine_parameters,
   disease_parameters,
-  WHO_seed_switch
+  WHO_seed_switch,
+  custom_routine_vaccination,
+  custom_sia_vaccination
 )
 }
 \arguments{
@@ -29,7 +31,7 @@ case_vaccine_to_param(
 
 \item{vaccination_pre1980}{Data frame of historical vaccination introduction assumptions.}
 
-\item{vaccine_parameters}{Data frame of vaccination parameters}
+\item{vaccine_parameters}{Data frame of vaccination parameters.}
 }
 \value{
 A named list of parameters including coverage arrays and seeding inputs.

@@ -239,7 +239,7 @@ build_routine_vaccination_param <- function(vaccination_data, schedule, ages, ye
       dim3 = 1,
       dim4 = match(row$year, years),
       year = row$year,
-      value = row$coverage / 100
+      value = row$coverage
     )
   })
 }

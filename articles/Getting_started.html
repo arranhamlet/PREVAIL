@@ -394,14 +394,14 @@ previously described <code><a href="../reference/run_model_unpack_results.html">
 using our new parameters.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">run_reduction</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model_unpack_results.html">run_model_unpack_results</a></span><span class="op">(</span></span>
-<span>  <span class="va">reduction_params</span>,</span>
+<span>  params <span class="op">=</span> <span class="va">reduction_params</span>,</span>
 <span>  simulation_length <span class="op">=</span> <span class="fl">10</span> <span class="op">*</span> <span class="fl">365</span>,</span>
 <span>  no_runs  <span class="op">=</span> <span class="fl">5</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#Future results</span></span>
 <span><span class="va">run_maintenance</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model_unpack_results.html">run_model_unpack_results</a></span><span class="op">(</span></span>
-<span>  <span class="va">maintenance_params</span>,</span>
+<span>  params <span class="op">=</span> <span class="va">maintenance_params</span>,</span>
 <span>  simulation_length <span class="op">=</span> <span class="fl">10</span> <span class="op">*</span> <span class="fl">365</span>,</span>
 <span>  no_runs  <span class="op">=</span> <span class="fl">5</span></span>
 <span><span class="op">)</span></span></code></pre></div>

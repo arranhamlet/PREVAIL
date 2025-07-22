@@ -94,7 +94,7 @@ data_load_process_wrapper <- function(
   )
 
   inputs <- aggregated_inputs$inputs
-  default_inputs <- aggregated_inputs$inputs
+  default_inputs <- aggregated_inputs$default_inputs
 
   #Update aging and calculation of reproduction parameters
   aging_reproduction <- calc_aging_and_repro(

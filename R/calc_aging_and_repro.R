@@ -23,6 +23,7 @@
 #'
 #' @export
 calc_aging_and_repro <- function(aggregate_age, new_age_breaks, inputs, default_inputs) {
+
   aging_rate <- if (aggregate_age) {
     age_correct_last <- new_age_breaks
     age_correct_last[length(age_correct_last)] <- 101
@@ -37,8 +38,8 @@ calc_aging_and_repro <- function(aggregate_age, new_age_breaks, inputs, default_
   } else {
     age_lowers <- new_age_breaks[-length(new_age_breaks)]
     age_uppers <- new_age_breaks[-1]
-    repro_low  <- min(which(age_uppers > 15 & age_lowers < 50))
-    repro_high <- max(which(age_lowers < 50 & age_uppers > 15))
+    repro_low  <- min(which(age_uppers >= 16 & age_lowers <= 50))
+    repro_high <- max(which(age_lowers <= 50 & age_uppers >= 16))
   }
 
   if (length(inputs$N0$dim1) == 101) {
@@ -52,12 +53,8 @@ calc_aging_and_repro <- function(aggregate_age, new_age_breaks, inputs, default_
   } else {
     repro_weight <- default_inputs$population %>%
       dplyr::mutate(
-        age_group = base::cut(
-          dim1,
-          breaks = replace(new_age_breaks, length(new_age_breaks), Inf),
-          right = FALSE,
-          labels = seq_len(length(new_age_breaks) - 1)
-        ),
+        age_group =  findInterval(dim1 - 1, new_age_breaks),
+        age_group = as.numeric(as.character(age_group)),
         in_repro = dim1 >= 16 & dim1 <= 50
       ) %>%
       dplyr::group_by(dim2, age_group) %>%

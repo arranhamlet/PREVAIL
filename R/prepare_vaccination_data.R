@@ -93,8 +93,8 @@ case_vaccine_to_param <- function(
     vaccine_parameters,
     disease_parameters,
     WHO_seed_switch,
-    custom_routine_vaccination,
-    custom_sia_vaccination
+    custom_routine_vaccination = NA,
+    custom_sia_vaccination = NA
 ) {
 
   iso <- demog_data$input_data$iso

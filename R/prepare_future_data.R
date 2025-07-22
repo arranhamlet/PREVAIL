@@ -29,7 +29,13 @@ prepare_future_data <- function(params, future_events, current_susceptibility) {
 
   ## --- Extend Vaccination Coverage ---
   prior_vacc <- params$vaccination_coverage
-  final_vacc <- prior_vacc[, , , last(dim(prior_vacc))]
+
+  final_vacc <- {
+    idx <- max(which(sapply(seq_len(dim(params$vaccination_coverage)[4]),
+                            function(i) !all(params$vaccination_coverage[,,,i] == 0))))
+    params$vaccination_coverage[,,,idx, drop = TRUE]
+  }
+
   dim(final_vacc) <- c(dim(prior_vacc)[1:3], 1)
 
   vacc_array <- abind::abind(
@@ -54,21 +60,36 @@ prepare_future_data <- function(params, future_events, current_susceptibility) {
   new_params$tt_migration <- 0
   new_params$no_migration_changes <- 1
 
-  final_mig <- params$migration_in_number[, , , last(dim(params$migration_in_number)) - 1]
+  final_mig <- {
+    idx <- max(which(sapply(seq_len(dim(params$migration_in_number)[4]),
+                            function(i) !all(params$migration_in_number[,,,i] == 0))))
+               params$migration_in_number[,,,idx, drop = TRUE]
+  }
+
   final_mig[] <- 0
   dim(final_mig) <- c(dim(params$migration_in_number)[1:3], 1)
   new_params$migration_in_number <- final_mig
 
-  final_mig_dist <- params$migration_distribution_values[, last(dim(params$migration_distribution_values)) - 1]
+  final_mig_dist <- params$migration_distribution_values %>%
+    as.data.frame() %>%
+    dplyr::select(where(~ !all(. == 0))) %>%
+    dplyr::pull(dplyr::last_col())
   final_mig_dist[] <- 0
   dim(final_mig_dist) <- c(dim(params$migration_distribution_values)[1], 1)
   new_params$migration_distribution_values <- final_mig_dist
 
   ## --- Lock Birth and Death Rates to Final Values ---
-  final_birth <- params$crude_birth[, last(dim(params$crude_birth)) - 1]
+  final_birth <- params$crude_birth %>%
+    as.data.frame() %>%
+    dplyr::select(where(~ !all(. == 0))) %>%
+    dplyr::pull(dplyr::last_col())
   dim(final_birth) <- c(dim(params$crude_birth)[1], 1)
 
-  final_death <- params$crude_death[, , last(dim(params$crude_death)) - 1]
+  final_death <- {
+    idx <- max(which(sapply(seq_len(dim(params$crude_death)[3]),
+                            function(i) !all(params$crude_death[,,i] == 0))))
+    params$crude_death[,,idx, drop = TRUE]
+  }
   dim(final_death) <- c(dim(params$crude_death)[1:2], 1)
 
   new_params$crude_birth <- final_birth
@@ -79,7 +100,11 @@ prepare_future_data <- function(params, future_events, current_susceptibility) {
   new_params$no_death_changes <- 1
 
   ## --- Seed Future Infections by Population Weight ---
-  final_pop <- params$population[, ncol(params$population) - 1]
+  final_pop <- params$population %>%
+    as.data.frame() %>%
+    dplyr::select(where(~ !all(. == 0))) %>%
+    dplyr::pull(dplyr::last_col())
+
   pop_weights <- final_pop / sum(final_pop)
 
   seed_df <- Reduce(rbind, lapply(seq_len(n_future), function(i) {
@@ -100,7 +125,13 @@ prepare_future_data <- function(params, future_events, current_susceptibility) {
   new_params$tt_seeded <- future_event_tt
   new_params$no_seeded_changes <- n_future
 
-  ## --- Set Updated Initial Conditions ---
+  new_params$repro_weight <- params$repro_weight %>%
+    as.data.frame() %>%
+    dplyr::select(where(~ !all(. == 0))) %>%
+    dplyr::pull(dplyr::last_col())
+  dim(new_params$repro_weight) <- c(params$n_age, 1)
+
+    ## --- Set Updated Initial Conditions ---
   new_params$S0 <- current_susceptibility$S0
   new_params$Rpop0 <- current_susceptibility$Rpop0
   new_params$I0[] <- 0

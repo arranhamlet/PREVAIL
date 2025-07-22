@@ -405,14 +405,14 @@ maintenance_plots <- summary_plots(
 ## Comparing Transmission Scenarios
 
 To compare outputs across different intervention or transmission
-settings, we use the `scenario_compare()` function. This provides a
+settings, we use the `scenario_compare()` function. This takes the outputs of `summary_plots()` and provides a
 unified summary of model dynamics and population susceptibility across
 two model scenarios.
 
 ```{r, eval = FALSE}
 comparison <- scenario_compare(
-  scenario_1 = scenario_baseline,
-  scenario_2 = scenario_intervention
+  scenario_1 = reduction_plots,
+  scenario_2 = maintenance_plots
 )
 ```
 

@@ -20,6 +20,8 @@ library(dplyr)
 library(magrittr)
 ```
 
+# Introduction
+
 This vignette introduces how demographic processes are represented and customized in the PREVAIL model. 
 
 <br />

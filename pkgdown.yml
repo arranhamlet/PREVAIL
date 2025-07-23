@@ -4,7 +4,8 @@ pkgdown_sha: ~
 articles:
   demography: demography.html
   Getting_started: Getting_started.html
-last_built: 2025-07-23T10:57Z
+  vaccination: vaccination.html
+last_built: 2025-07-23T14:33Z
 urls:
   reference: https://arranhamlet.github.io/PREVAIL/reference
   article: https://arranhamlet.github.io/PREVAIL/articles

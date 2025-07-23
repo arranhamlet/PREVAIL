@@ -3,6 +3,7 @@
 <url><loc>https://arranhamlet.github.io/PREVAIL/articles/Getting_started.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/articles/demography.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/articles/index.html</loc></url>
+<url><loc>https://arranhamlet.github.io/PREVAIL/articles/vaccination.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/authors.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/index.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/reference/PREVAIL_locations.html</loc></url>
@@ -60,7 +61,9 @@
 <url><loc>https://arranhamlet.github.io/PREVAIL/reference/rds_names.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/reference/reformat_contact_matrix.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/reference/reformat_demographic_data.html</loc></url>
+<url><loc>https://arranhamlet.github.io/PREVAIL/reference/reformat_parameters.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/reference/reformat_vaccination.html</loc></url>
+<url><loc>https://arranhamlet.github.io/PREVAIL/reference/reformat_vaccination_schedule.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/reference/run_model.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/reference/run_model_unpack_results.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/reference/scenario_compare.html</loc></url>

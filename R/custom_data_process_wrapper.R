@@ -134,7 +134,7 @@ custom_data_process_wrapper <- function(
   times <- list(
     mig  = base::sort(with(preprocessed$processed_demographic_data, base::floor(c(tt_migration, base::max(tt_migration) + 1) * 365))),
     vac  = base::sort(with(cv_params, base::floor(c(tt_vaccination, base::max(tt_vaccination) + 1) * 365))),
-    seed = base::sort(base::floor(cv_params$tt_seeded * 365))
+    seed = base::sort(base::floor(cv_params$tt_seeded))
   )
 
   # ---- Optional Aggregation to New Age Structure ----
@@ -146,7 +146,7 @@ custom_data_process_wrapper <- function(
   )
 
   inputs <- aggregated_inputs$inputs
-  default_inputs <- aggregated_inputs$inputs
+  default_inputs <- aggregated_inputs$default_inputs
 
   #Update aging and calculation of reproduction parameters
   aging_reproduction <- calc_aging_and_repro(
@@ -187,7 +187,7 @@ custom_data_process_wrapper <- function(
     aging_rate                   = aging_reproduction$aging_rate,
     migration_in_number          = inputs$mig_in,
     migration_distribution_values = inputs$mig_dist,
-    seeded                       = inputs$seed_data,
+    seeded                       = inputs$seeded,
     repro_low                    = aging_reproduction$repro_low,
     repro_high                   = aging_reproduction$repro_high,
     age_maternal_protection_ends = 1,

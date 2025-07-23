@@ -196,6 +196,27 @@ and ages 20-50, then we would still be able to include this.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>  <span style="text-decoration: underline;">1</span>973    20     0</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>  <span style="text-decoration: underline;">1</span>974    20     1</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>  <span style="text-decoration: underline;">1</span>975    20     2</span></span></code></pre></div>
+<p>This will also work if you have a range of ages, separated by
+<code>-</code>.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">custom_mortality</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span></span>
+<span>  year <span class="op">=</span> <span class="fl">1970</span><span class="op">:</span><span class="fl">2015</span>,</span>
+<span>  age <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"20-29"</span>, <span class="st">"30-59"</span>, <span class="st">"60-100"</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">year</span>, <span class="va">age</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">5</span>, size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">custom_mortality</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># Groups:   year, age [6]</span></span></span>
+<span><span class="co">#&gt;    year age   value</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>  <span style="text-decoration: underline;">1</span>970 20-29     5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>  <span style="text-decoration: underline;">1</span>971 20-29     1</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span>  <span style="text-decoration: underline;">1</span>972 20-29     2</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>  <span style="text-decoration: underline;">1</span>973 20-29     3</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>  <span style="text-decoration: underline;">1</span>974 20-29     5</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>  <span style="text-decoration: underline;">1</span>975 20-29     4</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -235,7 +256,7 @@ the inbuilt data).</p>
 at the appropriate point. So to run the model with our custom_mortality
 data.frame, we would fill in our initial arguments as usual, and then
 specify <code>custom_mortality = custom_mortality_df</code>.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">custom_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/custom_data_process_wrapper.html">custom_data_process_wrapper</a></span><span class="op">(</span></span>
 <span>    iso <span class="op">=</span> <span class="st">"GBR"</span>,</span>
 <span>    disease <span class="op">=</span> <span class="st">"measles"</span>,</span>
@@ -244,7 +265,7 @@ specify <code>custom_mortality = custom_mortality_df</code>.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p>and if we wanted to run the model with our custom mortality and
 migration it would be:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">custom_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/custom_data_process_wrapper.html">custom_data_process_wrapper</a></span><span class="op">(</span></span>
 <span>    iso <span class="op">=</span> <span class="st">"GBR"</span>,</span>
 <span>    disease <span class="op">=</span> <span class="st">"measles"</span>,</span>
@@ -264,7 +285,7 @@ running it, especially when you have multiple custom datasets.</em></p>
 </h2>
 <p>As described in the vignette, Getting Started with PREVAIL, to run
 the model we then just have to supply the parameters required.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">custom_model_run</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model_unpack_results.html">run_model_unpack_results</a></span><span class="op">(</span></span>
 <span>  params <span class="op">=</span> <span class="va">custom_params</span>,</span>
 <span>  no_runs <span class="op">=</span> <span class="fl">1</span></span>

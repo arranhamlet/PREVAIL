@@ -12,6 +12,7 @@
 #' @importFrom magrittr %>%
 #' @export
 reformat_vaccination <- function(custom_vaccination, iso, disease) {
+
   dplyr::mutate(
     custom_vaccination,
     iso3 = iso,
@@ -19,5 +20,7 @@ reformat_vaccination <- function(custom_vaccination, iso, disease) {
     disease = disease,
     vaccine_description = disease,
     vaccination_name = disease
-  )
+  ) %>%
+    dplyr::rename(dose_order = dose)
+
 }

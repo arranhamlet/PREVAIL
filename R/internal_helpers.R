@@ -220,6 +220,7 @@ filter_vaccine_schedule <- function(vaccination_schedule, vaccination_type, iso)
 #' @importFrom purrr map_dfr
 #' @keywords internal
 build_routine_vaccination_param <- function(vaccination_data, schedule, ages, years) {
+
   df <- fill_missing_years_general(vaccination_data, "year", "coverage") %>%
     dplyr::group_by(vaccine, vaccine_description, dose_order, year) %>%
     dplyr::summarise(coverage = max(coverage), .groups = "drop") %>%
@@ -230,7 +231,9 @@ build_routine_vaccination_param <- function(vaccination_data, schedule, ages, ye
     dose <- min(row$dose_order, max(schedule$schedulerounds, na.rm = TRUE))
     timing <- schedule %>%
       dplyr::filter(schedulerounds == dose) %>%
-      dplyr::slice(1) %>%
+      dplyr::filter(
+        year == if (all(year > row$year)) min(year) else max(year[year <= row$year])
+      ) %>%
       dplyr::pull(age_years)
     targets <- if (row$dose_order == 1) 1 else (2 * row$dose_order - 2):(2 * row$dose_order - 1)
     expand.grid(

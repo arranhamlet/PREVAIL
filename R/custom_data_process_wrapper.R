@@ -93,9 +93,9 @@ custom_data_process_wrapper <- function(
   if (all(!is.na(custom_routine_vaccination)))  datasets$routine_vaccination  <- reformat_vaccination(custom_routine_vaccination, iso = iso, disease = disease)
   if (all(!is.na(custom_sia_vaccination)))      datasets$sia_vaccination      <- reformat_vaccination(custom_sia_vaccination, iso = iso, disease = disease)
   if (all(!is.na(custom_disease_data)))         datasets$disease_data         <- custom_disease_data
-  if (all(!is.na(custom_vaccination_schedule))) datasets$vaccination_schedule <- custom_vaccination_schedule
-  if (all(!is.na(custom_disease_parameters)))   datasets$disease_parameters   <- custom_disease_parameters
-  if (all(!is.na(custom_vaccine_parameters)))   datasets$vaccine_parameters   <- custom_vaccine_parameters
+  if (all(!is.na(custom_vaccination_schedule))) datasets$vaccination_schedule <- reformat_vaccination_schedule(custom_vaccination_schedule, iso = iso, disease = disease)
+  if (all(!is.na(custom_disease_parameters)))   datasets$disease_parameters   <- reformat_parameters(custom_disease_parameters, disease = disease, type = "disease")
+  if (all(!is.na(custom_vaccine_parameters)))   datasets$vaccine_parameters   <- reformat_parameters(custom_vaccine_parameters, disease = disease, type = "vaccine")
 
   # ---- Prepare Inputs ----
   preprocessed <- prepare_model_inputs(

@@ -1,0 +1,241 @@
+---
+title: "Vaccination"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{vaccination}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE
+)
+
+library(dplyr)
+
+options(scipen = 999)
+```
+
+# 1. Prepare your custom data
+
+Firstly we need to load our required packages, we're using the **pacman** package here, which will also install these packages if missing.
+
+```{r, eval = FALSE}
+#If pacman is not already present, install
+if(!require("pacman")) install.packages("pacman")
+
+#Install missing packages, and load 
+pacman::p_load(
+  PREVAIL,
+  tidyverse
+)
+```
+
+Once this is done, we can start thinking about the data we would like to customise. Here we are going to be focussing on vaccination and vaccine associated parameters. These are:
+
+**custom_routine_vaccination** - Routine immunization activities.
+ 
+**custom_sia_vaccination** - Supplemental immunization activities, these are activities such as outbreak response and top-up vaccination campaigns. 
+
+**custom_vaccination_schedule** - How and when vaccination is applied, this will determine the ages that routine immunization occurs at.
+
+**custom_vaccine_parameters** - The effectiveness and duration of protection provided by immunization.
+
+### Custom routine and supplemental vaccination activities 
+
+To specify custom routine vaccination activities, we need to create a data.frame with four columns.
+
+**year** - The years to apply routine vaccination to.
+**age** - The ages that routine vaccination should be applied to.
+**dose** - The vaccine dose. This is whether this is the 1st, 2nd, 3rd, etc., vaccine given.
+**coverage** - The population level coverage achieved in the year.
+
+Here we will generate some custom routine vaccination data, with a linear increase in coverage, with some random noise.
+
+```{r, eval = T}
+# Routine vaccination
+routine_vaccination <- data.frame(
+  year = 1970:2030,
+  age = 5,
+  dose = 1
+) %>%
+  mutate(
+    # Linear increase with bounded random noise
+    coverage = round(pmax(pmin(0.2 + 0.75 * (year - min(year)) / diff(range(year)) +
+                     rnorm(length(year), 0, 0.03), 1), 0), 2)
+  )
+
+head(routine_vaccination)
+```
+
+For supplemental vaccination, we need the same columns, but will simulate three campaigns at different years targeting a wider population.
+
+```{r, eval = T}
+# Routine vaccination
+sia_vaccination <- expand.grid(
+  year = c(1990, 2020),
+  age = 15:50,
+  dose = 1
+) %>%
+  group_by(year, age) %>%
+  mutate(
+    #Generate random noise
+    coverage = round(rnorm(1, rnorm(1, 0.8, 0.1), sd = 0.1), 2),
+    #Make sure coverage is bound between 0-1
+    coverage = pmin(pmax(coverage, 0), 1)
+  ) 
+
+head(sia_vaccination)
+```
+
+### Custom vaccination schedule
+
+Customizing your vaccination schedule allows for changes to how routine vaccination is applied. However, this information will only be included if you have *not* provided an input to `custom_routine_vaccination = `. This is because `custom_routine_vaccination = ` requires a data.frame() which specifies the ages targeted already.
+
+Here we just need three inputs.
+
+**year** - The year from which the schedule applies. Different vaccinations may have changes to the schedule, if you have vaccination activities specified which occur before the first date you provide, it will take the earliest date provided. 
+
+**dose** - The vaccine dose the schedule applies to.
+
+**age** - The age to target. Ages should be prefixed by an "M" for month, or a "Y" for year. I.e. "M6" would apply vaccination to 6 month olds, and "Y5" would apply to 5 year olds.
+
+```{r, eval = T}
+#Custom vaccination schedule
+vaccination_schedule <- expand.grid(
+  year = c(1980, 2020),
+  dose = c(1, 2)
+) %>%
+  mutate(
+    age = c("M12", "Y15", "Y25", "Y60")
+  )
+
+head(vaccination_schedule)
+```
+
+### Custom vaccination parameters
+
+And finally, custom vaccination parameters. These change how much protection is provided, and how long it lasts for. Here we need four columns.
+
+**parameter** - Either waning or protection.
+
+**duration** - Either short or long. This refers to the initial protection provided by the vaccine, and the long term protection afforded after the initial protection wanes.
+
+**dose** - The vaccine dose the parameter applies to.
+
+**value** - For parameters that are waning, this is in *years*, and for protection, this is a *proportion*.
+
+```{r, eval = F}
+#Custom parameters
+vaccination_parameters <- expand.grid(
+  parameter = c("waning", "protection"),
+  duration = c("short", "long"),
+  dose = c(1, 2)
+) %>%
+  arrange(parameter, duration, dose) %>%
+  mutate(value = c(10, 25, 50, 75, 0.8, 0.95, 0.5, 0.7))
+
+head(vaccination_parameters)
+```
+
+# 2. Customising our vaccination parameters
+
+Here we use `custom_data_process_wrapper()` instead of `data_load_process_wrapper()`. However, the approach is generally the same, as it takes all of the arguments used in `data_load_process_wrapper()`, and a few others, all of which have a default value of `NA` (which tells the model to use the inbuilt data).
+
+* custom_migration 
+* custom_fertility
+* custom_mortality
+* custom_population
+* custom_contact_matricies
+* custom_routine_vaccination
+* custom_sia_vaccination
+* custom_disease_data
+* custom_vaccination_schedule
+* custom_disease_parameters
+* custom_vaccine_parameters
+
+Here we will be focusing on the vaccination inputs:
+
+* custom_routine_vaccination
+* custom_sia_vaccination
+* custom_vaccination_schedule
+* custom_vaccine_parameters
+
+### Running the function
+
+To run the model with custom data, you add in your custom data.frame at the appropriate point. So to run the model with our custom_mortality data.frame, we would fill in our initial arguments as usual, and then specify `custom_mortality = custom_mortality_df`.
+
+```{r, eval = F}
+custom_params <- custom_data_process_wrapper(
+    iso = "GBR",
+    disease = "measles",
+    R0 = 15,
+    custom_routine_vaccination = routine_vaccination,
+    custom_sia_vaccination = sia_vaccination,
+    custom_vaccination_schedule = vaccination_schedule,
+    custom_vaccine_parameters = vaccination_parameters
+)
+```
+
+and for comparison, we will also run `custom_data_process_wrapper()` without any changes to vaccination.
+
+```{r, eval = F}
+default_params <- custom_data_process_wrapper(
+    iso = "GBR",
+    disease = "measles",
+    R0 = 15
+)
+```
+
+# 3.  Running the model with our custom parameters and evaluating.
+
+Now we have generated our parameters, we want to see the impact of our custom vaccination. We do this as in the [Getting started vignette](), by using `run_model_unpack_results()`.
+
+```{r, eval = F}
+model_run_custom <- run_model_unpack_results(
+  params = custom_params,
+  simulation_length = (custom_params$input_data$year_end - custom_params$input_data$year_start) * 365,
+  no_runs = 1
+)
+
+model_run_default <- run_model_unpack_results(
+  params = default_params,
+  simulation_length = (default_params$input_data$year_end - default_params$input_data$year_start) * 365,
+  no_runs = 1
+)
+```
+
+And then we will use `summary_plots()` to compare outputs.
+
+```{r, eval = FALSE}
+custom_plots <- summary_plots(
+  model_run = model_run_custom,
+  params = custom_params
+)
+
+default_plots <- summary_plots(
+  model_run = model_run_default,
+  params = default_params
+)
+```
+
+To compare the impact of vaccination, we are going to combine the `$vaccination_coverage_plot` object from both. To do this, we will use our function `combine_ggplot()`, which will combine two **ggplot2** objects into the same plot.
+
+```{r, eval = FALSE}
+combine_ggplot(
+  plot1 = custom_plots$vaccination_coverage_plot,
+  plot2 = default_plots$vaccination_coverage_plot,
+  plot_names = c("Custom", "Default")
+)
+```
+
+```{r , echo=FALSE, out.width = '100%', out.height = '100%'}
+knitr::include_graphics("vignette_img/vignette_vaccination_plot_1.jpg", error = FALSE)
+```
+
+
+As you can see, we have made large changes to the population level vaccination coverage! However, because we have changed several things at once, you might want to change them one-by-one and compare to see each individual changes impact.

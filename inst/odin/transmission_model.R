@@ -153,7 +153,6 @@ I_after_vaccination[, , ] <- I_after_aging[i, j, k] + vaccinating_into_I[i, j, k
 vaccinating_out_of_R[, , ] <- if((j == 1 && n_vacc < 3) || (j %% 2 == 0 && j + 3 > n_vacc) || (j %% 2 == 1 && j > 1 && j + 2 > n_vacc) || R_after_aging[i, j, k] <= 0 || vaccination_prop[i, j, k] <= 0) 0 else if(stochastic_vaccination == 1) Binomial(R_after_aging[i, j, k], max(min(vaccination_prop[i, j, k], 1), 0)) else R_after_aging[i, j, k] * max(min(vaccination_prop[i, j, k], 1), 0)
 R_after_vaccination[, , ] <- R_after_aging[i, j, k] + vaccinating_into_R[i, j, k] - vaccinating_out_of_R[i, j, k]
 
-
 # For Is compartment
 vaccinating_out_of_Is[, , ] <- if((j == 1 && n_vacc < 3) || (j %% 2 == 0 && j + 3 > n_vacc) || (j %% 2 == 1 && j > 1 && j + 2 > n_vacc) || Is_after_aging[i, j, k] <= 0 || vaccination_prop[i, j, k] <= 0) 0 else if(stochastic_vaccination == 1) Binomial(Is_after_aging[i, j, k], max(min(vaccination_prop[i, j, k], 1), 0)) else Is_after_aging[i, j, k] * max(min(vaccination_prop[i, j, k], 1), 0)
 Is_after_vaccination[, , ] <- Is_after_aging[i, j, k] + vaccinating_into_Is[i, j, k] - vaccinating_out_of_Is[i, j, k]

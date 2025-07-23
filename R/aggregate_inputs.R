@@ -54,14 +54,18 @@ aggregate_inputs <- function(preprocessed,
     mutate(
       year = ifelse(is.na(year), unique(na.omit(year)), year)
     ) %>%
-    ungroup()
+    ungroup() %>%
+    #Update value to get correct coverage -
+    mutate(
+      value = 1 - (1 - pmin(value, 0.999)) ^ (1/365)
+    )
 
   vaccination_people <- vaccination_coverage_expanded %>%
     dplyr::left_join(
       weight_reformatted %>%
         rename(pop = value), by = c("year" = "year", "dim1" = "age")
     ) %>%
-    dplyr::mutate(value = pop * (value/365)) %>%
+    dplyr::mutate(value = pop * (value)) %>%
     tidyr::drop_na()
 
   cv_params$age_vaccination_beta_modifier_upd <- cv_params$age_vaccination_beta_modifier %>%

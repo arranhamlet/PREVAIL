@@ -20,6 +20,10 @@ library(dplyr)
 options(scipen = 999)
 ```
 
+Vaccination is a key driver of population immunity and outbreak risk in infectious disease models like PREVAIL. While PREVAIL includes comprehensive default vaccination data, users can easily supply their own to reflect local coverage, campaign schedules, or vaccine characteristics. Custom vaccination inputs allow you to explore the impact of different strategies, disruptions, or interventions on immunity and epidemic outcomes.
+
+This vignette shows how to provide your own routine and supplemental vaccination data, set custom schedules, and specify vaccine effectiveness. By the end, you’ll be able to tailor vaccination assumptions to match your data and scenario, ensuring model results reflect your setting as accurately as possible.
+
 # 1. Prepare your custom data
 
 Firstly we need to load our required packages, we're using the **pacman** package here, which will also install these packages if missing.

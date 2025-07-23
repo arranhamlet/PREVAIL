@@ -93,6 +93,18 @@ custom_mortality <- expand.grid(
 
 head(custom_mortality)
 ```
+This will also work if you have a range of ages, separated by `-`.
+
+```{r, eval = T}
+custom_mortality <- expand.grid(
+  year = 1970:2015,
+  age = c("20-29", "30-59", "60-100")
+) %>%
+  dplyr::group_by(year, age) %>%
+  dplyr::mutate(value = sample(0:5, size = 1))
+
+head(custom_mortality)
+```
 
 # 2. Customising our demographic parameters
 

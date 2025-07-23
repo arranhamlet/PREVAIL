@@ -2,6 +2,7 @@
 <url><loc>https://arranhamlet.github.io/PREVAIL/404.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/articles/Getting_started.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/articles/demography.html</loc></url>
+<url><loc>https://arranhamlet.github.io/PREVAIL/articles/disease.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/articles/index.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/articles/vaccination.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/authors.html</loc></url>
@@ -30,6 +31,7 @@
 <url><loc>https://arranhamlet.github.io/PREVAIL/reference/calculate_current_susceptibility.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/reference/case_vaccine_to_param.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/reference/collapse_age_bins.html</loc></url>
+<url><loc>https://arranhamlet.github.io/PREVAIL/reference/combine_ggplot.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/reference/combine_vaccination_params.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/reference/compare_weighted_inputs.html</loc></url>
 <url><loc>https://arranhamlet.github.io/PREVAIL/reference/contact_matricies.html</loc></url>

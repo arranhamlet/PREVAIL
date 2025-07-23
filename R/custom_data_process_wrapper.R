@@ -187,7 +187,7 @@ custom_data_process_wrapper <- function(
     aging_rate                   = aging_reproduction$aging_rate,
     migration_in_number          = inputs$mig_in,
     migration_distribution_values = inputs$mig_dist,
-    seeded                       = inputs$seeded,
+    seeded                       = inputs$seed_data,
     repro_low                    = aging_reproduction$repro_low,
     repro_high                   = aging_reproduction$repro_high,
     age_maternal_protection_ends = 1,

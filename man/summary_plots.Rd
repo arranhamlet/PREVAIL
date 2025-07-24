@@ -4,7 +4,7 @@
 \alias{summary_plots}
 \title{Generate Summary Plots and Susceptibility Profiles}
 \usage{
-summary_plots(model_run, params)
+summary_plots(model_run, params, year)
 }
 \arguments{
 \item{model_run}{A `data.frame` or `data.table` in long format, including columns

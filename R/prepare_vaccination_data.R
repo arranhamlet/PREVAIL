@@ -192,8 +192,9 @@ case_vaccine_to_param <- function(
 
   # ---- Natural Immunity Waning ----
   nat_waning <- disease_parameters %>%
-    dplyr::filter(parameter == "natural immunity waning") %>%
-    dplyr::pull(value) %>%
+    dplyr::filter(parameter == "natural immunity waning period") %>%
+    dplyr::mutate(mean = gsub("lifelong", 0, mean)) %>%
+    dplyr::pull(mean) %>%
     tidyr::replace_na(0) %>%
     base::gsub("NA", 0, .) %>%
     base::as.numeric() * 365

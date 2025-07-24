@@ -43,7 +43,7 @@ data_load_process_wrapper <- function(
     disease_data           = PREVAIL::WHO_disease_reports,
     schedule               = PREVAIL::WHO_vaccination_schedule,
     pre1980                = PREVAIL::vaccination_pre1980,
-    disease_parameters     = PREVAIL::disease_parameters %>% dplyr::filter(disease == !!disease),
+    disease_parameters     = PREVAIL::disease_parameters %>% dplyr::filter(tolower(disease) == !!disease),
     vaccine_parameters     = PREVAIL::vaccine_parameters %>% dplyr::filter(disease == !!disease)
   )
 
@@ -101,50 +101,65 @@ data_load_process_wrapper <- function(
     aggregate_age = aggregate_age,
     new_age_breaks = new_age_breaks,
     inputs = inputs,
-    default_inputs = default_inputs
+    default_inputs = default_inputs,
+    disease_param = datasets$disease_parameters
   )
 
   # ---- Return Packaged Parameters ----
   packed_params <- param_packager(
+
+    #Population parameters
     n_age                        = length(unique(inputs$age_beta_mod$dim1)),
     n_vacc                       = preprocessed$processed_demographic_data$input_data$n_vacc,
     n_risk                       = preprocessed$processed_demographic_data$input_data$n_risk,
-    short_term_waning            = 1 / (max(datasets$vaccine_parameters$value[datasets$vaccine_parameters$parameter == "short_term_waning"]) * 365),
-    long_term_waning             = 1 / (max(datasets$vaccine_parameters$value[datasets$vaccine_parameters$parameter == "long_term_waning"]) * 365),
-    incubation_rate              = 1 / as.numeric(datasets$disease_parameters$value[datasets$disease_parameters$parameter == "incubation period"]),
-    recovery_rate                = 1 / as.numeric(datasets$disease_parameters$value[datasets$disease_parameters$parameter == "infectious period"]),
-    severe_recovery_rate         = 1 / as.numeric(datasets$disease_parameters$value[datasets$disease_parameters$parameter == "infectious period"]),
-    natural_immunity_waning      = if (cv_params$nat_waning == 0) 0 else 1 / cv_params$nat_waning,
-    R0                           = if (WHO_seed_switch) c(R0, 0) else R0,
-    tt_R0                        = if (WHO_seed_switch) c(0, max(c(1, times$seed[2]))) else 0,
-    vaccination_coverage         = inputs$vacc_cov,
+    population                   = inputs$population,
+    female_population            = inputs$female_population,
+    repro_weight = aging_reproduction$repro_weight,
     contact_matrix               = inputs$contact_matrix,
-    age_vaccination_beta_modifier = inputs$age_beta_mod,
     S0                           = inputs$N0,
     Rpop0                        = 0,
     I0                           = 0,
+    repro_low                    = aging_reproduction$repro_low,
+    repro_high                   = aging_reproduction$repro_high,
+    age_maternal_protection_ends = aging_reproduction$maternal_prot_end,
 
+    #Demographic changes
+    crude_birth                  = inputs$crude_birth,
+    crude_death                  = inputs$crude_death,
+    aging_rate                   = aging_reproduction$aging_rate,
+    migration_in_number          = inputs$mig_in,
+    migration_distribution_values = inputs$mig_dist,
+    migration_represent_current_pop = 1,
+
+    #Vaccination parameters
+    vaccination_coverage         = inputs$vacc_cov,
+    short_term_waning            = 1 / (max(datasets$vaccine_parameters$value[datasets$vaccine_parameters$parameter == "short_term_waning"]) * 365),
+    long_term_waning             = 1 / (max(datasets$vaccine_parameters$value[datasets$vaccine_parameters$parameter == "long_term_waning"]) * 365),
+    age_vaccination_beta_modifier = inputs$age_beta_mod,
+    protection_weight_vacc       = datasets$disease_parameters %>% subset(parameter == "maternal protection (vaccine)") %>% pull(mean)/100 * aging_reproduction$maternal_prot_weight,
+    protection_weight_rec        = datasets$disease_parameters %>% subset(parameter == "maternal protection (infection)") %>% pull(mean)/100 * aging_reproduction$maternal_prot_weight,
+
+    #Disease parameters
+    incubation_rate              = 1 / datasets$disease_parameters %>% subset(parameter == "incubation period") %>% pull(mean),
+    recovery_rate                = 1 /  datasets$disease_parameters %>% subset(parameter == "infectious period") %>% pull(mean),
+    severe_recovery_rate         = 1 / datasets$disease_parameters %>% subset(parameter == "infectious period") %>% pull(mean),
+    prop_severe = datasets$disease_parameters %>% subset(parameter == "proportion severe (hospitalized)") %>% pull(mean)/100,
+    prop_complications = datasets$disease_parameters %>% subset(parameter == "proportion severe (hospitalized)") %>% pull(mean)/100 ,
+    natural_immunity_waning      = if (cv_params$nat_waning == 0) 0 else 1 / cv_params$nat_waning,
+    R0                           = if (WHO_seed_switch) c(R0, 0) else R0,
+    cfr_normal = datasets$disease_parameters %>% subset(parameter == "cfr for standard cases") %>% pull(mean)/100,
+    cfr_severe = datasets$disease_parameters %>% subset(parameter == "cfr for severe cases") %>% pull(mean)/100,
+
+    #Time parameters
+    tt_R0                        = if (WHO_seed_switch) c(0, max(c(1, times$seed[2]))) else 0,
     tt_birth_changes             = times$mig,
     tt_death_changes             = times$mig,
     tt_migration                 = times$mig,
     tt_vaccination_coverage      = times$vac,
     tt_seeded                    = if (WHO_seed_switch) times$seed else c(0, max(times$seed)),
 
-    crude_birth                  = inputs$crude_birth,
-    crude_death                  = inputs$crude_death,
-    aging_rate                   = aging_reproduction$aging_rate,
-    migration_in_number          = inputs$mig_in,
-    migration_distribution_values = inputs$mig_dist,
+    #Cases
     seeded                       = inputs$seeded,
-    repro_low                    = aging_reproduction$repro_low,
-    repro_high                   = aging_reproduction$repro_high,
-    age_maternal_protection_ends = 1,
-    protection_weight_vacc       = 0,
-    protection_weight_rec        = 0,
-    migration_represent_current_pop = 1,
-    population                   = inputs$population,
-    female_population            = inputs$female_population,
-    repro_weight = aging_reproduction$repro_weight
   )
 
   # Attach input metadata

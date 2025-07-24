@@ -29,7 +29,7 @@
 #'   scale_y_continuous scale_x_continuous labs theme_bw coord_cartesian
 #' @importFrom dplyr mutate case_when group_by
 #' @export
-summary_plots <- function(model_run, params) {
+summary_plots <- function(model_run, params, year) {
 
   # --- Setup and Input Parsing ---
   year_start <- if (params$input_data$year_start == "") 1950 else params$input_data$year_start

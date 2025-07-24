@@ -158,9 +158,9 @@ scenario_compare <- function(scenario_1, scenario_2) {
 
   # --- Combine all plots and table ---
   summary_linegraphs <- ((
-    (subset_case_plot + ggplot2::theme(legend.position = "none")) +
+    (subset_case_plot + labs(x = "") + ggplot2::theme(legend.position = "none")) +
       cumulative_case_plot + ggplot2::theme(legend.position = "none") +
-      susceptibility_plot +
+      susceptibility_plot + labs(x = "") +
       patchwork::plot_layout(guides = "collect")
   ) /
     flextable::gen_grob(case_summary_format, fit = "width", scaling = "min")) + plot_layout(heights = c(4, 1))

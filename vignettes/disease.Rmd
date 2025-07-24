@@ -1,5 +1,5 @@
 ---
-title: "disease"
+title: "Disease"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{disease}
@@ -37,15 +37,14 @@ pacman::p_load(
 
 Once this is done, we can start thinking about the data we would like to customise. Here we are going to be focusing on disease associated parameters. These are:
 
-**custom_disease_data** - Case data to match.
+**custom_disease_data** - Cases reported over time.
 
 **custom_disease_parameters** - Parameters to modify disease transmission, see the table below for more detail.
 
-| parameter                              | model variable                  | description                                            | what modifying it might do                           |
+| Parameter                              | Model variable                  | Description                                            | What modifying it might do                           |
 |-----------------------------------------|---------------------------------|--------------------------------------------------------|------------------------------------------------------|
 | incubation period                       | incubation_rate                 | Time from infection to symptoms (1/incubation_rate)    | Shorter = earlier outbreaks, longer = delays spread  |
 | infectious period                       | recovery_rate                   | Duration infectious (1/recovery_rate)                  | Longer = more spread, shorter = less spread          |
-| R0                                      | R0                             | Basic reproduction number                              | Higher = larger outbreaks, lower = smaller           |
 | natural immunity waning period          | natural_immunity_waning         | Duration of natural immunity (1/waning rate)           | Shorter = more susceptibles over time                |
 | proportion of cases that are severe     | prop_severe                     | Fraction of infections that are severe                 | Higher = more severe cases and resource use          |
 | cfr for standard cases                  | cfr_normal                      | Death rate for standard (mild) cases                   | Higher = more deaths in mild cases                   |
@@ -55,6 +54,44 @@ Once this is done, we can start thinking about the data we would like to customi
 | maternal protection (infection)         | protection_weight_rec            | Proportion protected from previously infected mothers  | Higher = more newborns protected from birth          |
 | age maternal protection ends            | age_maternal_protection_ends     | Age when maternal protection ends                      | Higher = longer newborns are protected               |
 
+### Custom disease data
+
+The object `custom_disease_data` is used to provide an exact match to WHO reported cases from 1980 (the earliest data is available) in order to replicate trends in immunity seen at the current time point.
+
+This data is also used as a switch, where if `WHO_seed_switch = TRUE`, then dynamic disease transmission is turned off at the time of the first data point, and the cases that occur in the model are provided by this dataset.
+
+To create our custom data.frame, we need to specify two columns
+
+**year** - The year the cases occured in.
+
+**cases** - The number of cases in the year.
+
+```{r, eval = T}
+custom_cases <- data.frame(
+ year = c(1990, 2010),
+ cases = c(100, 2000)
+)
+```
+
+### Custom parameters
+
+When customising our disease parameters, we can customise as many or as few as we want. If parameters are not provided by our custom_disease_parameters object, then it will use the defaults. For default values, see `PREVAIL::disease_parameters`.
+
+To specify our parameters, we need to provide three arguments:
+
+**parameter** - The parameter we are interested in.
+
+**value** - The value we want for the parameter.
+
+**unit** - The unit the value is provided in.
+
+```{r, eval = T}
+custom_parameters <- data.frame(
+  parameter = c("incubation period", "infectious period"),
+  parameter = c(5, 30),
+  unit = c("days", "days")
+)
+```
 
 
 

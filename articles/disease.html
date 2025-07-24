@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>disease • PREVAIL</title>
+<title>Disease • PREVAIL</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="disease">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Disease">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -34,7 +34,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/demography.html">Demography</a></li>
-    <li><a class="dropdown-item" href="../articles/disease.html">disease</a></li>
+    <li><a class="dropdown-item" href="../articles/disease.html">Disease</a></li>
     <li><a class="dropdown-item" href="../articles/Getting_started.html">Getting Started with PREVAIL</a></li>
     <li><a class="dropdown-item" href="../articles/vaccination.html">Vaccination</a></li>
   </ul>
@@ -57,7 +57,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>disease</h1>
+      <h1>Disease</h1>
             
       
 
@@ -84,7 +84,7 @@ packages if missing.</p>
 <p>Once this is done, we can start thinking about the data we would like
 to customise. Here we are going to be focusing on disease associated
 parameters. These are:</p>
-<p><strong>custom_disease_data</strong> - Case data to match.</p>
+<p><strong>custom_disease_data</strong> - Cases reported over time.</p>
 <p><strong>custom_disease_parameters</strong> - Parameters to modify
 disease transmission, see the table below for more detail.</p>
 <table class="table">
@@ -95,10 +95,10 @@ disease transmission, see the table below for more detail.</p>
 <col width="29%">
 </colgroup>
 <thead><tr class="header">
-<th>parameter</th>
-<th>model variable</th>
-<th>description</th>
-<th>what modifying it might do</th>
+<th>Parameter</th>
+<th>Model variable</th>
+<th>Description</th>
+<th>What modifying it might do</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -114,54 +114,48 @@ disease transmission, see the table below for more detail.</p>
 <td>Longer = more spread, shorter = less spread</td>
 </tr>
 <tr class="odd">
-<td>R0</td>
-<td>R0</td>
-<td>Basic reproduction number</td>
-<td>Higher = larger outbreaks, lower = smaller</td>
-</tr>
-<tr class="even">
 <td>natural immunity waning period</td>
 <td>natural_immunity_waning</td>
 <td>Duration of natural immunity (1/waning rate)</td>
 <td>Shorter = more susceptibles over time</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>proportion of cases that are severe</td>
 <td>prop_severe</td>
 <td>Fraction of infections that are severe</td>
 <td>Higher = more severe cases and resource use</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>cfr for standard cases</td>
 <td>cfr_normal</td>
 <td>Death rate for standard (mild) cases</td>
 <td>Higher = more deaths in mild cases</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>cfr for severe cases</td>
 <td>cfr_severe</td>
 <td>Death rate for severe cases</td>
 <td>Higher = more deaths in severe cases</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>proportion of severe with complications</td>
 <td>prop_complications</td>
 <td>Fraction of severe cases with complications</td>
 <td>Higher = more with complications after infection</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>maternal protection (vaccine)</td>
 <td>protection_weight_vacc</td>
 <td>Proportion protected from vaccinated mothers</td>
 <td>Higher = more newborns protected from birth</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>maternal protection (infection)</td>
 <td>protection_weight_rec</td>
 <td>Proportion protected from previously infected mothers</td>
 <td>Higher = more newborns protected from birth</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>age maternal protection ends</td>
 <td>age_maternal_protection_ends</td>
 <td>Age when maternal protection ends</td>
@@ -169,8 +163,47 @@ disease transmission, see the table below for more detail.</p>
 </tr>
 </tbody>
 </table>
+<div class="section level4">
+<h4 id="custom-disease-data">Custom disease data<a class="anchor" aria-label="anchor" href="#custom-disease-data"></a>
+</h4>
+<p>The object <code>custom_disease_data</code> is used to provide an
+exact match to WHO reported cases from 1980 (the earliest data is
+available) in order to replicate trends in immunity seen at the current
+time point.</p>
+<p>This data is also used as a switch, where if
+<code>WHO_seed_switch = TRUE</code>, then dynamic disease transmission
+is turned off at the time of the first data point, and the cases that
+occur in the model are provided by this dataset.</p>
+<p>To create our custom data.frame, we need to specify two columns</p>
+<p><strong>year</strong> - The year the cases occured in.</p>
+<p><strong>cases</strong> - The number of cases in the year.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">custom_cases</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span> year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1990</span>, <span class="fl">2010</span><span class="op">)</span>,</span>
+<span> cases <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">2000</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
-  </main>
+<div class="section level4">
+<h4 id="custom-parameters">Custom parameters<a class="anchor" aria-label="anchor" href="#custom-parameters"></a>
+</h4>
+<p>When customising our disease parameters, we can customise as many or
+as few as we want. If parameters are not provided by our
+custom_disease_parameters object, then it will use the defaults. For
+default values, see <code><a href="../reference/disease_parameters.html">PREVAIL::disease_parameters</a></code>.</p>
+<p>To specify our parameters, we need to provide three arguments:</p>
+<p><strong>parameter</strong> - The parameter we are interested in.</p>
+<p><strong>value</strong> - The value we want for the parameter.</p>
+<p><strong>unit</strong> - The unit the value is provided in.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">custom_parameters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  parameter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"incubation period"</span>, <span class="st">"infectious period"</span><span class="op">)</span>,</span>
+<span>  parameter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">30</span><span class="op">)</span>,</span>
+<span>  unit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"days"</span>, <span class="st">"days"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 

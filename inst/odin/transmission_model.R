@@ -388,9 +388,12 @@ update(Reff) <- if(n_age <= 0) 0 else sum(ngm)/n_age
 initial(Reff) <- R0[1]
 
 #Seeding
+reporting_rate <- parameter(1)
+
 t_seeded <- interpolate(tt_seeded, seeded, "constant")
+
 #Safe seeding
-seeded_actual[, , ] <- if (S[i, j, k] < t_seeded[i, j, k]) S[i, j, k] else t_seeded[i, j, k]
+seeded_actual[, , ] <- if (S[i, j, k] < t_seeded[i, j, k]) S[i, j, k] * reporting_rate else t_seeded[i, j, k] * reporting_rate
 dim(seeded_actual) <- c(n_age, n_vacc, n_risk)
 
 #Calculate populations

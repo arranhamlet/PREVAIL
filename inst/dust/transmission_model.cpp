@@ -44,6 +44,7 @@
 // [[dust2::parameter(tt_migration, type = "real_type", rank = 1, required = TRUE, constant = FALSE)]]
 // [[dust2::parameter(migration_in_number, type = "real_type", rank = 4, required = TRUE, constant = FALSE)]]
 // [[dust2::parameter(migration_distribution_values, type = "real_type", rank = 2, required = TRUE, constant = FALSE)]]
+// [[dust2::parameter(reporting_rate, type = "real_type", rank = 0, required = FALSE, constant = FALSE)]]
 // [[dust2::parameter(repro_weight, type = "real_type", rank = 2, required = TRUE, constant = FALSE)]]
 // [[dust2::parameter(stochastic_birth, type = "real_type", rank = 0, required = FALSE, constant = FALSE)]]
 // [[dust2::parameter(stochastic_vaccination, type = "real_type", rank = 0, required = FALSE, constant = FALSE)]]
@@ -249,6 +250,7 @@ public:
     real_type protection_weight_rec;
     int no_vacc_changes;
     int no_migration_changes;
+    real_type reporting_rate;
     real_type stochastic_birth;
     real_type stochastic_vaccination;
     std::vector<real_type> S0;
@@ -444,6 +446,7 @@ public:
     const real_type protection_weight_rec = dust2::r::read_real(parameters, "protection_weight_rec");
     const int no_vacc_changes = dust2::r::read_int(parameters, "no_vacc_changes");
     const int no_migration_changes = dust2::r::read_int(parameters, "no_migration_changes");
+    const real_type reporting_rate = dust2::r::read_real(parameters, "reporting_rate", 1);
     const real_type stochastic_birth = dust2::r::read_real(parameters, "stochastic_birth", 0);
     const real_type stochastic_vaccination = dust2::r::read_real(parameters, "stochastic_vaccination", 0);
     dim.migration_distribution.set({static_cast<size_t>(6)});
@@ -700,7 +703,7 @@ public:
       {"new_case", std::vector<size_t>(dim.new_case.dim.begin(), dim.new_case.dim.end())}
     };
     odin.packing.state.copy_offset(odin.offset.state.begin());
-    return shared_state{odin, dim, n_age, n_vacc, n_risk, incubation_rate, recovery_rate, natural_immunity_waning, severe_recovery_rate, no_R0_changes, no_seeded_changes, no_death_changes, simp_birth_death, no_birth_changes, repro_low, repro_high, age_maternal_protection_ends, protection_weight_vacc, protection_weight_rec, no_vacc_changes, no_migration_changes, stochastic_birth, stochastic_vaccination, S0, I0, Rpop0, cfr_normal, prop_severe, cfr_severe, prop_complications, R0, tt_R0, contact_matrix, seeded, tt_seeded, crude_death, tt_death_changes, crude_birth, tt_birth_changes, aging_rate, tt_vaccination_coverage, vaccination_coverage, age_vaccination_beta_modifier, tt_migration, migration_in_number, migration_distribution_values, repro_weight, short_term_waning, long_term_waning, interpolate_migration, interpolate_migration_distribution, interpolate_t_R0, interpolate_t_seeded, interpolate_death_int, interpolate_repro_weight_now, interpolate_birth_int, interpolate_vaccination_prop};
+    return shared_state{odin, dim, n_age, n_vacc, n_risk, incubation_rate, recovery_rate, natural_immunity_waning, severe_recovery_rate, no_R0_changes, no_seeded_changes, no_death_changes, simp_birth_death, no_birth_changes, repro_low, repro_high, age_maternal_protection_ends, protection_weight_vacc, protection_weight_rec, no_vacc_changes, no_migration_changes, reporting_rate, stochastic_birth, stochastic_vaccination, S0, I0, Rpop0, cfr_normal, prop_severe, cfr_severe, prop_complications, R0, tt_R0, contact_matrix, seeded, tt_seeded, crude_death, tt_death_changes, crude_birth, tt_birth_changes, aging_rate, tt_vaccination_coverage, vaccination_coverage, age_vaccination_beta_modifier, tt_migration, migration_in_number, migration_distribution_values, repro_weight, short_term_waning, long_term_waning, interpolate_migration, interpolate_migration_distribution, interpolate_t_R0, interpolate_t_seeded, interpolate_death_int, interpolate_repro_weight_now, interpolate_birth_int, interpolate_vaccination_prop};
   }
   static internal_state build_internal(const shared_state& shared) {
     std::vector<real_type> Npop_age_risk(shared.dim.Npop_age_risk.size);
@@ -847,6 +850,7 @@ public:
     shared.age_maternal_protection_ends = dust2::r::read_real(parameters, "age_maternal_protection_ends", shared.age_maternal_protection_ends);
     shared.protection_weight_vacc = dust2::r::read_real(parameters, "protection_weight_vacc", shared.protection_weight_vacc);
     shared.protection_weight_rec = dust2::r::read_real(parameters, "protection_weight_rec", shared.protection_weight_rec);
+    shared.reporting_rate = dust2::r::read_real(parameters, "reporting_rate", shared.reporting_rate);
     shared.stochastic_birth = dust2::r::read_real(parameters, "stochastic_birth", shared.stochastic_birth);
     shared.stochastic_vaccination = dust2::r::read_real(parameters, "stochastic_vaccination", shared.stochastic_vaccination);
     dust2::r::read_real_array(parameters, shared.dim.S0, shared.S0.data(), "S0", false);
@@ -1153,7 +1157,7 @@ public:
     for (size_t i = 1; i <= shared.dim.seeded_actual.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.seeded_actual.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.seeded_actual.dim[2]; ++k) {
-          internal.seeded_actual[i - 1 + (j - 1) * shared.dim.seeded_actual.mult[1] + (k - 1) * shared.dim.seeded_actual.mult[2]] = (S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] < internal.t_seeded[i - 1 + (j - 1) * shared.dim.t_seeded.mult[1] + (k - 1) * shared.dim.t_seeded.mult[2]] ? S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] : internal.t_seeded[i - 1 + (j - 1) * shared.dim.t_seeded.mult[1] + (k - 1) * shared.dim.t_seeded.mult[2]]);
+          internal.seeded_actual[i - 1 + (j - 1) * shared.dim.seeded_actual.mult[1] + (k - 1) * shared.dim.seeded_actual.mult[2]] = (S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] < internal.t_seeded[i - 1 + (j - 1) * shared.dim.t_seeded.mult[1] + (k - 1) * shared.dim.t_seeded.mult[2]] ? S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] * shared.reporting_rate : internal.t_seeded[i - 1 + (j - 1) * shared.dim.t_seeded.mult[1] + (k - 1) * shared.dim.t_seeded.mult[2]] * shared.reporting_rate);
         }
       }
     }

@@ -44,6 +44,8 @@ param_packager(
   migration_represent_current_pop = 0,
   cfr_normal = 0,
   cfr_severe = 0,
+  cfr_normal_real = 0,
+  cfr_severe_real = 0,
   population,
   female_population,
   repro_weight

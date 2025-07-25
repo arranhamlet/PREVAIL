@@ -135,6 +135,8 @@ And finally, custom vaccination parameters. These change how much protection is 
 
 **value** - For parameters that are waning, this is in *years*, and for protection, this is a *proportion*.
 
+If parameters are not provided, then it will use the defaults. For default values, see `PREVAIL::vaccine_parameters`.
+
 ```{r, eval = F}
 #Custom parameters
 vaccination_parameters <- expand.grid(
@@ -148,7 +150,7 @@ vaccination_parameters <- expand.grid(
 head(vaccination_parameters)
 ```
 
-# 2. Customising our vaccination parameters
+# 2. Processing our custom vaccination parameters
 
 Here we use `custom_data_process_wrapper()` instead of `data_load_process_wrapper()`. However, the approach is generally the same, as it takes all of the arguments used in `data_load_process_wrapper()`, and a few others, all of which have a default value of `NA` (which tells the model to use the inbuilt data).
 
@@ -177,7 +179,7 @@ To run the model with custom data, you add in your custom data.frame at the appr
 
 ```{r, eval = F}
 custom_params <- custom_data_process_wrapper(
-    iso = "GBR",
+    iso = "PSE",
     disease = "measles",
     R0 = 15,
     custom_routine_vaccination = routine_vaccination,
@@ -191,7 +193,7 @@ and for comparison, we will also run `custom_data_process_wrapper()` without any
 
 ```{r, eval = F}
 default_params <- custom_data_process_wrapper(
-    iso = "GBR",
+    iso = "PSE",
     disease = "measles",
     R0 = 15
 )

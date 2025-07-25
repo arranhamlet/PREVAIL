@@ -66,7 +66,7 @@ param_packager <- function(
     age_maternal_protection_ends = 1, repro_low = 1, repro_high = NULL,
     tt_migration = 0, migration_in_number = 0, migration_distribution_values = 0,
     migration_represent_current_pop = 0,
-    cfr_normal = 0, cfr_severe = 0, population, female_population,
+    cfr_normal = 0, cfr_severe = 0, cfr_normal_real = 0, cfr_severe_real = 0, population, female_population,
     repro_weight
 ) {
 
@@ -131,6 +131,8 @@ param_packager <- function(
     migration_represent_current_pop = migration_represent_current_pop,
     cfr_normal = format_array(cfr_normal, n_age),
     cfr_severe = format_array(cfr_severe, n_age),
+    cfr_normal_real = format_array(cfr_normal_real, n_age),
+    cfr_severe_real = format_array(cfr_severe_real, n_age),
     population = format_array(population, c(n_age, length(tt_birth_changes))),
     female_population = format_array(female_population, c(n_age, length(tt_birth_changes))),
     repro_weight = format_array(repro_weight, c(n_age, length(tt_birth_changes)))

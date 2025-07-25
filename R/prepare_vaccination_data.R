@@ -154,7 +154,7 @@ case_vaccine_to_param <- function(
 
   # Build seeded case input
   if (nrow(processed_case) > 0) {
-    case_df <- build_seeded_case_param(processed_case, demog_data, years, ages)
+    case_df <- build_seeded_case_param(processed_case, demog_data, ages)
     tt_seeded <- sort(c(0, match(unique(processed_case$year), years) - 1))
   } else {
     case_df <- data.table::data.table(dim1 = 1, dim2 = 1, dim3 = 1, dim4 = 1, value = 10)
@@ -192,46 +192,27 @@ case_vaccine_to_param <- function(
 
   # ---- Natural Immunity Waning ----
   nat_waning <- disease_parameters %>%
-    dplyr::filter(parameter == "natural immunity waning period") %>%
+    dplyr::filter(grepl("natural immunity", parameter)) %>%
     dplyr::mutate(mean = gsub("lifelong", 0, mean)) %>%
     dplyr::pull(mean) %>%
     tidyr::replace_na(0) %>%
     base::gsub("NA", 0, .) %>%
     base::as.numeric() * 365
 
-  seed_time <- base::sort(base::floor(tt_seeded * 365))
+  year_seed_time <- base::sort(base::floor(tt_seeded * 365))
 
   # ---- WHO Seeding ----
   if (WHO_seed_switch) {
 
-    # Base seed entries: all except dim4 = 1, and doubled for WHO style
-    base_seed <- case_df %>%
-      dplyr::filter(dim4 != 1) %>%
-      dplyr::mutate(dim4 = (dim4 * 2) - 2)
-
-    # Duplicate with value = 0 and dim4 shifted forward
-    zero_seed <- base_seed %>%
-      dplyr::mutate(value = 0, dim4 = dim4 + 1)
-
-    # Insert "patch" value for initial seeding
-    zero_seed <- dplyr::bind_rows(
-      zero_seed,
-      zero_seed %>%
-        dplyr::filter(dim4 == 3) %>%
-        dplyr::mutate(dim4 = 1)
-    ) %>%
+    seed_data <- case_df %>%
       dplyr::mutate(value = dplyr::case_when(
-        dim4 == 1 & dim1 == 1 ~ 10,
+        dim4 == 1 & dim1 == 1 ~ 1,
         TRUE ~ value
       ))
 
-    seed_data <- dplyr::bind_rows(base_seed, zero_seed) %>%
-      dplyr::arrange(dim4)
-
     # Adjust timepoints to match WHO-style seeding schedule
-    original_times <- seed_time
-    replicated <- base::unlist(base::lapply(original_times[original_times != 0], function(e) c(e, e + 1)))
-    seed_time <- c(0, base::sort(replicated), base::max(replicated) + 364, base::max(replicated) + 365)
+    original_times <- year_seed_time
+    seed_time <- c(0, base::unlist(base::lapply(original_times[original_times != 0], function(e) c(e, e + 1))))
 
   } else {
 
@@ -241,7 +222,7 @@ case_vaccine_to_param <- function(
     seed_data <- base::data.frame(
       dim1 = 1, dim2 = 1, dim3 = 1,
       dim4 = seq_along(seed_time),
-      value = 10
+      value = 1
     )
   }
 

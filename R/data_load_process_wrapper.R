@@ -9,6 +9,7 @@
 #' @param iso A 3-letter ISO country code identifying the country for analysis (e.g., "ETH" for Ethiopia).
 #' @param disease A character string specifying the disease of interest (e.g., "measles", "diphtheria", "pertussis").
 #' @param R0 Numeric scalar or vector specifying the basic reproduction number, defining disease transmissibility.
+#' @param cfr_off Logical; Sets the CFR to zero. Used when calculating current susceptibility as prior mortality rates will already include disease specific mortality.
 #' @param year_start Optional numeric value specifying the first year of the simulation window. Default ("") uses the earliest available data year.
 #' @param year_end Optional numeric value specifying the last year of the simulation window. Default ("") uses the latest available data year.
 #' @param WHO_seed_switch Logical indicating whether to use WHO-style seeding to replicate historical case-reporting patterns (default is `TRUE`).
@@ -23,6 +24,7 @@ data_load_process_wrapper <- function(
     iso,
     disease,
     R0,
+    cfr_off = TRUE,
     year_start = "",
     year_end = "",
     WHO_seed_switch = TRUE,
@@ -147,8 +149,8 @@ data_load_process_wrapper <- function(
     prop_complications = datasets$disease_parameters %>% subset(parameter == "proportion severe (hospitalized)") %>% pull(mean)/100 ,
     natural_immunity_waning      = if (cv_params$nat_waning == 0) 0 else 1 / cv_params$nat_waning,
     R0                           = if (WHO_seed_switch) c(R0, 0) else R0,
-    cfr_normal = datasets$disease_parameters %>% subset(parameter == "cfr for standard cases") %>% pull(mean)/100,
-    cfr_severe = datasets$disease_parameters %>% subset(parameter == "cfr for severe cases") %>% pull(mean)/100,
+    cfr_normal = if(cfr_off == T) 0 else datasets$disease_parameters %>% subset(parameter == "cfr for standard cases") %>% pull(mean),
+    cfr_severe = if(cfr_off == T) 0 else datasets$disease_parameters %>% subset(parameter == "cfr for severe cases") %>% pull(mean),
 
     #Time parameters
     tt_R0                        = if (WHO_seed_switch) c(0, max(c(1, times$seed[2]))) else 0,

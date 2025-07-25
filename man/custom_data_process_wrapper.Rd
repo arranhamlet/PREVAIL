@@ -8,6 +8,7 @@ custom_data_process_wrapper(
   iso,
   disease,
   R0,
+  cfr_off = T,
   year_start = "",
   year_end = "",
   WHO_seed_switch = TRUE,
@@ -33,6 +34,8 @@ custom_data_process_wrapper(
 \item{disease}{A character string specifying the disease of interest (e.g., "measles", "diphtheria", "pertussis").}
 
 \item{R0}{Numeric scalar or vector specifying the basic reproduction number, defining disease transmissibility.}
+
+\item{cfr_off}{Logical; Sets the CFR to zero. Used when calculating current susceptibility as prior mortality rates will already include disease specific mortality.}
 
 \item{year_start}{Optional numeric value specifying the first year of the simulation window. Default ("") uses the earliest available data year.}
 

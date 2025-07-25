@@ -1702,7 +1702,7 @@ public:
     for (size_t i = 1; i <= shared.dim.recovered_Is_to_Rc.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.recovered_Is_to_Rc.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.recovered_Is_to_Rc.dim[2]; ++k) {
-          internal.recovered_Is_to_Rc[i - 1 + (j - 1) * shared.dim.recovered_Is_to_Rc.mult[1] + (k - 1) * shared.dim.recovered_Is_to_Rc.mult[2]] = (internal.recovered_Is_to_R[i - 1 + (j - 1) * shared.dim.recovered_Is_to_R.mult[1] + (k - 1) * shared.dim.recovered_Is_to_R.mult[2]] - internal.recovered_from_Is[i - 1 + (j - 1) * shared.dim.recovered_from_Is.mult[1] + (k - 1) * shared.dim.recovered_from_Is.mult[2]] <= 0 ? 0 : internal.recovered_Is_to_R[i - 1 + (j - 1) * shared.dim.recovered_Is_to_R.mult[1] + (k - 1) * shared.dim.recovered_Is_to_R.mult[2]] - internal.recovered_from_Is[i - 1 + (j - 1) * shared.dim.recovered_from_Is.mult[1] + (k - 1) * shared.dim.recovered_from_Is.mult[2]]);
+          internal.recovered_Is_to_Rc[i - 1 + (j - 1) * shared.dim.recovered_Is_to_Rc.mult[1] + (k - 1) * shared.dim.recovered_Is_to_Rc.mult[2]] = internal.recovered_from_Is[i - 1 + (j - 1) * shared.dim.recovered_from_Is.mult[1] + (k - 1) * shared.dim.recovered_from_Is.mult[2]] - internal.recovered_Is_to_R[i - 1 + (j - 1) * shared.dim.recovered_Is_to_R.mult[1] + (k - 1) * shared.dim.recovered_Is_to_R.mult[2]];
         }
       }
     }

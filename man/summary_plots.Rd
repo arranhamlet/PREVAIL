@@ -4,7 +4,7 @@
 \alias{summary_plots}
 \title{Generate Summary Plots and Susceptibility Profiles}
 \usage{
-summary_plots(model_run, params, year)
+summary_plots(model_run, params)
 }
 \arguments{
 \item{model_run}{A `data.frame` or `data.table` in long format, including columns
@@ -16,12 +16,13 @@ summary_plots(model_run, params, year)
 }
 \value{
 A named list containing:
-\item{select_state_plot}{A ggplot2 object: time-series of key model states.}
-\item{susceptibility_plot}{A ggplot2 object: latest age-specific susceptibility profile.}
-\item{vaccination_coverage_plot}{A ggplot2 object: vaccination coverage over time.}
-\item{cumulative_case_plot}{A ggplot2 object: cumulative case trajectory with uncertainty.}
-\item{susceptibility_data}{A `data.table`: weekly susceptibility proportions.}
-\item{box_data}{A `data.table`: peak and total cases per run.}
+\describe{
+  \item{select_state_plot}{A `ggplot2` object: time-series plot of selected model states by week.}
+  \item{susceptibility_plot}{A `ggplot2` object: latest year’s age-specific susceptibility profile.}
+  \item{vaccination_coverage_plot}{A `ggplot2` object: line chart showing population-level vaccine coverage over time.}
+  \item{cumulative_case_plot}{A `ggplot2` object: cumulative case counts with uncertainty ribbons.}
+  \item{susceptibility_data}{A `data.table`: weekly susceptibility proportions by status and time.}
+}
 }
 \description{
 This function processes model output and generates:
@@ -30,5 +31,4 @@ This function processes model output and generates:
 3. A line chart of vaccination coverage over time.
 4. A long-format `data.table` with stratified susceptibility proportions.
 5. A cumulative case time-series plot.
-6. A summary `box_data` table with peak and total case statistics per run.
 }

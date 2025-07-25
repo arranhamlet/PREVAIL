@@ -62,14 +62,14 @@ This data is also used as a switch, where if `WHO_seed_switch = TRUE`, then dyna
 
 To create our custom data.frame, we need to specify two columns
 
-**year** - The year the cases occured in.
+**year** - The year the cases occurred in.
 
 **cases** - The number of cases in the year.
 
 ```{r, eval = T}
 custom_cases <- data.frame(
- year = c(1990, 2010),
- cases = c(100, 2000)
+ year = c(1970, 1990, 2010),
+ cases = c(1, 100, 20000000)
 )
 ```
 
@@ -88,11 +88,43 @@ To specify our parameters, we need to provide three arguments:
 ```{r, eval = T}
 custom_parameters <- data.frame(
   parameter = c("incubation period", "infectious period"),
-  parameter = c(5, 30),
+  value = c(5, 30),
   unit = c("days", "days")
 )
 ```
 
+All other parameters not explicitly included will be drawn from the default values.
 
+### R0
 
+The basic reproductive number, R0, is input as an argument in both `load_data_process_wrapper()` and `custom_data_process_wrapper()`, where it is specified as `R0 = `.
 
+# 2. Processing our custom disease parameters
+
+Now that we have created our custom disease parameters, we need to process them using `custom_data_process_wrapper()`.
+
+```{r, eval = F}
+custom_params <- custom_data_process_wrapper(
+    iso = "PSE",
+    disease = "measles",
+    R0 = 15,
+    custom_disease_data = custom_cases,
+    custom_disease_parameters = custom_parameters
+)
+```
+
+This can then be input into `run_model_unpack_results()` to run the model.
+
+```{r, eval = F}
+model_run_custom <- run_model_unpack_results(
+  params = custom_params,
+  simulation_length = (custom_params$input_data$year_end - custom_params$input_data$year_start) * 365,
+  no_runs = 1
+)
+```
+
+and then to visualise we can use `summary_plots()`.
+
+```{r, eval = F}
+plots <- summary_plots(model_run_custom, custom_params)
+```

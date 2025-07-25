@@ -3,7 +3,7 @@
 #' Adds required columns to a user-supplied vaccination data frame for routine vaccination coverage,
 #' standardizing column names and values for use within the PREVAIL package.
 #'
-#' @param custom_vaccination A data.frame or tibble containing at minimum a year and value column.
+#' @param custom_data A data.frame or tibble containing at minimum a year and value column.
 #' @param iso Three-letter ISO country code.
 #' @param disease Disease or vaccine name (character).
 #'
@@ -11,10 +11,10 @@
 #' @importFrom dplyr mutate
 #' @importFrom magrittr %>%
 #' @export
-reformat_vaccination <- function(custom_vaccination, iso, disease) {
+reformat_vaccination <- function(custom_data, iso, disease) {
 
   dplyr::mutate(
-    custom_vaccination,
+    custom_data,
     iso3 = iso,
     area = iso,
     disease = disease,

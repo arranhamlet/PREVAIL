@@ -4,14 +4,12 @@
 \alias{build_seeded_case_param}
 \title{Build Seeded Case Parameter Array from Case and Demographic Data}
 \usage{
-build_seeded_case_param(processed_case, demog_data, years, ages)
+build_seeded_case_param(processed_case, demog_data, ages)
 }
 \arguments{
 \item{processed_case}{A data frame with `year` and `cases` columns.}
 
 \item{demog_data}{A named list including `population_data`, a matrix of counts.}
-
-\item{years}{A numeric vector of model years.}
 
 \item{ages}{A numeric vector of age bins.}
 }

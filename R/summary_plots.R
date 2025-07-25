@@ -6,7 +6,6 @@
 #' 3. A line chart of vaccination coverage over time.
 #' 4. A long-format `data.table` with stratified susceptibility proportions.
 #' 5. A cumulative case time-series plot.
-#' 6. A summary `box_data` table with peak and total case statistics per run.
 #'
 #' @param model_run A `data.frame` or `data.table` in long format, including columns
 #'   `time`, `state`, `value`, `age`, `risk`, `vaccination`, and `run`.
@@ -15,21 +14,23 @@
 #'   - `input_data$age_breaks`: Age breakpoints as a semicolon-separated string.
 #'
 #' @return A named list containing:
-#' \item{select_state_plot}{A ggplot2 object: time-series of key model states.}
-#' \item{susceptibility_plot}{A ggplot2 object: latest age-specific susceptibility profile.}
-#' \item{vaccination_coverage_plot}{A ggplot2 object: vaccination coverage over time.}
-#' \item{cumulative_case_plot}{A ggplot2 object: cumulative case trajectory with uncertainty.}
-#' \item{susceptibility_data}{A `data.table`: weekly susceptibility proportions.}
-#' \item{box_data}{A `data.table`: peak and total cases per run.}
+#' \describe{
+#'   \item{select_state_plot}{A `ggplot2` object: time-series plot of selected model states by week.}
+#'   \item{susceptibility_plot}{A `ggplot2` object: latest year’s age-specific susceptibility profile.}
+#'   \item{vaccination_coverage_plot}{A `ggplot2` object: line chart showing population-level vaccine coverage over time.}
+#'   \item{cumulative_case_plot}{A `ggplot2` object: cumulative case counts with uncertainty ribbons.}
+#'   \item{susceptibility_data}{A `data.table`: weekly susceptibility proportions by status and time.}
+#' }
 #'
 #' @importFrom data.table setDT fcase
 #' @importFrom collapse fgroup_by fsummarise fquantile fsum
 #' @importFrom scales comma breaks_pretty percent_format
 #' @importFrom ggplot2 ggplot aes geom_line geom_bar geom_ribbon facet_wrap
 #'   scale_y_continuous scale_x_continuous labs theme_bw coord_cartesian
-#' @importFrom dplyr mutate case_when group_by
+#' @importFrom dplyr mutate case_when group_by filter
 #' @export
-summary_plots <- function(model_run, params, year) {
+
+summary_plots <- function(model_run, params) {
 
   # --- Setup and Input Parsing ---
   year_start <- if (params$input_data$year_start == "") 1950 else params$input_data$year_start

@@ -82,6 +82,8 @@ list please see `data(PREVAIL_locations)`. In this example we will use
 secondary infections we would expect to see from an initial infection.
 The higher the number, the more infectious the disease is.
 
+**cfr_off** - Sets the CFR to zero. Used when calculating current susceptibility as prior mortality rates will already include disease specific mortality.
+
 **year_start** - The first year of data to input into the model. This
 determines the data to load into the model, and allows us to replicate
 historical patterns in demography, vaccination and infection. The range
@@ -116,6 +118,9 @@ params <- data_load_process_wrapper(
 
   # Basic reproductive number; governs overall infectiousness.
   R0 = 15,
+  
+  #cfr_off; Sets the CFR to zero. 
+  cfr_off = T,
 
   # Start year of historical data input (1950–2023).
   # Set to "" to use the full dataset range.

@@ -253,7 +253,6 @@ build_routine_vaccination_param <- function(vaccination_data, schedule, ages, ye
 #'
 #' @param processed_case A data frame with `year` and `cases` columns.
 #' @param demog_data A named list including `population_data`, a matrix of counts.
-#' @param years A numeric vector of model years.
 #' @param ages A numeric vector of age bins.
 #'
 #' @return A data frame with columns: dim1 (age), dim2, dim3, dim4 (year offset), and value.
@@ -261,9 +260,8 @@ build_routine_vaccination_param <- function(vaccination_data, schedule, ages, ye
 #' @importFrom purrr map_dfr
 #' @importFrom dplyr filter bind_rows
 #' @keywords internal
-build_seeded_case_param <- function(processed_case, demog_data, years, ages) {
-  df <- fill_missing_years_general(processed_case, "year", "cases") %>%
-    dplyr::filter(year <= max(years))
+build_seeded_case_param <- function(processed_case, demog_data, ages) {
+  df <- insert_zero_case_rows(processed_case)
 
   years_adjusted <- unique(df$year)
 

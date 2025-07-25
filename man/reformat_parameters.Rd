@@ -4,10 +4,17 @@
 \alias{reformat_parameters}
 \title{Reformat Parameter Table for Model Input}
 \usage{
-reformat_parameters(custom_parameters, disease, type = c("disease", "vaccine"))
+reformat_parameters(
+  custom_parameters,
+  default_parameters,
+  disease,
+  type = c("disease", "vaccine")
+)
 }
 \arguments{
 \item{custom_parameters}{Data frame of custom parameters.}
+
+\item{default_parameters}{Data frame of the default parameters}
 
 \item{disease}{Character string, name of the disease.}
 

@@ -27,6 +27,10 @@ prepare_future_data <- function(params, future_events, current_susceptibility) {
   future_event_tt <- future_events$year * 365
   new_params$input_data$year_start <- if(new_params$input_data$year_end == "") 2024 else new_params$input_data$year_end
 
+  # Re-establish CFR
+  new_params$cfr_normal <- new_params$cfr_normal_real
+  new_params$cfr_severe <- new_params$cfr_severe_real
+
   ## --- Extend Vaccination Coverage ---
   prior_vacc <- params$vaccination_coverage
 

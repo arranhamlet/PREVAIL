@@ -15,6 +15,7 @@
 #' @param iso A 3-letter ISO country code identifying the country for analysis (e.g., "ETH" for Ethiopia).
 #' @param disease A character string specifying the disease of interest (e.g., "measles", "diphtheria", "pertussis").
 #' @param R0 Numeric scalar or vector specifying the basic reproduction number, defining disease transmissibility.
+#' @param cfr_off Logical; Sets the CFR to zero. Used when calculating current susceptibility as prior mortality rates will already include disease specific mortality.
 #' @param year_start Optional numeric value specifying the first year of the simulation window. Default ("") uses the earliest available data year.
 #' @param year_end Optional numeric value specifying the last year of the simulation window. Default ("") uses the latest available data year.
 #' @param WHO_seed_switch Logical; use WHO-style seeding to replicate historical case-reporting patterns (default TRUE).
@@ -46,6 +47,7 @@ custom_data_process_wrapper <- function(
     iso,
     disease,
     R0,
+    cfr_off = T,
     year_start = "",
     year_end = "",
     WHO_seed_switch = TRUE,
@@ -90,12 +92,12 @@ custom_data_process_wrapper <- function(
   if (all(!is.na(custom_mortality)))            datasets$mortality            <- reformat_demographic_data(custom_data = custom_mortality, age_required = 0:100, iso = iso, years = years_all, fill_method = "closest", value_allocation = "maintain")
   if (all(!is.na(custom_population)))           datasets$population_all       <- reformat_demographic_data(custom_data = custom_population, age_required = 0:100, iso = iso, years = years_all, fill_method = "closest", value_allocation = "split")
   if (all(!is.na(custom_contact_matricies)))    datasets$contact_matricies    <- custom_contact_matricies
-  if (all(!is.na(custom_routine_vaccination)))  datasets$routine_vaccination  <- reformat_vaccination(custom_routine_vaccination, iso = iso, disease = disease)
-  if (all(!is.na(custom_sia_vaccination)))      datasets$sia_vaccination      <- reformat_vaccination(custom_sia_vaccination, iso = iso, disease = disease)
-  if (all(!is.na(custom_disease_data)))         datasets$disease_data         <- custom_disease_data
+  if (all(!is.na(custom_routine_vaccination)))  datasets$routine_vaccination  <- reformat_vaccination(custom_data = custom_routine_vaccination, iso = iso, disease = disease)
+  if (all(!is.na(custom_sia_vaccination)))      datasets$sia_vaccination      <- reformat_vaccination(custom_data = custom_sia_vaccination, iso = iso, disease = disease)
+  if (all(!is.na(custom_disease_data)))         datasets$disease_data         <- reformat_cases(custom_data = custom_disease_data, iso = iso, disease = disease)
   if (all(!is.na(custom_vaccination_schedule))) datasets$vaccination_schedule <- reformat_vaccination_schedule(custom_vaccination_schedule, iso = iso, disease = disease)
-  if (all(!is.na(custom_disease_parameters)))   datasets$disease_parameters   <- reformat_parameters(custom_disease_parameters, disease = disease, type = "disease")
-  if (all(!is.na(custom_vaccine_parameters)))   datasets$vaccine_parameters   <- reformat_parameters(custom_vaccine_parameters, disease = disease, type = "vaccine")
+  if (all(!is.na(custom_disease_parameters)))   datasets$disease_parameters   <- reformat_parameters(default_parameters = datasets$disease_parameters, custom_parameters = custom_disease_parameters, disease = disease, type = "disease")
+  if (all(!is.na(custom_vaccine_parameters)))   datasets$vaccine_parameters   <- reformat_parameters(default_parameters = datasets$vaccine_parameters, custom_parameters = custom_vaccine_parameters, disease = disease, type = "vaccine")
 
   # ---- Prepare Inputs ----
   preprocessed <- prepare_model_inputs(
@@ -188,19 +190,22 @@ custom_data_process_wrapper <- function(
     short_term_waning            = 1 / (max(datasets$vaccine_parameters$value[datasets$vaccine_parameters$parameter == "short_term_waning"]) * 365),
     long_term_waning             = 1 / (max(datasets$vaccine_parameters$value[datasets$vaccine_parameters$parameter == "long_term_waning"]) * 365),
     age_vaccination_beta_modifier = inputs$age_beta_mod,
-    protection_weight_vacc       = datasets$disease_parameters %>% subset(parameter == "maternal protection (vaccine)") %>% pull(mean)/100 * aging_reproduction$maternal_prot_weight,
-    protection_weight_rec        = datasets$disease_parameters %>% subset(parameter == "maternal protection (infection)") %>% pull(mean)/100 * aging_reproduction$maternal_prot_weight,
+    protection_weight_vacc       = datasets$disease_parameters %>% subset(parameter == "maternal protection (vaccine)") %>% pull(mean) * aging_reproduction$maternal_prot_weight,
+    protection_weight_rec        = datasets$disease_parameters %>% subset(parameter == "maternal protection (infection)") %>% pull(mean) * aging_reproduction$maternal_prot_weight,
 
     #Disease parameters
     incubation_rate              = 1 / datasets$disease_parameters %>% subset(parameter == "incubation period") %>% pull(mean),
     recovery_rate                = 1 /  datasets$disease_parameters %>% subset(parameter == "infectious period") %>% pull(mean),
     severe_recovery_rate         = 1 / datasets$disease_parameters %>% subset(parameter == "infectious period") %>% pull(mean),
-    prop_severe = datasets$disease_parameters %>% subset(parameter == "proportion severe (hospitalized)") %>% pull(mean)/100,
-    prop_complications = datasets$disease_parameters %>% subset(parameter == "proportion severe (hospitalized)") %>% pull(mean)/100 ,
+    prop_severe = datasets$disease_parameters %>% subset(parameter == "proportion severe (hospitalized)") %>% pull(mean),
+    prop_complications = datasets$disease_parameters %>% subset(parameter == "proportion severe (hospitalized)") %>% pull(mean) ,
     natural_immunity_waning      = if (cv_params$nat_waning == 0) 0 else 1 / cv_params$nat_waning,
     R0                           = if (WHO_seed_switch) c(R0, 0) else R0,
-    cfr_normal = datasets$disease_parameters %>% subset(parameter == "cfr for standard cases") %>% pull(mean)/100,
-    cfr_severe = datasets$disease_parameters %>% subset(parameter == "cfr for severe cases") %>% pull(mean)/100,
+    cfr_normal = if(cfr_off == T) 0 else datasets$disease_parameters %>% subset(parameter == "cfr for standard cases") %>% pull(mean),
+    cfr_severe = if(cfr_off == T) 0 else datasets$disease_parameters %>% subset(parameter == "cfr for severe cases") %>% pull(mean),
+
+    cfr_normal_real = datasets$disease_parameters %>% subset(parameter == "cfr for standard cases") %>% pull(mean),
+    cfr_severe_real = datasets$disease_parameters %>% subset(parameter == "cfr for severe cases") %>% pull(mean),
 
     #Time parameters
     tt_R0                        = if (WHO_seed_switch) c(0, max(c(1, times$seed[2]))) else 0,

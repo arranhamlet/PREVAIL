@@ -97,7 +97,8 @@ into_Is[, , ] <- if(incubated[i, j, k] - into_I[i, j, k] <= 0) 0 else incubated[
 
 #Is sampling
 recovered_Is_to_R[, , ] <- if(recovered_from_Is[i, j, k] <= 0) 0 else Binomial(recovered_from_Is[i, j, k], max(min(1 - prop_complications[i], 1), 0))
-recovered_Is_to_Rc[, , ] <- if(recovered_Is_to_R[i, j, k] - recovered_from_Is[i, j, k] <= 0) 0 else recovered_Is_to_R[i, j, k] - recovered_from_Is[i, j, k]
+recovered_Is_to_Rc[, , ] <- recovered_from_Is[i, j, k] - recovered_Is_to_R[i, j, k]
+
 
 # STEP 1: AGING - Apply aging
 # For S compartment

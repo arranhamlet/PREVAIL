@@ -4,10 +4,10 @@
 \alias{reformat_vaccination}
 \title{Reformat Custom Vaccination Data for Model Input}
 \usage{
-reformat_vaccination(custom_vaccination, iso, disease)
+reformat_vaccination(custom_data, iso, disease)
 }
 \arguments{
-\item{custom_vaccination}{A data.frame or tibble containing at minimum a year and value column.}
+\item{custom_data}{A data.frame or tibble containing at minimum a year and value column.}
 
 \item{iso}{Three-letter ISO country code.}
 

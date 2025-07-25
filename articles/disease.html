@@ -175,12 +175,12 @@ time point.</p>
 is turned off at the time of the first data point, and the cases that
 occur in the model are provided by this dataset.</p>
 <p>To create our custom data.frame, we need to specify two columns</p>
-<p><strong>year</strong> - The year the cases occured in.</p>
+<p><strong>year</strong> - The year the cases occurred in.</p>
 <p><strong>cases</strong> - The number of cases in the year.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">custom_cases</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span> year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1990</span>, <span class="fl">2010</span><span class="op">)</span>,</span>
-<span> cases <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">2000</span><span class="op">)</span></span>
+<span> year <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1970</span>, <span class="fl">1990</span>, <span class="fl">2010</span><span class="op">)</span>,</span>
+<span> cases <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">100</span>, <span class="fl">20000000</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
@@ -197,10 +197,45 @@ default values, see <code><a href="../reference/disease_parameters.html">PREVAIL
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">custom_parameters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  parameter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"incubation period"</span>, <span class="st">"infectious period"</span><span class="op">)</span>,</span>
-<span>  parameter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">30</span><span class="op">)</span>,</span>
+<span>  value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">30</span><span class="op">)</span>,</span>
 <span>  unit <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"days"</span>, <span class="st">"days"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<p>All other parameters not explicitly included will be drawn from the
+default values.</p>
 </div>
+<div class="section level4">
+<h4 id="r0">R0<a class="anchor" aria-label="anchor" href="#r0"></a>
+</h4>
+<p>The basic reproductive number, R0, is input as an argument in both
+<code>load_data_process_wrapper()</code> and
+<code><a href="../reference/custom_data_process_wrapper.html">custom_data_process_wrapper()</a></code>, where it is specified as
+<code>R0 =</code>.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="processing-our-custom-disease-parameters">2. Processing our custom disease parameters<a class="anchor" aria-label="anchor" href="#processing-our-custom-disease-parameters"></a>
+</h2>
+<p>Now that we have created our custom disease parameters, we need to
+process them using <code><a href="../reference/custom_data_process_wrapper.html">custom_data_process_wrapper()</a></code>.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">custom_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/custom_data_process_wrapper.html">custom_data_process_wrapper</a></span><span class="op">(</span></span>
+<span>    iso <span class="op">=</span> <span class="st">"PSE"</span>,</span>
+<span>    disease <span class="op">=</span> <span class="st">"measles"</span>,</span>
+<span>    R0 <span class="op">=</span> <span class="fl">15</span>,</span>
+<span>    custom_disease_data <span class="op">=</span> <span class="va">custom_cases</span>,</span>
+<span>    custom_disease_parameters <span class="op">=</span> <span class="va">custom_parameters</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>This can then be input into <code><a href="../reference/run_model_unpack_results.html">run_model_unpack_results()</a></code>
+to run the model.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">model_run_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model_unpack_results.html">run_model_unpack_results</a></span><span class="op">(</span></span>
+<span>  params <span class="op">=</span> <span class="va">custom_params</span>,</span>
+<span>  simulation_length <span class="op">=</span> <span class="op">(</span><span class="va">custom_params</span><span class="op">$</span><span class="va">input_data</span><span class="op">$</span><span class="va">year_end</span> <span class="op">-</span> <span class="va">custom_params</span><span class="op">$</span><span class="va">input_data</span><span class="op">$</span><span class="va">year_start</span><span class="op">)</span> <span class="op">*</span> <span class="fl">365</span>,</span>
+<span>  no_runs <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>and then to visualise we can use <code><a href="../reference/summary_plots.html">summary_plots()</a></code>.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summary_plots.html">summary_plots</a></span><span class="op">(</span><span class="va">model_run_custom</span>, <span class="va">custom_params</span><span class="op">)</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

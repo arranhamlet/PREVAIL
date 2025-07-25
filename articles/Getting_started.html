@@ -123,6 +123,9 @@ for Palestine.</p>
 how many secondary infections we would expect to see from an initial
 infection. The higher the number, the more infectious the disease
 is.</p>
+<p><strong>cfr_off</strong> - Sets the CFR to zero. Used when
+calculating current susceptibility as prior mortality rates will already
+include disease specific mortality.</p>
 <p><strong>year_start</strong> - The first year of data to input into
 the model. This determines the data to load into the model, and allows
 us to replicate historical patterns in demography, vaccination and
@@ -156,6 +159,9 @@ baseline single year age groups of 0-100, to the values specified in
 <span></span>
 <span>  <span class="co"># Basic reproductive number; governs overall infectiousness.</span></span>
 <span>  R0 <span class="op">=</span> <span class="fl">15</span>,</span>
+<span>  </span>
+<span>  <span class="co">#cfr_off; Sets the CFR to zero. </span></span>
+<span>  cfr_off <span class="op">=</span> <span class="cn">T</span>,</span>
 <span></span>
 <span>  <span class="co"># Start year of historical data input (1950–2023).</span></span>
 <span>  <span class="co"># Set to "" to use the full dataset range.</span></span>

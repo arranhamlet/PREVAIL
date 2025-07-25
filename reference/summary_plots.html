@@ -4,14 +4,12 @@
 2. A stacked bar chart of age-specific susceptibility profiles (annual only).
 3. A line chart of vaccination coverage over time.
 4. A long-format `data.table` with stratified susceptibility proportions.
-5. A cumulative case time-series plot.
-6. A summary `box_data` table with peak and total case statistics per run."><meta property="og:description" content="This function processes model output and generates:
+5. A cumulative case time-series plot."><meta property="og:description" content="This function processes model output and generates:
 1. A time-series plot of selected states (weekly only).
 2. A stacked bar chart of age-specific susceptibility profiles (annual only).
 3. A line chart of vaccination coverage over time.
 4. A long-format `data.table` with stratified susceptibility proportions.
-5. A cumulative case time-series plot.
-6. A summary `box_data` table with peak and total case statistics per run."></head><body>
+5. A cumulative case time-series plot."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -56,13 +54,12 @@
 2. A stacked bar chart of age-specific susceptibility profiles (annual only).
 3. A line chart of vaccination coverage over time.
 4. A long-format `data.table` with stratified susceptibility proportions.
-5. A cumulative case time-series plot.
-6. A summary `box_data` table with peak and total case statistics per run.</p>
+5. A cumulative case time-series plot.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">summary_plots</span><span class="op">(</span><span class="va">model_run</span>, <span class="va">params</span>, <span class="va">year</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">summary_plots</span><span class="op">(</span><span class="va">model_run</span>, <span class="va">params</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -82,24 +79,21 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A named list containing:</p>
-<dl><dt>select_state_plot</dt>
-<dd><p>A ggplot2 object: time-series of key model states.</p></dd>
+    <p>A named list containing:</p><dl><dt>select_state_plot</dt>
+<dd><p>A `ggplot2` object: time-series plot of selected model states by week.</p></dd>
 
-<dt>susceptibility_plot</dt>
-<dd><p>A ggplot2 object: latest age-specific susceptibility profile.</p></dd>
+  <dt>susceptibility_plot</dt>
+<dd><p>A `ggplot2` object: latest year’s age-specific susceptibility profile.</p></dd>
 
-<dt>vaccination_coverage_plot</dt>
-<dd><p>A ggplot2 object: vaccination coverage over time.</p></dd>
+  <dt>vaccination_coverage_plot</dt>
+<dd><p>A `ggplot2` object: line chart showing population-level vaccine coverage over time.</p></dd>
 
-<dt>cumulative_case_plot</dt>
-<dd><p>A ggplot2 object: cumulative case trajectory with uncertainty.</p></dd>
+  <dt>cumulative_case_plot</dt>
+<dd><p>A `ggplot2` object: cumulative case counts with uncertainty ribbons.</p></dd>
 
-<dt>susceptibility_data</dt>
-<dd><p>A `data.table`: weekly susceptibility proportions.</p></dd>
+  <dt>susceptibility_data</dt>
+<dd><p>A `data.table`: weekly susceptibility proportions by status and time.</p></dd>
 
-<dt>box_data</dt>
-<dd><p>A `data.table`: peak and total cases per run.</p></dd>
 
 </dl></div>
 

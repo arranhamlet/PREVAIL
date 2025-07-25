@@ -223,6 +223,8 @@ afforded after the initial protection wanes.</p>
 to.</p>
 <p><strong>value</strong> - For parameters that are waning, this is in
 <em>years</em>, and for protection, this is a <em>proportion</em>.</p>
+<p>If parameters are not provided, then it will use the defaults. For
+default values, see <code><a href="../reference/vaccine_parameters.html">PREVAIL::vaccine_parameters</a></code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#Custom parameters</span></span>
 <span><span class="va">vaccination_parameters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span></span>
@@ -237,7 +239,7 @@ to.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="customising-our-vaccination-parameters">2. Customising our vaccination parameters<a class="anchor" aria-label="anchor" href="#customising-our-vaccination-parameters"></a>
+<h2 id="processing-our-custom-vaccination-parameters">2. Processing our custom vaccination parameters<a class="anchor" aria-label="anchor" href="#processing-our-custom-vaccination-parameters"></a>
 </h2>
 <p>Here we use <code><a href="../reference/custom_data_process_wrapper.html">custom_data_process_wrapper()</a></code> instead of
 <code><a href="../reference/data_load_process_wrapper.html">data_load_process_wrapper()</a></code>. However, the approach is
@@ -274,7 +276,7 @@ data.frame, we would fill in our initial arguments as usual, and then
 specify <code>custom_mortality = custom_mortality_df</code>.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">custom_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/custom_data_process_wrapper.html">custom_data_process_wrapper</a></span><span class="op">(</span></span>
-<span>    iso <span class="op">=</span> <span class="st">"GBR"</span>,</span>
+<span>    iso <span class="op">=</span> <span class="st">"PSE"</span>,</span>
 <span>    disease <span class="op">=</span> <span class="st">"measles"</span>,</span>
 <span>    R0 <span class="op">=</span> <span class="fl">15</span>,</span>
 <span>    custom_routine_vaccination <span class="op">=</span> <span class="va">routine_vaccination</span>,</span>
@@ -287,7 +289,7 @@ specify <code>custom_mortality = custom_mortality_df</code>.</p>
 vaccination.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">default_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/custom_data_process_wrapper.html">custom_data_process_wrapper</a></span><span class="op">(</span></span>
-<span>    iso <span class="op">=</span> <span class="st">"GBR"</span>,</span>
+<span>    iso <span class="op">=</span> <span class="st">"PSE"</span>,</span>
 <span>    disease <span class="op">=</span> <span class="st">"measles"</span>,</span>
 <span>    R0 <span class="op">=</span> <span class="fl">15</span></span>
 <span><span class="op">)</span></span></code></pre></div>

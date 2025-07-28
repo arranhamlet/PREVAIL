@@ -118,16 +118,16 @@ prepare_future_data <- function(params, future_events, current_susceptibility) {
     data.frame(dim1 = sampled_ages, dim2 = 1, dim3 = 1, dim4 = i, value = 1)
   }))
 
+  new_params$tt_seeded <- c(0, which(future_events$introduced_cases != 0) * 365, which(future_events$introduced_cases != 0) * 365 + 1)
+  new_params$no_seeded_changes <- length(new_params$tt_seeded)
+
   new_params$seeded <- generate_array_df(
     dim1 = params$n_age,
     dim2 = params$n_vacc,
     dim3 = params$n_risk,
-    dim4 = n_future,
+    dim4 = new_params$no_seeded_changes,
     updates = seed_df
   ) %>% df_to_array()
-
-  new_params$tt_seeded <- future_event_tt
-  new_params$no_seeded_changes <- n_future
 
   new_params$repro_weight <- params$repro_weight %>%
     as.data.frame() %>%

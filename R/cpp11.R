@@ -47,3 +47,63 @@ dust2_system_transmission_model_update_pars <- function(ptr, pars) {
 dust2_system_transmission_model_simulate <- function(ptr, r_times, r_index_state, preserve_particle_dimension, preserve_group_dimension) {
   .Call(`_PREVAIL_dust2_system_transmission_model_simulate`, ptr, r_times, r_index_state, preserve_particle_dimension, preserve_group_dimension)
 }
+
+dust2_unfilter_transmission_model_alloc <- function(r_pars, r_time_start, r_time, r_time_control, r_data, r_n_particles, r_n_groups, r_n_threads) {
+  .Call(`_PREVAIL_dust2_unfilter_transmission_model_alloc`, r_pars, r_time_start, r_time, r_time_control, r_data, r_n_particles, r_n_groups, r_n_threads)
+}
+
+dust2_filter_transmission_model_alloc <- function(r_pars, r_time_start, r_time, r_time_control, r_data, r_n_particles, r_n_groups, r_n_threads, r_seed) {
+  .Call(`_PREVAIL_dust2_filter_transmission_model_alloc`, r_pars, r_time_start, r_time, r_time_control, r_data, r_n_particles, r_n_groups, r_n_threads, r_seed)
+}
+
+dust2_system_transmission_model_compare_data <- function(ptr, r_data, preserve_particle_dimension, preserve_group_dimension) {
+  .Call(`_PREVAIL_dust2_system_transmission_model_compare_data`, ptr, r_data, preserve_particle_dimension, preserve_group_dimension)
+}
+
+dust2_unfilter_transmission_model_update_pars <- function(ptr, r_pars, r_index_group) {
+  .Call(`_PREVAIL_dust2_unfilter_transmission_model_update_pars`, ptr, r_pars, r_index_group)
+}
+
+dust2_unfilter_transmission_model_run <- function(ptr, r_initial, save_trajectories, save_snapshots, adjoint, r_index_state, r_index_group, preserve_particle_dimension, preserve_group_dimension) {
+  .Call(`_PREVAIL_dust2_unfilter_transmission_model_run`, ptr, r_initial, save_trajectories, save_snapshots, adjoint, r_index_state, r_index_group, preserve_particle_dimension, preserve_group_dimension)
+}
+
+dust2_unfilter_transmission_model_last_trajectories <- function(ptr, select_random_particle, preserve_particle_dimension, preserve_group_dimension) {
+  .Call(`_PREVAIL_dust2_unfilter_transmission_model_last_trajectories`, ptr, select_random_particle, preserve_particle_dimension, preserve_group_dimension)
+}
+
+dust2_unfilter_transmission_model_last_snapshots <- function(ptr, select_random_particle, preserve_particle_dimension, preserve_group_dimension) {
+  .Call(`_PREVAIL_dust2_unfilter_transmission_model_last_snapshots`, ptr, select_random_particle, preserve_particle_dimension, preserve_group_dimension)
+}
+
+dust2_unfilter_transmission_model_last_state <- function(ptr, select_random_particle, preserve_particle_dimension, preserve_group_dimension) {
+  .Call(`_PREVAIL_dust2_unfilter_transmission_model_last_state`, ptr, select_random_particle, preserve_particle_dimension, preserve_group_dimension)
+}
+
+dust2_filter_transmission_model_update_pars <- function(ptr, r_pars, r_index_group) {
+  .Call(`_PREVAIL_dust2_filter_transmission_model_update_pars`, ptr, r_pars, r_index_group)
+}
+
+dust2_filter_transmission_model_run <- function(ptr, r_initial, save_trajectories, save_snapshots, adjoint, index_state, index_group, preserve_particle_dimension, preserve_group_dimension) {
+  .Call(`_PREVAIL_dust2_filter_transmission_model_run`, ptr, r_initial, save_trajectories, save_snapshots, adjoint, index_state, index_group, preserve_particle_dimension, preserve_group_dimension)
+}
+
+dust2_filter_transmission_model_last_trajectories <- function(ptr, select_random_particle, preserve_particle_dimension, preserve_group_dimension) {
+  .Call(`_PREVAIL_dust2_filter_transmission_model_last_trajectories`, ptr, select_random_particle, preserve_particle_dimension, preserve_group_dimension)
+}
+
+dust2_filter_transmission_model_last_snapshots <- function(ptr, select_random_particle, preserve_particle_dimension, preserve_group_dimension) {
+  .Call(`_PREVAIL_dust2_filter_transmission_model_last_snapshots`, ptr, select_random_particle, preserve_particle_dimension, preserve_group_dimension)
+}
+
+dust2_filter_transmission_model_last_state <- function(ptr, select_random_particle, preserve_particle_dimension, preserve_group_dimension) {
+  .Call(`_PREVAIL_dust2_filter_transmission_model_last_state`, ptr, select_random_particle, preserve_particle_dimension, preserve_group_dimension)
+}
+
+dust2_filter_transmission_model_rng_state <- function(ptr) {
+  .Call(`_PREVAIL_dust2_filter_transmission_model_rng_state`, ptr)
+}
+
+dust2_filter_transmission_model_set_rng_state <- function(ptr, r_rng_state) {
+  .Call(`_PREVAIL_dust2_filter_transmission_model_set_rng_state`, ptr, r_rng_state)
+}

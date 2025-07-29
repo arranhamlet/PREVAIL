@@ -37,7 +37,8 @@ Imports:
     purrr,
     patchwork,
     collapse,
-    scales
+    scales,
+    monty
 Remotes:
     mrc-ide/dust2,
 LinkingTo:

@@ -30,7 +30,7 @@ update(Rc[, , ]) <- max(Rc[i, j, k] + recovered_Is_to_Rc[i, j, k] - waning_Rc[i,
 #Additional outputs
 update(total_pop) <- N
 
-update(seropositive[]) <- (sum(S[, 2:n_vacc, ]) + sum(I[i, , ]) + sum(Is[i, , ]) + sum(R[i, , ]) + sum(Rc[i, , ]))/N
+update(seropositive[]) <- (sum(S[i, 2:n_vacc, ]) + sum(I[i, , ]) + sum(Is[i, , ]) + sum(R[i, , ]) + sum(Rc[i, , ]))/Npop_age[i]
 initial(seropositive[]) <- 0
 dim(seropositive) <- n_age
 
@@ -92,7 +92,7 @@ waning_R[, , ] <- if(R_after_aging[i, j, k] <= 0) 0 else Binomial(R_after_aging[
 waning_Rc[, , ] <- if(Rc_after_aging[i, j, k] <= 0) 0 else Binomial(Rc_after_aging[i, j, k], max(min(natural_immunity_waning, 1), 0))
 
 #E sampling
-update(new_case[, , ]) <- incubated[i, j, k] + t_seeded[i, j, k]
+update(new_case[, , ]) <- incubated[i, j, k] + seeded_actual[i, j, k]
 initial(new_case[, , ]) <- I0[i, j, k]
 dim(new_case) <- c(n_age, n_vacc, n_risk)
 
@@ -375,7 +375,7 @@ infectious_period[, , ] <- if((severe_recovery_rate + cfr_severe[i] + background
 #Interpolate R0
 t_R0 <- interpolate(tt_R0, R0, "constant")
 #Calculate beta from the R0 and infectious period
-beta[, , ] <- if(infectious_period[i, j, k] <= 0) 0 else t_R0 / infectious_period[i, j, k]
+beta[, , ] <- if(infectious_period[i, j, k] <= 0) 0 else (R0_modifier * t_R0) / infectious_period[i, j, k]
 
 #Update with vaccination and age mediation
 beta_updated[, , ] <- if(i <= age_maternal_protection_ends) beta[i, j, k] * (1 - age_vaccination_beta_modifier[i, j, k]) * (1 - (protection_weight_vacc * prop_maternal_vaccinated[k] + protection_weight_rec * prop_maternal_natural[k])) else (1 - age_vaccination_beta_modifier[i, j, k]) * beta[i, j, k]
@@ -409,12 +409,16 @@ initial(Reff) <- R0[1]
 
 #Seeding
 reporting_rate <- parameter(1)
+R0_modifier <- parameter(1)
 
 t_seeded <- interpolate(tt_seeded, seeded, "constant")
 
 #Safe seeding
 seeded_actual[, , ] <- if (S[i, j, k] < t_seeded[i, j, k]) S[i, j, k] * reporting_rate else t_seeded[i, j, k] * reporting_rate
 dim(seeded_actual) <- c(n_age, n_vacc, n_risk)
+
+update(seeded_actual_sum) <- sum(seeded_actual)
+initial(seeded_actual_sum) <- 0
 
 #Calculate populations
 N <- sum(S) + sum(E) + sum(I) + sum(R) + sum(Is) + sum(Rc)

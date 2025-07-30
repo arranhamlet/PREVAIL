@@ -7,8 +7,11 @@
 fit_transmission_model(
   parameters,
   serodata,
-  domain = matrix(c(0, 2, 0, 2), nrow = 2, byrow = TRUE),
-  vcv = diag(c(0.1, 0.1)),
+  prior,
+  fitted_parameters = c("reporting_rate", "R0_modifier"),
+  initial = NULL,
+  domain = matrix(c(0, 2, 0, 2), nrow = 2, byrow = T),
+  vcv = diag(0.1, length(fitted_parameters)),
   n_steps = 1000,
   n_chains = 1,
   n_particles = 1
@@ -20,42 +23,51 @@ fit_transmission_model(
 \item{serodata}{A data.frame with columns \code{time} and \code{serosurvey}, where \code{serosurvey} is a list-column
 containing numeric vectors of observed seropositivity by age.}
 
-\item{domain}{A 2-row matrix specifying the lower and upper bounds for each parameter. Default is \code{matrix(c(0, 2, 0, 2), nrow = 2, byrow = TRUE)}.}
+\item{prior}{A prior distribution object created using \code{\link[monty]{monty_dsl}}.}
 
-\item{vcv}{A variance-covariance matrix for the proposal distribution used in the random walk sampler. Default: \code{diag(c(0.1, 0.1))}.}
+\item{fitted_parameters}{Character vector of parameter names to fit (e.g., \code{c("reporting_rate", "R0_modifier")}).}
 
-\item{n_steps}{Integer. Number of MCMC steps to perform (default: 1000).}
+\item{initial}{A named list of initial parameter values, or \code{NULL} to default all to 1.}
 
-\item{n_chains}{Integer. Number of independent MCMC chains to run (default: 1).}
+\item{domain}{A matrix with two rows (lower and upper) and columns named for each fitted parameter. Defines parameter bounds.}
 
-\item{n_particles}{Integer. Number of particles to use in the particle filter and simulation (default: 1).}
+\item{vcv}{A variance-covariance matrix for the random walk proposal. Should be square with dimensions equal to number of parameters.}
+
+\item{n_steps}{Integer. Number of MCMC steps to perform (default = 1000).}
+
+\item{n_chains}{Integer. Number of independent MCMC chains (default = 1).}
+
+\item{n_particles}{Integer. Number of particles used in the particle filter (default = 1).}
 }
 \value{
-A named list with the following components:
+A named list containing:
 \describe{
-  \item{samples}{Output of \code{\link[monty]{monty_sample}}, including sampled parameters and log-likelihoods.}
-  \item{posterior}{The constructed posterior object (prior + likelihood) used in the fit.}
-  \item{all_states}{Full simulation output unpacked from \code{\link[dust2]{dust_unpack_state}}.}
-  \item{plots}{List of \code{\link[ggplot2]{ggplot}} plots: \code{trace}, \code{loglik}, \code{combined}, and \code{sero}.}
+  \item{samples}{The output from \code{\link[monty]{monty_sample}}, including sampled parameters and log-likelihoods.}
+  \item{prior}{The prior object used in the fit.}
+  \item{parameters_alt}{A named list of parameters with MAP values substituted for those fitted.}
+  \item{initial}{The named list of initial values used (either user-supplied or default).}
+  \item{domain}{The matrix of parameter bounds used during the fit.}
+  \item{vcv}{The variance-covariance matrix used in the random walk sampler.}
+  \item{fitted_parameters}{Character vector of parameters that were fitted.}
+  \item{plots}{A list of ggplot2 trace and log-likelihood plots: \code{trace}, \code{loglik}, and \code{combined}.}
 }
 }
 \description{
 Runs a particle MCMC fit of the PREVAIL transmission model using pre-generated parameters and a serosurvey dataset.
-This function simulates two models (baseline and fitted) using the \pkg{dust2} engine, and fits them using the
-\pkg{monty} framework. Parameter input should be generated externally using
-\code{\link[PREVAIL]{custom_data_process_wrapper}}.
-}
-\details{
-The function initializes two model trajectories: one with the default parameters and one with the MAP (maximum a posteriori) values.
-Serosurvey observations are matched by time and plotted alongside model predictions for visual validation.
+This function performs a PMCMC run using the \pkg{dust2} engine for likelihood evaluation and the \pkg{monty}
+framework for inference. The function does not run simulation post-fitting — instead, it returns everything needed
+for follow-up analysis or second-stage fitting.
 }
 \examples{
 \dontrun{
 params <- PREVAIL::custom_data_process_wrapper(iso = "KEN", disease = "measles", R0 = 15)
 serodata <- data.frame(time = 2500, serosurvey = I(list(rep(0.85, 17))))
-fit <- fit_transmission_model(parameters = params, serodata = serodata, n_steps = 500)
+prior <- monty::monty_dsl({
+  reporting_rate ~ Normal(mean = 1, sd = 5)
+  R0_modifier ~ Normal(mean = 1, sd = 1)
+})
+fit <- fit_transmission_model(parameters = params, serodata = serodata, prior = prior)
 fit$plots$combined
-fit$plots$sero
 }
 
 }

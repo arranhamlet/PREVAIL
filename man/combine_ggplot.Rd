@@ -7,21 +7,18 @@
 combine_ggplot(plot1, plot2, plot_names = c("Plot 1", "Plot 2"))
 }
 \arguments{
-\item{plot1}{A ggplot2 plot object (e.g., from `ggplot()`). Style, axis expansion, and theme are taken from this plot.}
+\item{plot1}{A \code{ggplot} object. Style, axis expansions, and theme are taken from this plot.}
 
-\item{plot2}{A second ggplot2 plot object to overlay on the first.}
+\item{plot2}{A second \code{ggplot} object to overlay on the first.}
 
-\item{plot_names}{Optional character vector of length 2 to label the two sources in the legend.}
+\item{plot_names}{Optional character vector of length 2, naming the sources (defaults to \code{c("Plot 1", "Plot 2")}).}
 }
 \value{
-A ggplot2 object combining the two plots, with consistent styling and axis expansions.
+A combined \code{ggplot} object with geoms, groups, and axis settings from both plots.
 }
 \description{
 This function overlays two ggplot2 plots of the same type (e.g., line, point, bar) into a single plot,
-automatically extracting aesthetic mappings, primary geom types, axis expansions (including custom `expand` or limits),
-and other style elements from the first plot.
-}
-\details{
-It is fully generic for common plot types and preserves theming, labels, and color/fill scales. The output plot
-displays both lines/bars/points and uses a `Source` variable for coloring.
+preserving the original geoms used in each layer (e.g., lines and points together). It automatically extracts
+aesthetic mappings, axis expansions (including custom `expand` or limits), and theming from the first plot.
+It also combines legends using a `SourceGroup` that distinguishes both the type and origin of the data.
 }

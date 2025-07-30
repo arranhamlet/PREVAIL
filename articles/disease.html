@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Disease • PREVAIL</title>
+<title>disease • PREVAIL</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Disease">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="disease">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -34,7 +34,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/demography.html">Demography</a></li>
-    <li><a class="dropdown-item" href="../articles/disease.html">Disease</a></li>
+    <li><a class="dropdown-item" href="../articles/disease.html">disease</a></li>
     <li><a class="dropdown-item" href="../articles/fitting.html">How to fit parameters in PREVAIL</a></li>
     <li><a class="dropdown-item" href="../articles/Getting_started.html">Getting Started with PREVAIL</a></li>
     <li><a class="dropdown-item" href="../articles/vaccination.html">Vaccination</a></li>
@@ -58,7 +58,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
-      <h1>Disease</h1>
+      <h1>disease</h1>
             
       
 
@@ -68,26 +68,88 @@
     
     
 <div class="section level2">
-<h2 id="prepare-your-custom-data">1. Prepare your custom data<a class="anchor" aria-label="anchor" href="#prepare-your-custom-data"></a>
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>Firstly we need to load our required packages, we’re using the
-<strong>pacman</strong> package here, which will also install these
-packages if missing.</p>
+<p>Infectious disease models depend heavily on <strong>accurate
+parameterization</strong> to reflect real-world dynamics. Parameters
+such as the incubation period, infectious duration, case fatality rates,
+and levels of maternal protection all influence how a disease spreads
+and what burden it imposes. These values vary between diseases—and
+sometimes even between settings—so the ability to <strong>customize
+disease-specific parameters</strong> is critical for model realism.</p>
+<p>The <strong>PREVAIL</strong> package allows users to flexibly define
+disease-specific characteristics using simple, human-readable data
+frames. This vignette shows you how to do that, whether you’re:</p>
+<ul>
+<li>Replicating known case trends with historical WHO data<br>
+</li>
+<li>Adjusting natural history parameters (e.g. incubation or recovery
+rates)<br>
+</li>
+<li>Overriding default assumptions with new literature or expert
+input<br>
+</li>
+<li>Exploring hypothetical changes in severity or immunity for scenario
+analysis</li>
+</ul>
+<p>By providing structured input objects
+(<code>custom_disease_parameters</code> and
+<code>custom_disease_data</code>), you can tailor the model to better
+match your disease of interest—while retaining the ability to fall back
+on PREVAIL’s validated defaults when needed.</p>
+<p>You’ll learn how to:</p>
+<ul>
+<li>Define and structure disease-specific parameters<br>
+</li>
+<li>Supply custom case time series for dynamic or seeded
+simulations<br>
+</li>
+<li>Generate model-ready input using
+<code><a href="../reference/custom_data_process_wrapper.html">custom_data_process_wrapper()</a></code><br>
+</li>
+<li>Run and visualize simulations with your customized setup</li>
+</ul>
+<p>This approach ensures transparency and reproducibility while giving
+you full control over how disease dynamics are represented in the
+model.</p>
+</div>
+<div class="section level2">
+<h2 id="prepare-your-custom-data">1. Prepare Your Custom Data<a class="anchor" aria-label="anchor" href="#prepare-your-custom-data"></a>
+</h2>
+<p>Before customizing the disease-specific behaviour of the transmission
+model, we need to load the required packages and understand the types of
+inputs we’ll be working with.</p>
+<p>In this vignette, we focus on <strong>disease parameters</strong>—the
+core inputs that define how a pathogen behaves in the model. These
+include values like the incubation period, infectious duration, and case
+fatality rates, as well as assumptions about immunity and maternal
+protection. PREVAIL provides sensible defaults for several diseases, but
+users can override these with custom values as needed.</p>
+<p>We also show how to provide a <strong>custom case time
+series</strong>, which can be used to seed the model based on known
+outbreaks or to constrain transmission to match historical data.</p>
+<p>To get started, we load the required packages using the
+<code>pacman</code> package. This will install any missing packages and
+then load them into the session:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#If pacman is not already present, install</span></span>
-<span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://github.com/trinker/pacman" class="external-link">"pacman"</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pacman"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Install pacman if not already available</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://github.com/trinker/pacman" class="external-link">"pacman"</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pacman"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">#Install missing packages, and load </span></span>
+<span><span class="co"># Load required packages (installing if needed)</span></span>
 <span><span class="fu">pacman</span><span class="fu">::</span><span class="fu">p_load</span><span class="op">(</span></span>
-<span>  <span class="va">PREVAIL</span>,</span>
-<span>  <span class="va">tidyverse</span></span>
+<span>  <span class="va">PREVAIL</span>,     <span class="co"># The core transmission model and input processing framework</span></span>
+<span>  <span class="va">tidyverse</span>    <span class="co"># Tidy tools for data wrangling and plotting</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>Once this is done, we can start thinking about the data we would like
-to customise. Here we are going to be focusing on disease associated
-parameters. These are:</p>
-<p><strong>custom_disease_data</strong> - Cases reported over time.</p>
-<p><strong>custom_disease_parameters</strong> - Parameters to modify
-disease transmission, see the table below for more detail.</p>
+<p>Once the packages are loaded, we can begin preparing our two key
+inputs:</p>
+<p><strong>custom_disease_data</strong> - A simple dataset specifying
+the number of reported cases in each year. This can be used to seed the
+model or replicate past trends.</p>
+<p><strong>custom_disease_parameters</strong> - A table of
+disease-specific parameters that modify natural history, severity, and
+immunity assumptions. You can choose to supply only a subset of
+parameters and rely on defaults for the rest. See the table below for
+more detail.</p>
 <table class="table">
 <colgroup>
 <col width="22%">
@@ -164,9 +226,9 @@ disease transmission, see the table below for more detail.</p>
 </tr>
 </tbody>
 </table>
-<div class="section level4">
-<h4 id="custom-disease-data">Custom disease data<a class="anchor" aria-label="anchor" href="#custom-disease-data"></a>
-</h4>
+<div class="section level3">
+<h3 id="custom-disease-data">Custom disease data<a class="anchor" aria-label="anchor" href="#custom-disease-data"></a>
+</h3>
 <p>The object <code>custom_disease_data</code> is used to provide an
 exact match to WHO reported cases from 1980 (the earliest data is
 available) in order to replicate trends in immunity seen at the current
@@ -184,9 +246,9 @@ occur in the model are provided by this dataset.</p>
 <span> cases <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">100</span>, <span class="fl">20000000</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="custom-parameters">Custom parameters<a class="anchor" aria-label="anchor" href="#custom-parameters"></a>
-</h4>
+<div class="section level3">
+<h3 id="custom-parameters">Custom parameters<a class="anchor" aria-label="anchor" href="#custom-parameters"></a>
+</h3>
 <p>When customising our disease parameters, we can customise as many or
 as few as we want. If parameters are not provided by our
 custom_disease_parameters object, then it will use the defaults. For
@@ -204,9 +266,9 @@ default values, see <code><a href="../reference/disease_parameters.html">PREVAIL
 <p>All other parameters not explicitly included will be drawn from the
 default values.</p>
 </div>
-<div class="section level4">
-<h4 id="r0">R0<a class="anchor" aria-label="anchor" href="#r0"></a>
-</h4>
+<div class="section level3">
+<h3 id="r0">R0<a class="anchor" aria-label="anchor" href="#r0"></a>
+</h3>
 <p>The basic reproductive number, R0, is input as an argument in both
 <code>load_data_process_wrapper()</code> and
 <code><a href="../reference/custom_data_process_wrapper.html">custom_data_process_wrapper()</a></code>, where it is specified as
@@ -214,29 +276,71 @@ default values.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="processing-our-custom-disease-parameters">2. Processing our custom disease parameters<a class="anchor" aria-label="anchor" href="#processing-our-custom-disease-parameters"></a>
+<h2 id="process-custom-disease-parameters">2. Process Custom Disease Parameters<a class="anchor" aria-label="anchor" href="#process-custom-disease-parameters"></a>
 </h2>
-<p>Now that we have created our custom disease parameters, we need to
-process them using <code><a href="../reference/custom_data_process_wrapper.html">custom_data_process_wrapper()</a></code>.</p>
+<p>Now that we’ve defined our disease-specific inputs—including a time
+series of reported cases and a custom set of parameter values—we need to
+convert them into a model-ready format. This is done using the
+<code><a href="../reference/custom_data_process_wrapper.html">custom_data_process_wrapper()</a></code> function.</p>
+<p>This function is the main entry point for preparing all input data
+required by the PREVAIL model. It combines:</p>
+<ul>
+<li>
+<strong>Demographic data</strong> for the specified country
+(identified by a 3-letter ISO code)</li>
+<li>
+<strong>Vaccination coverage and schedules</strong> using WHO
+datasets</li>
+<li>
+<strong>Disease-specific parameters</strong>, including any
+user-defined custom overrides</li>
+<li>
+<strong>Case time series</strong>, which can be used to seed or
+constrain the model</li>
+</ul>
+<p>If any of these components are not provided, PREVAIL will
+automatically fall back on built-in default values. This makes it easy
+to customize just one part of the input while keeping the rest
+unchanged.</p>
+<p>We run the wrapper like this:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">custom_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/custom_data_process_wrapper.html">custom_data_process_wrapper</a></span><span class="op">(</span></span>
-<span>    iso <span class="op">=</span> <span class="st">"PSE"</span>,</span>
-<span>    disease <span class="op">=</span> <span class="st">"measles"</span>,</span>
-<span>    R0 <span class="op">=</span> <span class="fl">15</span>,</span>
-<span>    custom_disease_data <span class="op">=</span> <span class="va">custom_cases</span>,</span>
-<span>    custom_disease_parameters <span class="op">=</span> <span class="va">custom_parameters</span></span>
+<span>  iso <span class="op">=</span> <span class="st">"PSE"</span>,                        <span class="co"># ISO3 code for the country of interest</span></span>
+<span>  disease <span class="op">=</span> <span class="st">"measles"</span>,               <span class="co"># Disease to simulate</span></span>
+<span>  R0 <span class="op">=</span> <span class="fl">15</span>,                           <span class="co"># Basic reproduction number</span></span>
+<span>  custom_disease_data <span class="op">=</span> <span class="va">custom_cases</span>,              <span class="co"># Custom case time series</span></span>
+<span>  custom_disease_parameters <span class="op">=</span> <span class="va">custom_parameters</span>    <span class="co"># Custom parameter values</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>This can then be input into <code><a href="../reference/run_model_unpack_results.html">run_model_unpack_results()</a></code>
-to run the model.</p>
+<p>This returns a named list of parameters that are ready to be used by
+the simulation engine. These include time-varying arrays for population
+size, contact rates, seeding events, and all disease-specific
+dynamics.</p>
+<p>We can now simulate the model using
+<code><a href="../reference/run_model_unpack_results.html">run_model_unpack_results()</a></code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">model_run_custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model_unpack_results.html">run_model_unpack_results</a></span><span class="op">(</span></span>
 <span>  params <span class="op">=</span> <span class="va">custom_params</span>,</span>
 <span>  simulation_length <span class="op">=</span> <span class="op">(</span><span class="va">custom_params</span><span class="op">$</span><span class="va">input_data</span><span class="op">$</span><span class="va">year_end</span> <span class="op">-</span> <span class="va">custom_params</span><span class="op">$</span><span class="va">input_data</span><span class="op">$</span><span class="va">year_start</span><span class="op">)</span> <span class="op">*</span> <span class="fl">365</span>,</span>
 <span>  no_runs <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>and then to visualise we can use <code><a href="../reference/summary_plots.html">summary_plots()</a></code>.</p>
+<ul>
+<li>
+<code>simulation_length</code> defines how long the model should run
+(in days). Here we calculate it based on the duration of the input time
+series.</li>
+<li>
+<code>no_runs</code> specifies the number of stochastic simulations
+to perform. A value of <code>1</code> is sufficient for demonstration
+purposes.</li>
+</ul>
+<p>Finally, we can generate output plots using the
+<code><a href="../reference/summary_plots.html">summary_plots()</a></code> function:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summary_plots.html">summary_plots</a></span><span class="op">(</span><span class="va">model_run_custom</span>, <span class="va">custom_params</span><span class="op">)</span></span></code></pre></div>
+<p>This will return a list of <code>ggplot2</code> objects that
+summarise the key outputs from the simulation, including time series of
+infections and cases, compartment sizes, and breakdowns by age where
+relevant.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

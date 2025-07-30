@@ -34,7 +34,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/demography.html">Demography</a></li>
-    <li><a class="dropdown-item" href="../articles/disease.html">Disease</a></li>
+    <li><a class="dropdown-item" href="../articles/disease.html">disease</a></li>
     <li><a class="dropdown-item" href="../articles/fitting.html">How to fit parameters in PREVAIL</a></li>
     <li><a class="dropdown-item" href="../articles/Getting_started.html">Getting Started with PREVAIL</a></li>
     <li><a class="dropdown-item" href="../articles/vaccination.html">Vaccination</a></li>
@@ -67,9 +67,437 @@
 
     
     
+<div class="section level3">
+<h3 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h3>
+<p>Understanding and predicting infectious disease dynamics is critical
+for planning public health interventions, evaluating vaccine impact, and
+preparing for future outbreaks. One powerful way to achieve this is by
+<strong>fitting mathematical models to data</strong>—such as serological
+surveys or case reports—to estimate key transmission parameters and
+simulate likely epidemic trajectories.</p>
+<p>The <strong>PREVAIL</strong> package provides a streamlined framework
+for doing this in R. It combines a flexible, age-structured stochastic
+SEIR-type transmission model with built-in functions for data
+processing, parameter generation, and model calibration.</p>
+<p>PREVAIL is especially well suited to situations where: - You have
+access to seroprevalence or case data, but key transmission parameters
+(like <code>R0</code> or <code>reporting_rate</code>) are uncertain -
+You want to compare how well different model assumptions or parameter
+values explain observed data - You need to iteratively refine your model
+based on results from previous runs</p>
+<p>At the core of the fitting process is a <strong>particle Markov chain
+Monte Carlo (PMCMC)</strong> algorithm, implemented using the
+<code>monty</code> package and <code>dust2</code> model engine. PMCMC
+allows us to explore the parameter space efficiently, even when the
+model includes stochastic processes or cannot be solved
+analytically.</p>
+<p>This vignette walks through a full PMCMC workflow using PREVAIL.
+You’ll learn how to:</p>
+<ul>
+<li>Simulate or load input data (e.g. a serosurvey)</li>
+<li>Generate model-ready parameters using
+<code><a href="../reference/custom_data_process_wrapper.html">custom_data_process_wrapper()</a></code>
+</li>
+<li>Fit the model to data using
+<code><a href="../reference/fit_transmission_model.html">fit_transmission_model()</a></code>
+</li>
+<li>Extract posterior summaries and refine priors</li>
+<li>Re-run the fitting process for improved efficiency</li>
+</ul>
+<p>Whether you’re working with simulated data or real-world
+observations, this approach provides a robust foundation for fitting and
+calibrating transmission models in complex, data-limited settings.</p>
+</div>
+<div class="section level2">
+<h2 id="load-required-packages">1. Load Required Packages<a class="anchor" aria-label="anchor" href="#load-required-packages"></a>
+</h2>
+<p>First we need to load all of the packages required. Note that there
+is the inclusion of <strong>dust2</strong> and <strong>monty</strong>
+which are used to fit the models.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://arranhamlet.github.io/PREVAIL/">PREVAIL</a></span><span class="op">)</span></span></code></pre></div>
-  </main>
+<code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://github.com/trinker/pacman" class="external-link">"pacman"</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pacman"</span><span class="op">)</span></span>
+<span><span class="fu">pacman</span><span class="fu">::</span><span class="fu">p_load</span><span class="op">(</span></span>
+<span>  <span class="va">PREVAIL</span>,   <span class="co"># The core package with custom data processing and model fitting</span></span>
+<span>  <span class="va">dust2</span>,     <span class="co"># Fast stochastic model engine backend</span></span>
+<span>  <span class="va">monty</span>,     <span class="co"># PMCMC engine and prior/domain framework</span></span>
+<span>  <span class="va">ggplot2</span>,   <span class="co"># Plotting</span></span>
+<span>  <span class="va">patchwork</span>, <span class="co"># Layout multiple plots together</span></span>
+<span>  <span class="va">scales</span>,    <span class="co"># Axis scaling/formatting</span></span>
+<span>  <span class="va">dplyr</span>,     <span class="co"># Data manipulation</span></span>
+<span>  <span class="va">tidyr</span>      <span class="co"># Tidy data reshaping</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="define-the-serosurvey-data">2. Define the serosurvey data<a class="anchor" aria-label="anchor" href="#define-the-serosurvey-data"></a>
+</h3>
+<p>Before we fit the model, we need some data to fit it to. In this
+example, we’ll create a <strong>simulated serosurvey</strong>, which
+assumes 20% seroprevalence across all 17 age groups at a single
+timepoint: 4 years after the start of the simulation (i.e., day
+1460).</p>
+<p>We construct this as a simple <code>data.frame</code> with one row,
+where: - <code>time</code> gives the time in days -
+<code>serosurvey</code> is a list-column containing a numeric vector of
+age-specific seroprevalence values</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">serodata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  time <span class="op">=</span> <span class="fl">365</span> <span class="op">*</span> <span class="fl">4</span>,</span>
+<span>  serosurvey <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">17</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Note the use of <code>I(list(...))</code>. This ensures that each row
+of the <code>serosurvey</code> column is treated as a <strong>single
+list element</strong>—in this case, a vector of 17 values (one per age
+group). This is required by the model fitting function, which expects
+the seroprevalence to be supplied as a list of numeric vectors, not as
+individual columns.</p>
+<p>If you have real serosurvey data, you can format it the same way: one
+row per survey, with a time and a corresponding vector of age-specific
+seroprevalence values.</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="generate-model-parameters">3. Generate Model Parameters<a class="anchor" aria-label="anchor" href="#generate-model-parameters"></a>
+</h2>
+<p>We now generate the full list of parameters required to run the
+transmission model. This includes demographic structure, vaccination
+inputs, and disease-specific parameters.</p>
+<p>This is done using the custom_data_process_wrapper() function, which
+handles all the necessary setup in one call. You need to specify the
+country (iso) and disease, and you can optionally override certain
+values such as the basic reproduction number (R0).</p>
+<p>Here we’ll use Kenya (“KEN”) as the example country and measles as
+the disease, with R0 set to 15:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">params</span> <span class="op">&lt;-</span> <span class="fu">PREVAIL</span><span class="fu">::</span><span class="fu"><a href="../reference/custom_data_process_wrapper.html">custom_data_process_wrapper</a></span><span class="op">(</span></span>
+<span>  iso <span class="op">=</span> <span class="st">"KEN"</span>,</span>
+<span>  disease <span class="op">=</span> <span class="st">"measles"</span>,</span>
+<span>  R0 <span class="op">=</span> <span class="fl">15</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><strong>Function</strong>:
+<code><a href="../reference/custom_data_process_wrapper.html">custom_data_process_wrapper()</a></code></p>
+<p><strong>What it does</strong>: Loads and processes all required data
+inputs (demography, vaccination, disease parameters) into a named list
+of model-ready parameters. For further explanation, please see the <a href="">demography</a>, <a href="">disease</a>, and <a href="">vaccination</a> vignettes.</p>
+</div>
+<div class="section level2">
+<h2 id="define-parameters-to-fit-and-priors">4. Define Parameters to Fit and Priors<a class="anchor" aria-label="anchor" href="#define-parameters-to-fit-and-priors"></a>
+</h2>
+<p>We now define the model parameters we want to estimate and specify
+their prior distributions and bounds.</p>
+<p>In this example, we’ll estimate two parameters:</p>
+<ul>
+<li><p><code>reporting_rate</code>, adjusts the proportion of infections
+that are reported as observed cases.</p></li>
+<li><p><code>R0_modifier</code>, scales the basic reproduction number
+during the model run (e.g., to account for intervention
+effects).</p></li>
+</ul>
+<p>We first create a character vector listing the parameter names. Then
+we define the domain, which is a matrix specifying the lower and upper
+bounds for each parameter. The number of rows in the domain matrix must
+match the number of parameters, and the values should be given as pairs:
+one row per parameter, with the <strong>lower bound first and the upper
+bound second</strong>.</p>
+<p>We then use <code>monty_dsl()</code> from the <strong>monty</strong>
+package to define a prior distribution for each parameter. These are
+independent normal distributions with mean 1 and standard deviation 1,
+meaning we expect the true value to be around 1, but allow some
+flexibility.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">parameters_to_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"reporting_rate"</span>, <span class="st">"R0_modifier"</span><span class="op">)</span></span>
+<span><span class="va">domain</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">prior1</span> <span class="op">&lt;-</span> <span class="fu">monty</span><span class="fu">::</span><span class="fu"><a href="https://mrc-ide.github.io/monty/reference/monty_dsl.html" class="external-link">monty_dsl</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="va">reporting_rate</span> <span class="op">~</span> <span class="fu">Normal</span><span class="op">(</span>mean <span class="op">=</span> <span class="fl">1</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span>  <span class="va">R0_modifier</span> <span class="op">~</span> <span class="fu">Normal</span><span class="op">(</span>mean <span class="op">=</span> <span class="fl">1</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
+<p>These settings define a relatively wide prior and search space,
+allowing the fitting algorithm to explore values between 0 and 2 for
+each parameter. We’ll later refine these based on the first round of
+results.</p>
+</div>
+<div class="section level2">
+<h2 id="initial-model-fit">5. Initial Model Fit<a class="anchor" aria-label="anchor" href="#initial-model-fit"></a>
+</h2>
+<p>Now that we’ve defined the parameters to fit, their priors, and the
+bounds in which they can vary, we’re ready to run our first model
+fitting routine.</p>
+<p>We use the function <code><a href="../reference/fit_transmission_model.html">fit_transmission_model()</a></code> to do this.
+It performs <a href="https://www.sciencedirect.com/science/article/pii/S1755436519300301" class="external-link"><strong>particle
+MCMC (PMCMC)</strong></a> to estimate the parameter values that best
+explain the serosurvey data. Under the hood, it uses the
+<strong>dust2</strong> model engine to simulate trajectories, and the
+<strong>monty</strong> package to handle priors, domains, and
+sampling.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">fit1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_transmission_model.html">fit_transmission_model</a></span><span class="op">(</span></span>
+<span>  parameters <span class="op">=</span> <span class="va">params</span>,</span>
+<span>  serodata <span class="op">=</span> <span class="va">serodata</span>,</span>
+<span>  prior <span class="op">=</span> <span class="va">prior1</span>,</span>
+<span>  fitted_parameters <span class="op">=</span> <span class="va">parameters_to_fit</span>,</span>
+<span>  domain <span class="op">=</span> <span class="va">domain</span>,</span>
+<span>  vcv <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  n_steps <span class="op">=</span> <span class="fl">500</span>,</span>
+<span>  n_particles <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="explanation-of-each-argument">Explanation of each argument<a class="anchor" aria-label="anchor" href="#explanation-of-each-argument"></a>
+</h4>
+<ul>
+<li><p><code>parameters</code>: This is the full list of model inputs
+generated earlier by <code><a href="../reference/custom_data_process_wrapper.html">custom_data_process_wrapper()</a></code>. It
+contains everything the model needs to run—population structure,
+vaccination rates, R0, waning, and more.</p></li>
+<li><p><code>serodata</code>: The serosurvey dataset we created earlier.
+This should be a <code>data.frame</code> with a <code>time</code> column
+and a <code>serosurvey</code> column. The serosurvey column must be a
+list-column containing numeric vectors of age-specific seroprevalence
+values.</p></li>
+<li><p><code>prior</code>: The prior distributions for each parameter
+being fitted. These are defined using <code>monty_dsl()</code> and
+inform the sampler about our beliefs before seeing the data.</p></li>
+<li><p><code>fitted_parameters</code>: A character vector listing the
+names of the parameters to be estimated—in this case
+<code>reporting_rate</code> and <code>R0_modifier</code>.</p></li>
+<li><p><code>domain</code>: A matrix specifying the allowed bounds for
+each parameter. Each row corresponds to a parameter, and contains two
+values: the lower and upper bounds. This constrains the sampling
+space.</p></li>
+<li><p><code>vcv</code>: The proposal variance-covariance matrix. This
+controls how the sampler proposes new values at each MCMC step. For now
+we’re using a diagonal matrix with moderate variance (0.25), which
+implies that parameters are proposed independently and with moderate
+step size. We’ll update this later based on empirical variation from the
+first fit.</p></li>
+<li><p><code>n_steps</code>: The number of MCMC iterations to run. For
+demonstration purposes, we set this to <code>500</code>—which is
+relatively low. For real applications, you’ll typically want thousands
+of steps to ensure convergence.</p></li>
+<li><p><code>n_particles</code>: The number of particles used in the
+particle filter at each step. More particles improve the accuracy of the
+likelihood estimate, but increase computation time. We use just
+<code>1</code> here for speed in the vignette, but higher values (e.g.,
+50 or 100) are recommended for proper fitting.</p></li>
+</ul>
+<p>After running this step, the object <code>fit1</code> will contain
+all the samples, diagnostics, and plots from the fitting process.</p>
+</div>
+<div class="section level3">
+<h3 id="plot-results-from-the-first-fit">6. Plot results from the first fit<a class="anchor" aria-label="anchor" href="#plot-results-from-the-first-fit"></a>
+</h3>
+<p>Once the initial PMCMC run has completed, we can inspect the results
+visually using the built-in plots returned by
+<code><a href="../reference/fit_transmission_model.html">fit_transmission_model()</a></code>.</p>
+<p>The output <code>fit1</code> contains a list of <code>ggplot2</code>
+objects under <code>fit1$plots</code>, including both the model time
+series and the age-specific fit to the serosurvey.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">fit1</span><span class="op">$</span><span class="va">plots</span><span class="op">$</span><span class="va">combined</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">fit1</span><span class="op">$</span><span class="va">plots</span><span class="op">$</span><span class="va">sero</span><span class="op">)</span></span></code></pre></div>
+<ul>
+<li><p><code>fit1$plots$combined</code>: This plot shows the full model
+output over time, including compartments such as <strong>Susceptible
+(S)</strong>, <strong>Exposed (E)</strong>, <strong>Infectious
+(I)</strong>, and <strong>Recovered (R)</strong>. It provides an
+overview of epidemic dynamics across the simulation window.</p></li>
+<li><p><code>fit1$plots$sero</code>: This plot compares the
+model-predicted seroprevalence by age to the observed serosurvey data.
+Each point represents an observed value; lines show the model’s
+predicted mean and uncertainty across particles.</p></li>
+</ul>
+<p>Together, these plots help assess whether the current parameter set
+provides a reasonable match to the data.</p>
+<p>Our fit does not appear to be very good, so to improve this we will
+want to revise our priors, domain, and model assumptions before
+proceeding.</p>
+</div>
+<div class="section level3">
+<h3 id="extract-map-estimates-and-empirical-uncertainty">7. Extract MAP estimates and empirical uncertainty<a class="anchor" aria-label="anchor" href="#extract-map-estimates-and-empirical-uncertainty"></a>
+</h3>
+<p>Before running a second round of fitting, we want to make use of the
+results from the first run. In particular, we extract two important
+summaries from the posterior samples:</p>
+<ol style="list-style-type: decimal">
+<li>The <strong>maximum a posteriori (MAP)</strong> estimate, which
+gives us the best-fit parameter values from the first round.</li>
+<li>The <strong>empirical standard deviations</strong>, which help us
+understand how uncertain each estimate is and inform our next proposal
+distribution.</li>
+</ol>
+<p>By doing this, we can centre our second fit around the most likely
+parameter values and adapt the sampling behaviour to the variability
+seen in the first round. This improves convergence and avoids wasting
+computation in implausible regions of parameter space.</p>
+<p>We extract the MAP and SDs like this:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">samples_mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/drop.html" class="external-link">drop</a></span><span class="op">(</span><span class="va">fit1</span><span class="op">$</span><span class="va">samples</span><span class="op">$</span><span class="va">pars</span><span class="op">[</span>, , <span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">samples_mat</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"reporting_rate"</span>, <span class="st">"R0_modifier"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">map_vals</span> <span class="op">&lt;-</span> <span class="va">samples_mat</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.min.html" class="external-link">which.max</a></span><span class="op">(</span><span class="va">fit1</span><span class="op">$</span><span class="va">samples</span><span class="op">$</span><span class="va">density</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span><span class="op">)</span>, <span class="op">]</span></span>
+<span></span>
+<span><span class="va">param_sds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">samples_mat</span>, <span class="fl">2</span>, <span class="fu">stats</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">param_sds</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">param_sds</span><span class="op">)</span> <span class="op">|</span> <span class="va">param_sds</span> <span class="op">==</span> <span class="fl">0</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0.1</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="what-this-does">What this does:<a class="anchor" aria-label="anchor" href="#what-this-does"></a>
+</h4>
+<ul>
+<li><p><code>fit1$samples$pars</code>: This is the 3D array of parameter
+samples. We take the first chain and transpose it into a 2D matrix where
+each row is an MCMC sample and each column is a parameter.</p></li>
+<li><p><code>map_vals</code>: We find the row with the highest posterior
+density and treat it as the MAP estimate—the most likely parameter
+combination under the model and data.</p></li>
+<li><p><code>param_sds</code>: We calculate the standard deviation
+across all posterior samples for each parameter. This tells us how much
+variability there was in the posterior for each one. If the SD is
+missing or zero (e.g., due to lack of movement), we assign a default of
+<code>0.1</code> to keep things stable downstream.</p></li>
+</ul>
+</div>
+</div>
+<div class="section level3">
+<h3 id="refine-priors-and-domain-based-on-map-estimates">8. Refine priors and domain based on MAP estimates<a class="anchor" aria-label="anchor" href="#refine-priors-and-domain-based-on-map-estimates"></a>
+</h3>
+<p>Now that we’ve identified the MAP values and their uncertainty, we
+can use this information to <strong>refine our priors and
+domain</strong> before running a second round of PMCMC. This makes the
+fitting process more efficient by focusing on the region of parameter
+space that was most promising in the first run.</p>
+<p>We also want to update the <strong>proposal distribution</strong>,
+which determines how new parameter values are proposed during sampling.
+If we make proposals that are too wide, the algorithm wastes time
+exploring implausible regions. If they’re too narrow, it can get stuck
+and fail to explore properly.</p>
+<p>We update everything like this:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">domain2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/generate_domain_from_map.html">generate_domain_from_map</a></span><span class="op">(</span><span class="va">map_vals</span>, margin <span class="op">=</span> <span class="fl">0.25</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sd_from_domain</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">domain2</span>, <span class="fl">1</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/diff.html" class="external-link">diff</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">/</span> <span class="fl">2</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">prior2</span> <span class="op">&lt;-</span> <span class="fu">monty</span><span class="fu">::</span><span class="fu"><a href="https://mrc-ide.github.io/monty/reference/monty_dsl.html" class="external-link">monty_dsl</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="va">reporting_rate</span> <span class="op">~</span> <span class="fu">Normal</span><span class="op">(</span>mean <span class="op">=</span> <span class="op">!</span><span class="op">!</span><span class="va">map_vals</span><span class="op">[</span><span class="st">"reporting_rate"</span><span class="op">]</span>, sd <span class="op">=</span> <span class="op">!</span><span class="op">!</span><span class="va">sd_from_domain</span><span class="op">[</span><span class="st">"reporting_rate"</span><span class="op">]</span><span class="op">)</span></span>
+<span>  <span class="va">R0_modifier</span> <span class="op">~</span> <span class="fu">Normal</span><span class="op">(</span>mean <span class="op">=</span> <span class="op">!</span><span class="op">!</span><span class="va">map_vals</span><span class="op">[</span><span class="st">"R0_modifier"</span><span class="op">]</span>, sd <span class="op">=</span> <span class="op">!</span><span class="op">!</span><span class="va">sd_from_domain</span><span class="op">[</span><span class="st">"R0_modifier"</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">vcv2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">param_sds</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="what-this-does-1">What this does:<a class="anchor" aria-label="anchor" href="#what-this-does-1"></a>
+</h4>
+<ul>
+<li><p><code>generate_domain_from_map(map_vals, margin = 0.25)</code>:
+This constructs a new domain (set of bounds) around each MAP estimate.
+For example, if the MAP for <code>reporting_rate</code> is 0.8, it will
+create a domain from 0.55 to 1.05. This keeps the MCMC focused on the
+region we now believe is most likely.</p></li>
+<li><p><code>sd_from_domain</code>: We calculate a standard deviation
+for each parameter based on the width of this new domain. This gives us
+a sensible spread for the new priors.</p></li>
+<li><p><code>prior2</code>: We use <code>monty_dsl()</code> to define
+updated priors centred at the MAP values, with uncertainty scaled to
+match the new domain. These priors are narrower and more targeted than
+the original ones.</p></li>
+<li><p><code>vcv2</code>: Finally, we build a new variance-covariance
+matrix for the proposal distribution. This controls how new values are
+sampled at each step of the MCMC. Here, we use the empirical standard
+deviations from the first run to set the scale.</p></li>
+</ul>
+<p>Together, these updates should make the second PMCMC fit more precise
+and faster to converge.</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="run-the-second-model-fit-using-refined-priors">9. Run the second model fit using refined priors<a class="anchor" aria-label="anchor" href="#run-the-second-model-fit-using-refined-priors"></a>
+</h3>
+<p>With our updated priors, narrower domain, and improved proposal
+distribution, we can now run a second round of PMCMC. This fit is
+centred around the MAP values we extracted from the first run and should
+be much more efficient.</p>
+<p>The goal here is not to start from scratch but to <strong>focus the
+search</strong> in the region where the first run suggested the best-fit
+parameters are likely to be. This can help the sampler converge faster
+and provide more precise estimates.</p>
+<p>We also supply an <code>initial</code> parameter, which sets the
+starting point of the MCMC chain to the MAP estimate from the first run.
+This avoids wasting steps early on trying to get to the right part of
+parameter space.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">fit2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_transmission_model.html">fit_transmission_model</a></span><span class="op">(</span></span>
+<span>  parameters <span class="op">=</span> <span class="va">params</span>,</span>
+<span>  serodata <span class="op">=</span> <span class="va">serodata</span>,</span>
+<span>  prior <span class="op">=</span> <span class="va">prior2</span>,</span>
+<span>  initial <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="va">map_vals</span><span class="op">)</span>,</span>
+<span>  domain <span class="op">=</span> <span class="va">domain2</span>,</span>
+<span>  vcv <span class="op">=</span> <span class="va">vcv2</span>,</span>
+<span>  n_steps <span class="op">=</span> <span class="fl">500</span>,</span>
+<span>  n_particles <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="whats-different-from-the-first-fit">What’s different from the first fit?<a class="anchor" aria-label="anchor" href="#whats-different-from-the-first-fit"></a>
+</h4>
+<ul>
+<li><p><code>prior = prior2</code>: These are now narrower priors
+centred around the MAP values from the first fit, making the search more
+targeted.</p></li>
+<li><p><code>initial = as.list(map_vals)</code>: This tells the sampler
+to start from our best guess rather than from a random point.</p></li>
+<li><p><code>domain = domain2</code>: The new bounds reflect a smaller
+range around the MAP, helping prevent exploration of implausible
+regions.</p></li>
+<li><p><code>vcv = vcv2</code>: We use the empirical variability
+observed in the first round to guide the scale of proposed parameter
+jumps, which improves mixing and efficiency.</p></li>
+</ul>
+<p>Running this second fit should yield tighter posteriors and allow us
+to assess whether the parameter estimates are stable and
+reproducible.</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="compare-fits-visually-and-inspect-map-estimates">10. Compare fits visually and inspect MAP estimates<a class="anchor" aria-label="anchor" href="#compare-fits-visually-and-inspect-map-estimates"></a>
+</h3>
+<p>Once both PMCMC runs are complete, it’s helpful to <strong>visually
+compare the outputs</strong> to see how the refined priors improved the
+fit. We can also inspect the MAP values from the first run to understand
+where the sampler converged.</p>
+<p>We’ll use trace plots to check convergence and overlay the
+seroprevalence fits using <code><a href="../reference/combine_ggplot.html">combine_ggplot()</a></code>.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">fit1</span><span class="op">$</span><span class="va">plots</span><span class="op">$</span><span class="va">trace</span> <span class="op">+</span> <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"Fit 1: Wide Prior"</span><span class="op">)</span></span>
+<span><span class="va">fit2</span><span class="op">$</span><span class="va">plots</span><span class="op">$</span><span class="va">trace</span> <span class="op">+</span> <span class="fu">ggtitle</span><span class="op">(</span><span class="st">"Fit 2: MAP-Centered Prior"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/combine_ggplot.html">combine_ggplot</a></span><span class="op">(</span><span class="va">fit1</span><span class="op">$</span><span class="va">plots</span><span class="op">$</span><span class="va">sero</span>,</span>
+<span>               <span class="va">fit2</span><span class="op">$</span><span class="va">plots</span><span class="op">$</span><span class="va">sero</span><span class="op">)</span></span></code></pre></div>
+<ul>
+<li><p>The <strong>trace plots</strong> show how each parameter evolved
+across MCMC iterations. These are useful for diagnosing convergence and
+checking whether the chains are mixing well.</p></li>
+<li><p>The <strong>sero plots</strong> compare the model-predicted
+seroprevalence to the observed data. We use the
+<code><a href="../reference/combine_ggplot.html">combine_ggplot()</a></code> function to stack both fits into a single
+plot while preserving axes and styling. This helps highlight
+improvements from the refined fit.</p></li>
+</ul>
+<p>We can see here that our 2nd attempt at fitting produced a much
+better fit than our first!</p>
+<p>We can also print the MAP estimates from the first round:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"MAP Estimates from Fit 1:\n"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">map_vals</span><span class="op">)</span></span></code></pre></div>
+<p>These values give us a summary of the parameter combination that
+produced the best fit to the data under the initial wide prior.</p>
+</div>
+<div class="section level3">
+<h3 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
+</h3>
+<p>This vignette showed how to simulate or use observed serosurvey data,
+generate model parameters, define and refine priors, and fit a
+transmission model using PMCMC in PREVAIL. We demonstrated an iterative
+fitting workflow where results from the first fit are used to inform a
+more efficient second fit.</p>
+</div>
+</div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 

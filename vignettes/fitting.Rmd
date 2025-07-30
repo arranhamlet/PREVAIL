@@ -7,13 +7,303 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE
 )
 ```
 
-```{r setup}
-library(PREVAIL)
+## Introduction
+
+Understanding and predicting infectious disease dynamics is critical for planning public health interventions, evaluating vaccine impact, and preparing for future outbreaks. One powerful way to achieve this is by **fitting mathematical models to data**—such as serological surveys or case reports—to estimate key transmission parameters and simulate likely epidemic trajectories.
+
+The **PREVAIL** package provides a streamlined framework for doing this in R. It combines a flexible, age-structured stochastic SEIR-type transmission model with built-in functions for data processing, parameter generation, and model calibration.
+
+PREVAIL is especially well suited to situations where:
+- You have access to seroprevalence or case data, but key transmission parameters (like `R0` or `reporting_rate`) are uncertain
+- You want to compare how well different model assumptions or parameter values explain observed data
+- You need to iteratively refine your model based on results from previous runs
+
+At the core of the fitting process is a **particle Markov chain Monte Carlo (PMCMC)** algorithm, implemented using the `monty` package and `dust2` model engine. PMCMC allows us to explore the parameter space efficiently, even when the model includes stochastic processes or cannot be solved analytically.
+
+This vignette walks through a full PMCMC workflow using PREVAIL. You’ll learn how to:
+
+- Simulate or load input data (e.g. a serosurvey)
+- Generate model-ready parameters using `custom_data_process_wrapper()`
+- Fit the model to data using `fit_transmission_model()`
+- Extract posterior summaries and refine priors
+- Re-run the fitting process for improved efficiency
+
+Whether you're working with simulated data or real-world observations, this approach provides a robust foundation for fitting and calibrating transmission models in complex, data-limited settings.
+
+# 1. Load Required Packages
+
+First we need to load all of the packages required. Note that there is the inclusion of **dust2** and **monty** which are used to fit the models.
+
+```{r load-packages}
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(
+  PREVAIL,   # The core package with custom data processing and model fitting
+  dust2,     # Fast stochastic model engine backend
+  monty,     # PMCMC engine and prior/domain framework
+  ggplot2,   # Plotting
+  patchwork, # Layout multiple plots together
+  scales,    # Axis scaling/formatting
+  dplyr,     # Data manipulation
+  tidyr      # Tidy data reshaping
+)
 ```
+
+## 2. Define the serosurvey data
+
+Before we fit the model, we need some data to fit it to. In this example, we’ll create a **simulated serosurvey**, which assumes 20% seroprevalence across all 17 age groups at a single timepoint: 4 years after the start of the simulation (i.e., day 1460).
+
+We construct this as a simple `data.frame` with one row, where:
+- `time` gives the time in days
+- `serosurvey` is a list-column containing a numeric vector of age-specific seroprevalence values
+
+```{r define-serodata}
+serodata <- data.frame(
+  time = 365 * 4,
+  serosurvey = I(list(rep(0.2, 17)))
+)
+```
+
+Note the use of `I(list(...))`. This ensures that each row of the `serosurvey` column is treated as a **single list element**—in this case, a vector of 17 values (one per age group). This is required by the model fitting function, which expects the seroprevalence to be supplied as a list of numeric vectors, not as individual columns.
+
+If you have real serosurvey data, you can format it the same way: one row per survey, with a time and a corresponding vector of age-specific seroprevalence values.
+
+# 3. Generate Model Parameters
+We now generate the full list of parameters required to run the transmission model. This includes demographic structure, vaccination inputs, and disease-specific parameters.
+
+This is done using the custom_data_process_wrapper() function, which handles all the necessary setup in one call. You need to specify the country (iso) and disease, and you can optionally override certain values such as the basic reproduction number (R0).
+
+Here we’ll use Kenya ("KEN") as the example country and measles as the disease, with R0 set to 15:
+
+```{r generate-parameters}
+params <- PREVAIL::custom_data_process_wrapper(
+  iso = "KEN",
+  disease = "measles",
+  R0 = 15
+)
+```
+
+**Function**: `custom_data_process_wrapper()`
+
+**What it does**: Loads and processes all required data inputs (demography, vaccination, disease parameters) into a named list of model-ready parameters. For further explanation, please see the [demography](), [disease](), and [vaccination]() vignettes.
+
+# 4. Define Parameters to Fit and Priors
+
+We now define the model parameters we want to estimate and specify their prior distributions and bounds.
+
+In this example, we'll estimate two parameters:
+
+* `reporting_rate`, adjusts the proportion of infections that are reported as observed cases.
+
+* `R0_modifier`, scales the basic reproduction number during the model run (e.g., to account for intervention effects).
+
+We first create a character vector listing the parameter names. Then we define the domain, which is a matrix specifying the lower and upper bounds for each parameter. The number of rows in the domain matrix must match the number of parameters, and the values should be given as pairs: one row per parameter, with the **lower bound first and the upper bound second**.
+
+We then use `monty_dsl()` from the **monty** package to define a prior distribution for each parameter. These are independent normal distributions with mean 1 and standard deviation 1, meaning we expect the true value to be around 1, but allow some flexibility.
+
+```{r define-priors}
+parameters_to_fit <- c("reporting_rate", "R0_modifier")
+domain <- matrix(c(0, 2, 0, 2), nrow = 2, byrow = TRUE)
+
+prior1 <- monty::monty_dsl({
+  reporting_rate ~ Normal(mean = 1, sd = 1)
+  R0_modifier ~ Normal(mean = 1, sd = 1)
+})
+```
+
+These settings define a relatively wide prior and search space, allowing the fitting algorithm to explore values between 0 and 2 for each parameter. We'll later refine these based on the first round of results.
+
+# 5. Initial Model Fit
+
+Now that we’ve defined the parameters to fit, their priors, and the bounds in which they can vary, we’re ready to run our first model fitting routine.
+
+We use the function `fit_transmission_model()` to do this. It performs [**particle MCMC (PMCMC)**](https://www.sciencedirect.com/science/article/pii/S1755436519300301) to estimate the parameter values that best explain the serosurvey data. Under the hood, it uses the **dust2** model engine to simulate trajectories, and the **monty** package to handle priors, domains, and sampling.
+
+```{r fit1}
+fit1 <- fit_transmission_model(
+  parameters = params,
+  serodata = serodata,
+  prior = prior1,
+  fitted_parameters = parameters_to_fit,
+  domain = domain,
+  vcv = diag(c(0.25, 0.25)),
+  n_steps = 500,
+  n_particles = 1
+)
+```
+
+### Explanation of each argument
+
+- `parameters`: This is the full list of model inputs generated earlier by `custom_data_process_wrapper()`. It contains everything the model needs to run—population structure, vaccination rates, R0, waning, and more.
+
+- `serodata`: The serosurvey dataset we created earlier. This should be a `data.frame` with a `time` column and a `serosurvey` column. The serosurvey column must be a list-column containing numeric vectors of age-specific seroprevalence values.
+
+- `prior`: The prior distributions for each parameter being fitted. These are defined using `monty_dsl()` and inform the sampler about our beliefs before seeing the data.
+
+- `fitted_parameters`: A character vector listing the names of the parameters to be estimated—in this case `reporting_rate` and `R0_modifier`.
+
+- `domain`: A matrix specifying the allowed bounds for each parameter. Each row corresponds to a parameter, and contains two values: the lower and upper bounds. This constrains the sampling space.
+
+- `vcv`: The proposal variance-covariance matrix. This controls how the sampler proposes new values at each MCMC step. For now we’re using a diagonal matrix with moderate variance (0.25), which implies that parameters are proposed independently and with moderate step size. We’ll update this later based on empirical variation from the first fit.
+
+- `n_steps`: The number of MCMC iterations to run. For demonstration purposes, we set this to `500`—which is relatively low. For real applications, you'll typically want thousands of steps to ensure convergence.
+
+- `n_particles`: The number of particles used in the particle filter at each step. More particles improve the accuracy of the likelihood estimate, but increase computation time. We use just `1` here for speed in the vignette, but higher values (e.g., 50 or 100) are recommended for proper fitting.
+
+After running this step, the object `fit1` will contain all the samples, diagnostics, and plots from the fitting process.
+
+## 6. Plot results from the first fit
+
+Once the initial PMCMC run has completed, we can inspect the results visually using the built-in plots returned by `fit_transmission_model()`.
+
+The output `fit1` contains a list of `ggplot2` objects under `fit1$plots`, including both the model time series and the age-specific fit to the serosurvey.
+
+```{r fit1-plots}
+print(fit1$plots$combined)
+print(fit1$plots$sero)
+```
+
+- `fit1$plots$combined`: This plot shows the full model output over time, including compartments such as **Susceptible (S)**, **Exposed (E)**, **Infectious (I)**, and **Recovered (R)**. It provides an overview of epidemic dynamics across the simulation window.
+
+- `fit1$plots$sero`: This plot compares the model-predicted seroprevalence by age to the observed serosurvey data. Each point represents an observed value; lines show the model's predicted mean and uncertainty across particles.
+
+Together, these plots help assess whether the current parameter set provides a reasonable match to the data. 
+
+Our fit does not appear to be very good, so to improve this we will want to revise our priors, domain, and model assumptions before proceeding.
+
+## 7. Extract MAP estimates and empirical uncertainty
+
+Before running a second round of fitting, we want to make use of the results from the first run. In particular, we extract two important summaries from the posterior samples:
+
+1. The **maximum a posteriori (MAP)** estimate, which gives us the best-fit parameter values from the first round.
+2. The **empirical standard deviations**, which help us understand how uncertain each estimate is and inform our next proposal distribution.
+
+By doing this, we can centre our second fit around the most likely parameter values and adapt the sampling behaviour to the variability seen in the first round. This improves convergence and avoids wasting computation in implausible regions of parameter space.
+
+We extract the MAP and SDs like this:
+
+```{r map-values}
+samples_mat <- t(drop(fit1$samples$pars[, , 1]))
+colnames(samples_mat) <- c("reporting_rate", "R0_modifier")
+
+map_vals <- samples_mat[which.max(fit1$samples$density[, 1]), ]
+
+param_sds <- apply(samples_mat, 2, stats::sd, na.rm = TRUE)
+param_sds[is.na(param_sds) | param_sds == 0] <- 0.1
+```
+
+### What this does:
+
+- `fit1$samples$pars`: This is the 3D array of parameter samples. We take the first chain and transpose it into a 2D matrix where each row is an MCMC sample and each column is a parameter.
+
+- `map_vals`: We find the row with the highest posterior density and treat it as the MAP estimate—the most likely parameter combination under the model and data.
+
+- `param_sds`: We calculate the standard deviation across all posterior samples for each parameter. This tells us how much variability there was in the posterior for each one. If the SD is missing or zero (e.g., due to lack of movement), we assign a default of `0.1` to keep things stable downstream.
+
+## 8. Refine priors and domain based on MAP estimates
+
+Now that we’ve identified the MAP values and their uncertainty, we can use this information to **refine our priors and domain** before running a second round of PMCMC. This makes the fitting process more efficient by focusing on the region of parameter space that was most promising in the first run.
+
+We also want to update the **proposal distribution**, which determines how new parameter values are proposed during sampling. If we make proposals that are too wide, the algorithm wastes time exploring implausible regions. If they’re too narrow, it can get stuck and fail to explore properly.
+
+We update everything like this:
+
+```{r refined-prior}
+domain2 <- generate_domain_from_map(map_vals, margin = 0.25)
+
+sd_from_domain <- apply(domain2, 1, function(x) diff(x) / 2)
+
+prior2 <- monty::monty_dsl({
+  reporting_rate ~ Normal(mean = !!map_vals["reporting_rate"], sd = !!sd_from_domain["reporting_rate"])
+  R0_modifier ~ Normal(mean = !!map_vals["R0_modifier"], sd = !!sd_from_domain["R0_modifier"])
+})
+
+vcv2 <- diag(param_sds^2)
+```
+
+### What this does:
+
+- `generate_domain_from_map(map_vals, margin = 0.25)`: This constructs a new domain (set of bounds) around each MAP estimate. For example, if the MAP for `reporting_rate` is 0.8, it will create a domain from 0.55 to 1.05. This keeps the MCMC focused on the region we now believe is most likely.
+
+- `sd_from_domain`: We calculate a standard deviation for each parameter based on the width of this new domain. This gives us a sensible spread for the new priors.
+
+- `prior2`: We use `monty_dsl()` to define updated priors centred at the MAP values, with uncertainty scaled to match the new domain. These priors are narrower and more targeted than the original ones.
+
+- `vcv2`: Finally, we build a new variance-covariance matrix for the proposal distribution. This controls how new values are sampled at each step of the MCMC. Here, we use the empirical standard deviations from the first run to set the scale.
+
+Together, these updates should make the second PMCMC fit more precise and faster to converge.
+
+## 9. Run the second model fit using refined priors
+
+With our updated priors, narrower domain, and improved proposal distribution, we can now run a second round of PMCMC. This fit is centred around the MAP values we extracted from the first run and should be much more efficient.
+
+The goal here is not to start from scratch but to **focus the search** in the region where the first run suggested the best-fit parameters are likely to be. This can help the sampler converge faster and provide more precise estimates.
+
+We also supply an `initial` parameter, which sets the starting point of the MCMC chain to the MAP estimate from the first run. This avoids wasting steps early on trying to get to the right part of parameter space.
+
+```{r fit2}
+fit2 <- fit_transmission_model(
+  parameters = params,
+  serodata = serodata,
+  prior = prior2,
+  initial = as.list(map_vals),
+  domain = domain2,
+  vcv = vcv2,
+  n_steps = 500,
+  n_particles = 1
+)
+```
+
+### What’s different from the first fit?
+
+- `prior = prior2`: These are now narrower priors centred around the MAP values from the first fit, making the search more targeted.
+
+- `initial = as.list(map_vals)`: This tells the sampler to start from our best guess rather than from a random point.
+
+- `domain = domain2`: The new bounds reflect a smaller range around the MAP, helping prevent exploration of implausible regions.
+
+- `vcv = vcv2`: We use the empirical variability observed in the first round to guide the scale of proposed parameter jumps, which improves mixing and efficiency.
+
+Running this second fit should yield tighter posteriors and allow us to assess whether the parameter estimates are stable and reproducible.
+
+
+## 10. Compare fits visually and inspect MAP estimates
+
+Once both PMCMC runs are complete, it’s helpful to **visually compare the outputs** to see how the refined priors improved the fit. We can also inspect the MAP values from the first run to understand where the sampler converged.
+
+We’ll use trace plots to check convergence and overlay the seroprevalence fits using `combine_ggplot()`.
+
+```{r compare-fits}
+fit1$plots$trace + ggtitle("Fit 1: Wide Prior")
+fit2$plots$trace + ggtitle("Fit 2: MAP-Centered Prior")
+
+combine_ggplot(fit1$plots$sero,
+               fit2$plots$sero)
+```
+
+- The **trace plots** show how each parameter evolved across MCMC iterations. These are useful for diagnosing convergence and checking whether the chains are mixing well.
+
+- The **sero plots** compare the model-predicted seroprevalence to the observed data. We use the `combine_ggplot()` function to stack both fits into a single plot while preserving axes and styling. This helps highlight improvements from the refined fit.
+
+We can see here that our 2nd attempt at fitting produced a much better fit than our first!
+
+We can also print the MAP estimates from the first round:
+
+```{r print-map}
+cat("MAP Estimates from Fit 1:\n")
+print(map_vals)
+```
+
+These values give us a summary of the parameter combination that produced the best fit to the data under the initial wide prior.
+
+## Summary
+
+This vignette showed how to simulate or use observed serosurvey data, generate model parameters, define and refine priors, and fit a transmission model using PMCMC in PREVAIL. We demonstrated an iterative fitting workflow where results from the first fit are used to inform a more efficient second fit.

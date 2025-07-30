@@ -1,5 +1,5 @@
 ---
-title: "Demography"
+title: "Customising demography"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Demography}

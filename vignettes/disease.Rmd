@@ -1,5 +1,5 @@
 ---
-title: "disease"
+title: "Customising disease parameters"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{disease}

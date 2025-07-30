@@ -1,5 +1,5 @@
 ---
-title: "How to fit parameters in PREVAIL"
+title: "How to fit parameters"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{How to fit parameters in PREVAIL}

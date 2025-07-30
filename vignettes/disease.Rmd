@@ -20,26 +20,55 @@ library(dplyr)
 options(scipen = 999)
 ```
 
-# 1. Prepare your custom data
+## Introduction
 
-Firstly we need to load our required packages, we're using the **pacman** package here, which will also install these packages if missing.
+Infectious disease models depend heavily on **accurate parameterization** to reflect real-world dynamics. Parameters such as the incubation period, infectious duration, case fatality rates, and levels of maternal protection all influence how a disease spreads and what burden it imposes. These values vary between diseases—and sometimes even between settings—so the ability to **customize disease-specific parameters** is critical for model realism.
+
+The **PREVAIL** package allows users to flexibly define disease-specific characteristics using simple, human-readable data frames. This vignette shows you how to do that, whether you're:
+
+- Replicating known case trends with historical WHO data  
+- Adjusting natural history parameters (e.g. incubation or recovery rates)  
+- Overriding default assumptions with new literature or expert input  
+- Exploring hypothetical changes in severity or immunity for scenario analysis
+
+By providing structured input objects (`custom_disease_parameters` and `custom_disease_data`), you can tailor the model to better match your disease of interest—while retaining the ability to fall back on PREVAIL’s validated defaults when needed.
+
+You’ll learn how to:
+
+- Define and structure disease-specific parameters  
+- Supply custom case time series for dynamic or seeded simulations  
+- Generate model-ready input using `custom_data_process_wrapper()`  
+- Run and visualize simulations with your customized setup
+
+This approach ensures transparency and reproducibility while giving you full control over how disease dynamics are represented in the model.
+
+## 1. Prepare Your Custom Data
+
+Before customizing the disease-specific behaviour of the transmission model, we need to load the required packages and understand the types of inputs we’ll be working with.
+
+In this vignette, we focus on **disease parameters**—the core inputs that define how a pathogen behaves in the model. These include values like the incubation period, infectious duration, and case fatality rates, as well as assumptions about immunity and maternal protection. PREVAIL provides sensible defaults for several diseases, but users can override these with custom values as needed.
+
+We also show how to provide a **custom case time series**, which can be used to seed the model based on known outbreaks or to constrain transmission to match historical data.
+
+To get started, we load the required packages using the `pacman` package. This will install any missing packages and then load them into the session:
 
 ```{r, eval = FALSE}
-#If pacman is not already present, install
-if(!require("pacman")) install.packages("pacman")
+# Install pacman if not already available
+if (!require("pacman")) install.packages("pacman")
 
-#Install missing packages, and load 
+# Load required packages (installing if needed)
 pacman::p_load(
-  PREVAIL,
-  tidyverse
+  PREVAIL,     # The core transmission model and input processing framework
+  tidyverse    # Tidy tools for data wrangling and plotting
 )
+
 ```
 
-Once this is done, we can start thinking about the data we would like to customise. Here we are going to be focusing on disease associated parameters. These are:
+Once the packages are loaded, we can begin preparing our two key inputs:
 
-**custom_disease_data** - Cases reported over time.
+**custom_disease_data** - A simple dataset specifying the number of reported cases in each year. This can be used to seed the model or replicate past trends.
 
-**custom_disease_parameters** - Parameters to modify disease transmission, see the table below for more detail.
+**custom_disease_parameters** - A table of disease-specific parameters that modify natural history, severity, and immunity assumptions. You can choose to supply only a subset of parameters and rely on defaults for the rest. See the table below for more detail.
 
 | Parameter                              | Model variable                  | Description                                            | What modifying it might do                           |
 |-----------------------------------------|---------------------------------|--------------------------------------------------------|------------------------------------------------------|
@@ -99,23 +128,37 @@ All other parameters not explicitly included will be drawn from the default valu
 
 The basic reproductive number, R0, is input as an argument in both `load_data_process_wrapper()` and `custom_data_process_wrapper()`, where it is specified as `R0 = `.
 
-# 2. Processing our custom disease parameters
 
-Now that we have created our custom disease parameters, we need to process them using `custom_data_process_wrapper()`.
+## 2. Process Custom Disease Parameters
 
-```{r, eval = F}
+Now that we’ve defined our disease-specific inputs—including a time series of reported cases and a custom set of parameter values—we need to convert them into a model-ready format. This is done using the `custom_data_process_wrapper()` function.
+
+This function is the main entry point for preparing all input data required by the PREVAIL model. It combines:
+
+- **Demographic data** for the specified country (identified by a 3-letter ISO code)
+- **Vaccination coverage and schedules** using WHO datasets
+- **Disease-specific parameters**, including any user-defined custom overrides
+- **Case time series**, which can be used to seed or constrain the model
+
+If any of these components are not provided, PREVAIL will automatically fall back on built-in default values. This makes it easy to customize just one part of the input while keeping the rest unchanged.
+
+We run the wrapper like this:
+
+```{r, eval = FALSE}
 custom_params <- custom_data_process_wrapper(
-    iso = "PSE",
-    disease = "measles",
-    R0 = 15,
-    custom_disease_data = custom_cases,
-    custom_disease_parameters = custom_parameters
+  iso = "PSE",                        # ISO3 code for the country of interest
+  disease = "measles",               # Disease to simulate
+  R0 = 15,                           # Basic reproduction number
+  custom_disease_data = custom_cases,              # Custom case time series
+  custom_disease_parameters = custom_parameters    # Custom parameter values
 )
 ```
 
-This can then be input into `run_model_unpack_results()` to run the model.
+This returns a named list of parameters that are ready to be used by the simulation engine. These include time-varying arrays for population size, contact rates, seeding events, and all disease-specific dynamics.
 
-```{r, eval = F}
+We can now simulate the model using `run_model_unpack_results()`:
+
+```{r, eval = FALSE}
 model_run_custom <- run_model_unpack_results(
   params = custom_params,
   simulation_length = (custom_params$input_data$year_end - custom_params$input_data$year_start) * 365,
@@ -123,8 +166,13 @@ model_run_custom <- run_model_unpack_results(
 )
 ```
 
-and then to visualise we can use `summary_plots()`.
+- `simulation_length` defines how long the model should run (in days). Here we calculate it based on the duration of the input time series.
+- `no_runs` specifies the number of stochastic simulations to perform. A value of `1` is sufficient for demonstration purposes.
 
-```{r, eval = F}
+Finally, we can generate output plots using the `summary_plots()` function:
+
+```{r, eval = FALSE}
 plots <- summary_plots(model_run_custom, custom_params)
 ```
+
+This will return a list of `ggplot2` objects that summarise the key outputs from the simulation, including time series of infections and cases, compartment sizes, and breakdowns by age where relevant.

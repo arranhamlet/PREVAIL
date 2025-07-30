@@ -3,20 +3,20 @@
 // [[dust2::class(transmission_model)]]
 // [[dust2::time_type(discrete)]]
 // [[dust2::has_compare()]]
-// [[dust2::parameter(n_age, type = "int", rank = 0, required = FALSE, constant = TRUE)]]
-// [[dust2::parameter(n_vacc, type = "int", rank = 0, required = FALSE, constant = TRUE)]]
-// [[dust2::parameter(n_risk, type = "int", rank = 0, required = FALSE, constant = TRUE)]]
+// [[dust2::parameter(n_age, type = "int", rank = 0, required = TRUE, constant = TRUE)]]
+// [[dust2::parameter(n_vacc, type = "int", rank = 0, required = TRUE, constant = TRUE)]]
+// [[dust2::parameter(n_risk, type = "int", rank = 0, required = TRUE, constant = TRUE)]]
 // [[dust2::parameter(S0, type = "real_type", rank = 3, required = TRUE, constant = FALSE)]]
 // [[dust2::parameter(I0, type = "real_type", rank = 3, required = TRUE, constant = FALSE)]]
 // [[dust2::parameter(Rpop0, type = "real_type", rank = 3, required = TRUE, constant = FALSE)]]
 // [[dust2::parameter(incubation_rate, type = "real_type", rank = 0, required = TRUE, constant = FALSE)]]
 // [[dust2::parameter(recovery_rate, type = "real_type", rank = 0, required = TRUE, constant = FALSE)]]
-// [[dust2::parameter(cfr_normal, type = "real_type", rank = 1, required = TRUE, constant = FALSE)]]
 // [[dust2::parameter(natural_immunity_waning, type = "real_type", rank = 0, required = TRUE, constant = FALSE)]]
 // [[dust2::parameter(prop_severe, type = "real_type", rank = 3, required = TRUE, constant = FALSE)]]
 // [[dust2::parameter(severe_recovery_rate, type = "real_type", rank = 0, required = TRUE, constant = FALSE)]]
-// [[dust2::parameter(cfr_severe, type = "real_type", rank = 1, required = TRUE, constant = FALSE)]]
-// [[dust2::parameter(prop_complications, type = "real_type", rank = 1, required = TRUE, constant = FALSE)]]
+// [[dust2::parameter(cfr_normal, type = "real_type", rank = 3, required = TRUE, constant = FALSE)]]
+// [[dust2::parameter(cfr_severe, type = "real_type", rank = 3, required = TRUE, constant = FALSE)]]
+// [[dust2::parameter(prop_complications, type = "real_type", rank = 3, required = TRUE, constant = FALSE)]]
 // [[dust2::parameter(R0, type = "real_type", rank = 1, required = TRUE, constant = FALSE)]]
 // [[dust2::parameter(tt_R0, type = "real_type", rank = 1, required = TRUE, constant = FALSE)]]
 // [[dust2::parameter(no_R0_changes, type = "int", rank = 0, required = TRUE, constant = TRUE)]]
@@ -24,23 +24,25 @@
 // [[dust2::parameter(seeded, type = "real_type", rank = 4, required = TRUE, constant = FALSE)]]
 // [[dust2::parameter(tt_seeded, type = "real_type", rank = 1, required = TRUE, constant = FALSE)]]
 // [[dust2::parameter(no_seeded_changes, type = "int", rank = 0, required = TRUE, constant = TRUE)]]
+// [[dust2::parameter(tt_vaccination_coverage, type = "real_type", rank = 1, required = TRUE, constant = FALSE)]]
+// [[dust2::parameter(no_vacc_changes, type = "int", rank = 0, required = TRUE, constant = TRUE)]]
+// [[dust2::parameter(vaccination_coverage, type = "real_type", rank = 4, required = TRUE, constant = FALSE)]]
+// [[dust2::parameter(age_vaccination_beta_modifier, type = "real_type", rank = 3, required = TRUE, constant = FALSE)]]
+// [[dust2::parameter(stochastic_vaccination, type = "real_type", rank = 0, required = FALSE, constant = FALSE)]]
 // [[dust2::parameter(crude_death, type = "real_type", rank = 3, required = TRUE, constant = FALSE)]]
 // [[dust2::parameter(no_death_changes, type = "int", rank = 0, required = TRUE, constant = TRUE)]]
 // [[dust2::parameter(tt_death_changes, type = "real_type", rank = 1, required = TRUE, constant = FALSE)]]
-// [[dust2::parameter(simp_birth_death, type = "real_type", rank = 0, required = FALSE, constant = FALSE)]]
 // [[dust2::parameter(crude_birth, type = "real_type", rank = 2, required = TRUE, constant = FALSE)]]
 // [[dust2::parameter(no_birth_changes, type = "int", rank = 0, required = TRUE, constant = TRUE)]]
 // [[dust2::parameter(tt_birth_changes, type = "real_type", rank = 1, required = TRUE, constant = FALSE)]]
 // [[dust2::parameter(repro_low, type = "real_type", rank = 0, required = TRUE, constant = FALSE)]]
 // [[dust2::parameter(repro_high, type = "real_type", rank = 0, required = TRUE, constant = FALSE)]]
+// [[dust2::parameter(simp_birth_death, type = "real_type", rank = 0, required = FALSE, constant = FALSE)]]
+// [[dust2::parameter(stochastic_birth, type = "real_type", rank = 0, required = FALSE, constant = FALSE)]]
+// [[dust2::parameter(aging_rate, type = "real_type", rank = 1, required = TRUE, constant = FALSE)]]
 // [[dust2::parameter(age_maternal_protection_ends, type = "real_type", rank = 0, required = TRUE, constant = FALSE)]]
 // [[dust2::parameter(protection_weight_vacc, type = "real_type", rank = 0, required = TRUE, constant = FALSE)]]
 // [[dust2::parameter(protection_weight_rec, type = "real_type", rank = 0, required = TRUE, constant = FALSE)]]
-// [[dust2::parameter(aging_rate, type = "real_type", rank = 1, required = TRUE, constant = FALSE)]]
-// [[dust2::parameter(tt_vaccination_coverage, type = "real_type", rank = 1, required = TRUE, constant = FALSE)]]
-// [[dust2::parameter(no_vacc_changes, type = "int", rank = 0, required = TRUE, constant = TRUE)]]
-// [[dust2::parameter(vaccination_coverage, type = "real_type", rank = 4, required = TRUE, constant = FALSE)]]
-// [[dust2::parameter(age_vaccination_beta_modifier, type = "real_type", rank = 3, required = TRUE, constant = FALSE)]]
 // [[dust2::parameter(no_migration_changes, type = "int", rank = 0, required = TRUE, constant = TRUE)]]
 // [[dust2::parameter(tt_migration, type = "real_type", rank = 1, required = TRUE, constant = FALSE)]]
 // [[dust2::parameter(migration_in_number, type = "real_type", rank = 4, required = TRUE, constant = FALSE)]]
@@ -48,8 +50,6 @@
 // [[dust2::parameter(reporting_rate, type = "real_type", rank = 0, required = FALSE, constant = FALSE)]]
 // [[dust2::parameter(R0_modifier, type = "real_type", rank = 0, required = FALSE, constant = FALSE)]]
 // [[dust2::parameter(repro_weight, type = "real_type", rank = 2, required = TRUE, constant = FALSE)]]
-// [[dust2::parameter(stochastic_birth, type = "real_type", rank = 0, required = FALSE, constant = FALSE)]]
-// [[dust2::parameter(stochastic_vaccination, type = "real_type", rank = 0, required = FALSE, constant = FALSE)]]
 // [[dust2::parameter(short_term_waning, type = "real_type", rank = 1, required = TRUE, constant = FALSE)]]
 // [[dust2::parameter(long_term_waning, type = "real_type", rank = 1, required = TRUE, constant = FALSE)]]
 class transmission_model {
@@ -67,67 +67,22 @@ public:
       } offset;
     } odin;
     struct dim_type {
-      dust2::array::dimensions<1> seropositive;
-      dust2::array::dimensions<1> serosurvey;
-      dust2::array::dimensions<3> S_available;
-      dust2::array::dimensions<3> E_available;
-      dust2::array::dimensions<3> I_available;
-      dust2::array::dimensions<3> R_available;
-      dust2::array::dimensions<3> Rc_available;
-      dust2::array::dimensions<3> Is_available;
-      dust2::array::dimensions<3> new_case;
-      dust2::array::dimensions<3> waning_to_S_short;
-      dust2::array::dimensions<3> migration_occuring_S;
-      dust2::array::dimensions<3> migration_occuring_E;
-      dust2::array::dimensions<3> migration_occuring_I;
-      dust2::array::dimensions<3> migration_occuring_R;
-      dust2::array::dimensions<3> migration_occuring_Is;
-      dust2::array::dimensions<3> migration_occuring_Rc;
-      dust2::array::dimensions<3> inf_weighted;
-      dust2::array::dimensions<1> infectious_source;
-      dust2::array::dimensions<2> lambda_contact;
-      dust2::array::dimensions<1> lambda_raw;
-      dust2::array::dimensions<4> ngm_unfolded;
-      dust2::array::dimensions<1> ngm;
-      dust2::array::dimensions<3> seeded_actual;
-      dust2::array::dimensions<1> Npop_age;
-      dust2::array::dimensions<2> repro_weight;
-      dust2::array::dimensions<1> repro_weight_now;
+      dust2::array::dimensions<3> S0;
+      dust2::array::dimensions<3> I0;
+      dust2::array::dimensions<3> Rpop0;
       dust2::array::dimensions<3> S;
       dust2::array::dimensions<3> E;
       dust2::array::dimensions<3> I;
       dust2::array::dimensions<3> R;
       dust2::array::dimensions<3> Is;
       dust2::array::dimensions<3> Rc;
-      dust2::array::dimensions<3> S0;
-      dust2::array::dimensions<3> I0;
-      dust2::array::dimensions<3> Rpop0;
-      dust2::array::dimensions<1> prop_complications;
-      dust2::array::dimensions<3> beta_updated;
-      dust2::array::dimensions<3> age_vaccination_beta_modifier;
-      dust2::array::dimensions<3> prop_severe;
-      dust2::array::dimensions<1> cfr_normal;
-      dust2::array::dimensions<1> cfr_severe;
-      dust2::array::dimensions<3> beta;
-      dust2::array::dimensions<3> infectious_period;
-      dust2::array::dimensions<3> lambda;
-      dust2::array::dimensions<1> tt_R0;
-      dust2::array::dimensions<1> R0;
-      dust2::array::dimensions<2> contact_matrix;
-      dust2::array::dimensions<3> lambda_S;
-      dust2::array::dimensions<3> waning_R;
-      dust2::array::dimensions<3> waning_Rc;
-      dust2::array::dimensions<3> incubated;
-      dust2::array::dimensions<1> tt_seeded;
-      dust2::array::dimensions<4> seeded;
-      dust2::array::dimensions<3> t_seeded;
-      dust2::array::dimensions<3> into_I;
-      dust2::array::dimensions<3> into_Is;
-      dust2::array::dimensions<3> recovered_I_to_R;
-      dust2::array::dimensions<3> recovered_from_Is;
-      dust2::array::dimensions<3> recovered_Is_to_R;
-      dust2::array::dimensions<3> recovered_Is_to_Rc;
       dust2::array::dimensions<1> aging_rate;
+      dust2::array::dimensions<3> S_after_aging;
+      dust2::array::dimensions<3> E_after_aging;
+      dust2::array::dimensions<3> I_after_aging;
+      dust2::array::dimensions<3> R_after_aging;
+      dust2::array::dimensions<3> Is_after_aging;
+      dust2::array::dimensions<3> Rc_after_aging;
       dust2::array::dimensions<3> aging_into_S;
       dust2::array::dimensions<3> aging_out_of_S;
       dust2::array::dimensions<3> aging_into_E;
@@ -140,14 +95,36 @@ public:
       dust2::array::dimensions<3> aging_out_of_Is;
       dust2::array::dimensions<3> aging_into_Rc;
       dust2::array::dimensions<3> aging_out_of_Rc;
-      dust2::array::dimensions<2> Npop_age_risk;
-      dust2::array::dimensions<1> prop_maternal_vaccinated;
-      dust2::array::dimensions<1> prop_maternal_natural;
-      dust2::array::dimensions<1> vaccinated_mums;
-      dust2::array::dimensions<1> antibody_mums;
+      dust2::array::dimensions<3> S_after_vaccination;
+      dust2::array::dimensions<3> E_after_vaccination;
+      dust2::array::dimensions<3> I_after_vaccination;
+      dust2::array::dimensions<3> R_after_vaccination;
+      dust2::array::dimensions<3> Is_after_vaccination;
+      dust2::array::dimensions<3> Rc_after_vaccination;
+      dust2::array::dimensions<3> S_after_waning;
+      dust2::array::dimensions<3> E_after_waning;
+      dust2::array::dimensions<3> I_after_waning;
+      dust2::array::dimensions<3> R_after_waning;
+      dust2::array::dimensions<3> Is_after_waning;
+      dust2::array::dimensions<3> Rc_after_waning;
       dust2::array::dimensions<1> tt_vaccination_coverage;
       dust2::array::dimensions<4> vaccination_coverage;
       dust2::array::dimensions<3> vaccination_prop;
+      dust2::array::dimensions<3> vaccinating_into_S;
+      dust2::array::dimensions<3> vaccinating_out_of_S;
+      dust2::array::dimensions<3> vaccinating_into_E;
+      dust2::array::dimensions<3> vaccinating_out_of_E;
+      dust2::array::dimensions<3> vaccinating_into_I;
+      dust2::array::dimensions<3> vaccinating_out_of_I;
+      dust2::array::dimensions<3> vaccinating_into_R;
+      dust2::array::dimensions<3> vaccinating_out_of_R;
+      dust2::array::dimensions<3> vaccinating_into_Is;
+      dust2::array::dimensions<3> vaccinating_out_of_Is;
+      dust2::array::dimensions<3> vaccinating_into_Rc;
+      dust2::array::dimensions<3> vaccinating_out_of_Rc;
+      dust2::array::dimensions<3> waning_to_S_short;
+      dust2::array::dimensions<3> waning_R;
+      dust2::array::dimensions<3> waning_Rc;
       dust2::array::dimensions<3> waning_from_S_short;
       dust2::array::dimensions<3> waning_to_S_long;
       dust2::array::dimensions<3> waning_from_S_long;
@@ -174,27 +151,33 @@ public:
       dust2::array::dimensions<3> waning_to_Rc_unvaccinated;
       dust2::array::dimensions<1> short_term_waning;
       dust2::array::dimensions<1> long_term_waning;
-      dust2::array::dimensions<3> vaccinating_into_S;
-      dust2::array::dimensions<3> vaccinating_out_of_S;
-      dust2::array::dimensions<3> vaccinating_into_E;
-      dust2::array::dimensions<3> vaccinating_out_of_E;
-      dust2::array::dimensions<3> vaccinating_into_I;
-      dust2::array::dimensions<3> vaccinating_out_of_I;
-      dust2::array::dimensions<3> vaccinating_into_R;
-      dust2::array::dimensions<3> vaccinating_out_of_R;
-      dust2::array::dimensions<3> vaccinating_into_Is;
-      dust2::array::dimensions<3> vaccinating_out_of_Is;
-      dust2::array::dimensions<3> vaccinating_into_Rc;
-      dust2::array::dimensions<3> vaccinating_out_of_Rc;
+      dust2::array::dimensions<1> tt_migration;
+      dust2::array::dimensions<1> migration_distribution;
+      dust2::array::dimensions<2> migration_distribution_values;
+      dust2::array::dimensions<4> migration_in_number;
+      dust2::array::dimensions<3> migration_adjusted;
+      dust2::array::dimensions<3> migration;
+      dust2::array::dimensions<3> migration_S;
+      dust2::array::dimensions<3> migration_E;
+      dust2::array::dimensions<3> migration_I;
+      dust2::array::dimensions<3> migration_R;
+      dust2::array::dimensions<3> migration_Is;
+      dust2::array::dimensions<3> migration_Rc;
+      dust2::array::dimensions<3> migration_occuring_S;
+      dust2::array::dimensions<3> migration_occuring_E;
+      dust2::array::dimensions<3> migration_occuring_I;
+      dust2::array::dimensions<3> migration_occuring_R;
+      dust2::array::dimensions<3> migration_occuring_Is;
+      dust2::array::dimensions<3> migration_occuring_Rc;
       dust2::array::dimensions<1> Births;
       dust2::array::dimensions<1> reproductive_population;
       dust2::array::dimensions<1> birth_rate;
+      dust2::array::dimensions<2> crude_birth;
+      dust2::array::dimensions<3> crude_death;
       dust2::array::dimensions<1> tt_birth_changes;
       dust2::array::dimensions<1> tt_death_changes;
       dust2::array::dimensions<2> background_death;
       dust2::array::dimensions<2> Npop_background_death;
-      dust2::array::dimensions<2> crude_birth;
-      dust2::array::dimensions<3> crude_death;
       dust2::array::dimensions<1> birth_int;
       dust2::array::dimensions<2> death_int;
       dust2::array::dimensions<3> S_death;
@@ -203,36 +186,54 @@ public:
       dust2::array::dimensions<3> R_death;
       dust2::array::dimensions<3> Is_death;
       dust2::array::dimensions<3> Rc_death;
-      dust2::array::dimensions<1> tt_migration;
-      dust2::array::dimensions<1> migration_distribution;
-      dust2::array::dimensions<4> migration_in_number;
-      dust2::array::dimensions<2> migration_distribution_values;
-      dust2::array::dimensions<3> migration;
-      dust2::array::dimensions<3> migration_adjusted;
-      dust2::array::dimensions<3> migration_S;
-      dust2::array::dimensions<3> migration_E;
-      dust2::array::dimensions<3> migration_I;
-      dust2::array::dimensions<3> migration_R;
-      dust2::array::dimensions<3> migration_Is;
-      dust2::array::dimensions<3> migration_Rc;
-      dust2::array::dimensions<3> S_after_aging;
-      dust2::array::dimensions<3> E_after_aging;
-      dust2::array::dimensions<3> I_after_aging;
-      dust2::array::dimensions<3> R_after_aging;
-      dust2::array::dimensions<3> Is_after_aging;
-      dust2::array::dimensions<3> Rc_after_aging;
-      dust2::array::dimensions<3> S_after_vaccination;
-      dust2::array::dimensions<3> E_after_vaccination;
-      dust2::array::dimensions<3> I_after_vaccination;
-      dust2::array::dimensions<3> R_after_vaccination;
-      dust2::array::dimensions<3> Is_after_vaccination;
-      dust2::array::dimensions<3> Rc_after_vaccination;
-      dust2::array::dimensions<3> S_after_waning;
-      dust2::array::dimensions<3> E_after_waning;
-      dust2::array::dimensions<3> I_after_waning;
-      dust2::array::dimensions<3> R_after_waning;
-      dust2::array::dimensions<3> Is_after_waning;
-      dust2::array::dimensions<3> Rc_after_waning;
+      dust2::array::dimensions<3> inf_weighted;
+      dust2::array::dimensions<1> infectious_source;
+      dust2::array::dimensions<2> lambda_contact;
+      dust2::array::dimensions<1> lambda_raw;
+      dust2::array::dimensions<4> ngm_unfolded;
+      dust2::array::dimensions<1> ngm;
+      dust2::array::dimensions<3> lambda_S;
+      dust2::array::dimensions<3> beta_updated;
+      dust2::array::dimensions<3> lambda;
+      dust2::array::dimensions<3> infectious_period;
+      dust2::array::dimensions<3> beta;
+      dust2::array::dimensions<1> tt_R0;
+      dust2::array::dimensions<1> R0;
+      dust2::array::dimensions<3> cfr_normal;
+      dust2::array::dimensions<3> cfr_severe;
+      dust2::array::dimensions<3> prop_severe;
+      dust2::array::dimensions<3> prop_complications;
+      dust2::array::dimensions<3> age_vaccination_beta_modifier;
+      dust2::array::dimensions<2> contact_matrix;
+      dust2::array::dimensions<3> seeded_actual;
+      dust2::array::dimensions<1> seropositive;
+      dust2::array::dimensions<1> serosurvey;
+      dust2::array::dimensions<3> incubated;
+      dust2::array::dimensions<3> recovered_I_to_R;
+      dust2::array::dimensions<3> recovered_from_Is;
+      dust2::array::dimensions<3> into_I;
+      dust2::array::dimensions<3> into_Is;
+      dust2::array::dimensions<3> recovered_Is_to_R;
+      dust2::array::dimensions<3> recovered_Is_to_Rc;
+      dust2::array::dimensions<2> Npop_age_risk;
+      dust2::array::dimensions<1> compartment_share;
+      dust2::array::dimensions<1> tt_seeded;
+      dust2::array::dimensions<4> seeded;
+      dust2::array::dimensions<3> t_seeded;
+      dust2::array::dimensions<2> repro_weight;
+      dust2::array::dimensions<1> repro_weight_now;
+      dust2::array::dimensions<1> vaccinated_mums;
+      dust2::array::dimensions<1> antibody_mums;
+      dust2::array::dimensions<1> prop_maternal_vaccinated;
+      dust2::array::dimensions<1> prop_maternal_natural;
+      dust2::array::dimensions<3> S_available;
+      dust2::array::dimensions<3> E_available;
+      dust2::array::dimensions<3> I_available;
+      dust2::array::dimensions<3> R_available;
+      dust2::array::dimensions<3> Is_available;
+      dust2::array::dimensions<3> Rc_available;
+      dust2::array::dimensions<1> Npop_age;
+      dust2::array::dimensions<3> new_case;
     } dim;
     int n_age;
     int n_vacc;
@@ -243,25 +244,25 @@ public:
     real_type severe_recovery_rate;
     int no_R0_changes;
     int no_seeded_changes;
+    int no_vacc_changes;
+    real_type stochastic_vaccination;
     int no_death_changes;
-    real_type simp_birth_death;
     int no_birth_changes;
     real_type repro_low;
     real_type repro_high;
+    real_type simp_birth_death;
+    real_type stochastic_birth;
     real_type age_maternal_protection_ends;
     real_type protection_weight_vacc;
     real_type protection_weight_rec;
-    int no_vacc_changes;
     int no_migration_changes;
     real_type reporting_rate;
     real_type R0_modifier;
-    real_type stochastic_birth;
-    real_type stochastic_vaccination;
     std::vector<real_type> S0;
     std::vector<real_type> I0;
     std::vector<real_type> Rpop0;
-    std::vector<real_type> cfr_normal;
     std::vector<real_type> prop_severe;
+    std::vector<real_type> cfr_normal;
     std::vector<real_type> cfr_severe;
     std::vector<real_type> prop_complications;
     std::vector<real_type> R0;
@@ -269,14 +270,14 @@ public:
     std::vector<real_type> contact_matrix;
     std::vector<real_type> seeded;
     std::vector<real_type> tt_seeded;
+    std::vector<real_type> tt_vaccination_coverage;
+    std::vector<real_type> vaccination_coverage;
+    std::vector<real_type> age_vaccination_beta_modifier;
     std::vector<real_type> crude_death;
     std::vector<real_type> tt_death_changes;
     std::vector<real_type> crude_birth;
     std::vector<real_type> tt_birth_changes;
     std::vector<real_type> aging_rate;
-    std::vector<real_type> tt_vaccination_coverage;
-    std::vector<real_type> vaccination_coverage;
-    std::vector<real_type> age_vaccination_beta_modifier;
     std::vector<real_type> tt_migration;
     std::vector<real_type> migration_in_number;
     std::vector<real_type> migration_distribution_values;
@@ -285,12 +286,12 @@ public:
     std::vector<real_type> long_term_waning;
     dust2::interpolate::InterpolateConstantArray<real_type, 3> interpolate_migration;
     dust2::interpolate::InterpolateConstantArray<real_type, 1> interpolate_migration_distribution;
-    dust2::interpolate::InterpolateConstant<real_type> interpolate_t_R0;
-    dust2::interpolate::InterpolateConstantArray<real_type, 3> interpolate_t_seeded;
     dust2::interpolate::InterpolateConstantArray<real_type, 2> interpolate_death_int;
     dust2::interpolate::InterpolateConstantArray<real_type, 1> interpolate_repro_weight_now;
     dust2::interpolate::InterpolateConstantArray<real_type, 1> interpolate_birth_int;
     dust2::interpolate::InterpolateConstantArray<real_type, 3> interpolate_vaccination_prop;
+    dust2::interpolate::InterpolateConstant<real_type> interpolate_t_R0;
+    dust2::interpolate::InterpolateConstantArray<real_type, 3> interpolate_t_seeded;
   };
   struct internal_state {
     std::vector<real_type> Npop_age_risk;
@@ -314,11 +315,11 @@ public:
     std::vector<real_type> Rc_after_aging;
     std::vector<real_type> migration;
     std::vector<real_type> migration_distribution;
-    std::vector<real_type> t_seeded;
     std::vector<real_type> death_int;
     std::vector<real_type> repro_weight_now;
     std::vector<real_type> birth_int;
     std::vector<real_type> vaccination_prop;
+    std::vector<real_type> t_seeded;
     std::vector<real_type> waning_R;
     std::vector<real_type> waning_Rc;
     std::vector<real_type> vaccinating_out_of_E;
@@ -326,19 +327,20 @@ public:
     std::vector<real_type> vaccinating_out_of_R;
     std::vector<real_type> vaccinating_out_of_Is;
     std::vector<real_type> vaccinating_out_of_Rc;
-    std::vector<real_type> seeded_actual;
     std::vector<real_type> background_death;
     std::vector<real_type> reproductive_population;
+    std::vector<real_type> seeded_actual;
     std::vector<real_type> vaccinating_into_E;
     std::vector<real_type> vaccinating_into_I;
     std::vector<real_type> vaccinating_into_R;
     std::vector<real_type> vaccinating_into_Is;
     std::vector<real_type> vaccinating_into_Rc;
     std::vector<real_type> migration_adjusted;
-    std::vector<real_type> infectious_period;
+    std::vector<real_type> compartment_share;
     std::vector<real_type> Npop_background_death;
     std::vector<real_type> prop_maternal_vaccinated;
     std::vector<real_type> prop_maternal_natural;
+    std::vector<real_type> infectious_period;
     std::vector<real_type> E_after_vaccination;
     std::vector<real_type> I_after_vaccination;
     std::vector<real_type> R_after_vaccination;
@@ -350,8 +352,8 @@ public:
     std::vector<real_type> migration_occuring_R;
     std::vector<real_type> migration_occuring_Is;
     std::vector<real_type> migration_occuring_Rc;
-    std::vector<real_type> beta;
     std::vector<real_type> birth_rate;
+    std::vector<real_type> beta;
     std::vector<real_type> waning_from_E_short;
     std::vector<real_type> waning_from_E_long;
     std::vector<real_type> waning_from_I_short;
@@ -368,8 +370,8 @@ public:
     std::vector<real_type> migration_R;
     std::vector<real_type> migration_Is;
     std::vector<real_type> migration_Rc;
-    std::vector<real_type> beta_updated;
     std::vector<real_type> Births;
+    std::vector<real_type> beta_updated;
     std::vector<real_type> aging_into_S;
     std::vector<real_type> waning_to_E_long;
     std::vector<real_type> waning_to_E_unvaccinated;
@@ -418,8 +420,8 @@ public:
     std::vector<real_type> S_after_waning;
     std::vector<real_type> S_available;
     std::vector<real_type> S_death;
-    std::vector<real_type> ngm_unfolded;
     std::vector<real_type> Npop_age;
+    std::vector<real_type> ngm_unfolded;
     std::vector<real_type> lambda_raw;
     std::vector<real_type> ngm;
     std::vector<real_type> lambda;
@@ -433,91 +435,46 @@ public:
   }
   static shared_state build_shared(cpp11::list parameters) {
     shared_state::dim_type dim;
-    const int n_age = dust2::r::read_int(parameters, "n_age", 1);
-    const int n_vacc = dust2::r::read_int(parameters, "n_vacc", 1);
-    const int n_risk = dust2::r::read_int(parameters, "n_risk", 1);
+    const int n_age = dust2::r::read_int(parameters, "n_age");
+    const int n_vacc = dust2::r::read_int(parameters, "n_vacc");
+    const int n_risk = dust2::r::read_int(parameters, "n_risk");
     const real_type incubation_rate = dust2::r::read_real(parameters, "incubation_rate");
     const real_type recovery_rate = dust2::r::read_real(parameters, "recovery_rate");
     const real_type natural_immunity_waning = dust2::r::read_real(parameters, "natural_immunity_waning");
     const real_type severe_recovery_rate = dust2::r::read_real(parameters, "severe_recovery_rate");
     const int no_R0_changes = dust2::r::read_int(parameters, "no_R0_changes");
     const int no_seeded_changes = dust2::r::read_int(parameters, "no_seeded_changes");
+    const int no_vacc_changes = dust2::r::read_int(parameters, "no_vacc_changes");
+    const real_type stochastic_vaccination = dust2::r::read_real(parameters, "stochastic_vaccination", 0);
     const int no_death_changes = dust2::r::read_int(parameters, "no_death_changes");
-    const real_type simp_birth_death = dust2::r::read_real(parameters, "simp_birth_death", 1);
     const int no_birth_changes = dust2::r::read_int(parameters, "no_birth_changes");
     const real_type repro_low = dust2::r::read_real(parameters, "repro_low");
     const real_type repro_high = dust2::r::read_real(parameters, "repro_high");
+    const real_type simp_birth_death = dust2::r::read_real(parameters, "simp_birth_death", 1);
+    const real_type stochastic_birth = dust2::r::read_real(parameters, "stochastic_birth", 0);
     const real_type age_maternal_protection_ends = dust2::r::read_real(parameters, "age_maternal_protection_ends");
     const real_type protection_weight_vacc = dust2::r::read_real(parameters, "protection_weight_vacc");
     const real_type protection_weight_rec = dust2::r::read_real(parameters, "protection_weight_rec");
-    const int no_vacc_changes = dust2::r::read_int(parameters, "no_vacc_changes");
     const int no_migration_changes = dust2::r::read_int(parameters, "no_migration_changes");
     const real_type reporting_rate = dust2::r::read_real(parameters, "reporting_rate", 1);
     const real_type R0_modifier = dust2::r::read_real(parameters, "R0_modifier", 1);
-    const real_type stochastic_birth = dust2::r::read_real(parameters, "stochastic_birth", 0);
-    const real_type stochastic_vaccination = dust2::r::read_real(parameters, "stochastic_vaccination", 0);
     dim.migration_distribution.set({static_cast<size_t>(6)});
-    dim.seropositive.set({static_cast<size_t>(n_age)});
-    dim.serosurvey.set({static_cast<size_t>(n_age)});
-    dim.S_available.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.E_available.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.I_available.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.R_available.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.Rc_available.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.Is_available.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.new_case.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.waning_to_S_short.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.migration_occuring_S.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.migration_occuring_E.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.migration_occuring_I.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.migration_occuring_R.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.migration_occuring_Is.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.migration_occuring_Rc.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.inf_weighted.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.infectious_source.set({static_cast<size_t>(n_age)});
-    dim.lambda_contact.set({static_cast<size_t>(n_age), static_cast<size_t>(n_age)});
-    dim.lambda_raw.set({static_cast<size_t>(n_age)});
-    dim.ngm_unfolded.set({static_cast<size_t>(n_age), static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.ngm.set({static_cast<size_t>(n_age)});
-    dim.seeded_actual.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.Npop_age.set({static_cast<size_t>(n_age)});
-    dim.repro_weight.set({static_cast<size_t>(n_age), static_cast<size_t>(no_migration_changes)});
-    dim.repro_weight_now.set({static_cast<size_t>(n_age)});
+    dim.S0.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.I0.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.Rpop0.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
     dim.S.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
     dim.E.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
     dim.I.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
     dim.R.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
     dim.Is.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
     dim.Rc.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.S0.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.I0.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.Rpop0.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.prop_complications.set({static_cast<size_t>(n_age)});
-    dim.beta_updated.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.age_vaccination_beta_modifier.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.prop_severe.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.cfr_normal.set({static_cast<size_t>(n_age)});
-    dim.cfr_severe.set({static_cast<size_t>(n_age)});
-    dim.beta.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.infectious_period.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.lambda.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.tt_R0.set({static_cast<size_t>(no_R0_changes)});
-    dim.R0.set({static_cast<size_t>(no_R0_changes)});
-    dim.contact_matrix.set({static_cast<size_t>(n_age), static_cast<size_t>(n_age)});
-    dim.lambda_S.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.waning_R.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.waning_Rc.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.incubated.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.tt_seeded.set({static_cast<size_t>(no_seeded_changes)});
-    dim.seeded.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk), static_cast<size_t>(no_seeded_changes)});
-    dim.t_seeded.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.into_I.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.into_Is.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.recovered_I_to_R.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.recovered_from_Is.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.recovered_Is_to_R.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.recovered_Is_to_Rc.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
     dim.aging_rate.set({static_cast<size_t>(n_age)});
+    dim.S_after_aging.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.E_after_aging.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.I_after_aging.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.R_after_aging.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.Is_after_aging.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.Rc_after_aging.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
     dim.aging_into_S.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
     dim.aging_out_of_S.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
     dim.aging_into_E.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
@@ -530,14 +487,36 @@ public:
     dim.aging_out_of_Is.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
     dim.aging_into_Rc.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
     dim.aging_out_of_Rc.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.Npop_age_risk.set({static_cast<size_t>(n_age), static_cast<size_t>(n_risk)});
-    dim.prop_maternal_vaccinated.set({static_cast<size_t>(n_risk)});
-    dim.prop_maternal_natural.set({static_cast<size_t>(n_risk)});
-    dim.vaccinated_mums.set({static_cast<size_t>(n_risk)});
-    dim.antibody_mums.set({static_cast<size_t>(n_risk)});
+    dim.S_after_vaccination.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.E_after_vaccination.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.I_after_vaccination.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.R_after_vaccination.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.Is_after_vaccination.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.Rc_after_vaccination.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.S_after_waning.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.E_after_waning.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.I_after_waning.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.R_after_waning.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.Is_after_waning.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.Rc_after_waning.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
     dim.tt_vaccination_coverage.set({static_cast<size_t>(no_vacc_changes)});
     dim.vaccination_coverage.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk), static_cast<size_t>(no_vacc_changes)});
     dim.vaccination_prop.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.vaccinating_into_S.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.vaccinating_out_of_S.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.vaccinating_into_E.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.vaccinating_out_of_E.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.vaccinating_into_I.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.vaccinating_out_of_I.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.vaccinating_into_R.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.vaccinating_out_of_R.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.vaccinating_into_Is.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.vaccinating_out_of_Is.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.vaccinating_into_Rc.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.vaccinating_out_of_Rc.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.waning_to_S_short.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.waning_R.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.waning_Rc.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
     dim.waning_from_S_short.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
     dim.waning_to_S_long.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
     dim.waning_from_S_long.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
@@ -564,27 +543,32 @@ public:
     dim.waning_to_Rc_unvaccinated.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
     dim.short_term_waning.set({static_cast<size_t>(n_vacc)});
     dim.long_term_waning.set({static_cast<size_t>(n_vacc)});
-    dim.vaccinating_into_S.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.vaccinating_out_of_S.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.vaccinating_into_E.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.vaccinating_out_of_E.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.vaccinating_into_I.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.vaccinating_out_of_I.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.vaccinating_into_R.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.vaccinating_out_of_R.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.vaccinating_into_Is.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.vaccinating_out_of_Is.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.vaccinating_into_Rc.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.vaccinating_out_of_Rc.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.tt_migration.set({static_cast<size_t>(no_migration_changes)});
+    dim.migration_distribution_values.set({static_cast<size_t>(6), static_cast<size_t>(no_migration_changes)});
+    dim.migration_in_number.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk), static_cast<size_t>(no_migration_changes)});
+    dim.migration_adjusted.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.migration.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.migration_S.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.migration_E.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.migration_I.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.migration_R.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.migration_Is.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.migration_Rc.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.migration_occuring_S.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.migration_occuring_E.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.migration_occuring_I.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.migration_occuring_R.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.migration_occuring_Is.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.migration_occuring_Rc.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
     dim.Births.set({static_cast<size_t>(n_age)});
     dim.reproductive_population.set({static_cast<size_t>(n_age)});
     dim.birth_rate.set({static_cast<size_t>(n_risk)});
+    dim.crude_birth.set({static_cast<size_t>(n_age), static_cast<size_t>(no_birth_changes)});
+    dim.crude_death.set({static_cast<size_t>(n_age), static_cast<size_t>(n_risk), static_cast<size_t>(no_death_changes)});
     dim.tt_birth_changes.set({static_cast<size_t>(no_birth_changes)});
     dim.tt_death_changes.set({static_cast<size_t>(no_death_changes)});
     dim.background_death.set({static_cast<size_t>(n_age), static_cast<size_t>(n_risk)});
     dim.Npop_background_death.set({static_cast<size_t>(n_age), static_cast<size_t>(n_risk)});
-    dim.crude_birth.set({static_cast<size_t>(n_age), static_cast<size_t>(no_birth_changes)});
-    dim.crude_death.set({static_cast<size_t>(n_age), static_cast<size_t>(n_risk), static_cast<size_t>(no_death_changes)});
     dim.birth_int.set({static_cast<size_t>(n_age)});
     dim.death_int.set({static_cast<size_t>(n_age), static_cast<size_t>(n_risk)});
     dim.S_death.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
@@ -593,45 +577,64 @@ public:
     dim.R_death.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
     dim.Is_death.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
     dim.Rc_death.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.tt_migration.set({static_cast<size_t>(no_migration_changes)});
-    dim.migration_in_number.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk), static_cast<size_t>(no_migration_changes)});
-    dim.migration_distribution_values.set({static_cast<size_t>(6), static_cast<size_t>(no_migration_changes)});
-    dim.migration.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.migration_adjusted.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.migration_S.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.migration_E.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.migration_I.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.migration_R.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.migration_Is.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.migration_Rc.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.S_after_aging.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.E_after_aging.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.I_after_aging.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.R_after_aging.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.Is_after_aging.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.Rc_after_aging.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.S_after_vaccination.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.E_after_vaccination.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.I_after_vaccination.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.R_after_vaccination.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.Is_after_vaccination.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.Rc_after_vaccination.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.S_after_waning.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.E_after_waning.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.I_after_waning.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.R_after_waning.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.Is_after_waning.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.Rc_after_waning.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.inf_weighted.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.infectious_source.set({static_cast<size_t>(n_age)});
+    dim.lambda_contact.set({static_cast<size_t>(n_age), static_cast<size_t>(n_age)});
+    dim.lambda_raw.set({static_cast<size_t>(n_age)});
+    dim.ngm_unfolded.set({static_cast<size_t>(n_age), static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.ngm.set({static_cast<size_t>(n_age)});
+    dim.lambda_S.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.beta_updated.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.lambda.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.infectious_period.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.beta.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.tt_R0.set({static_cast<size_t>(no_R0_changes)});
+    dim.R0.set({static_cast<size_t>(no_R0_changes)});
+    dim.cfr_normal.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.cfr_severe.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.prop_severe.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.prop_complications.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.age_vaccination_beta_modifier.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.contact_matrix.set({static_cast<size_t>(n_age), static_cast<size_t>(n_age)});
+    dim.seeded_actual.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.seropositive.set({static_cast<size_t>(n_age)});
+    dim.serosurvey.set({static_cast<size_t>(n_age)});
+    dim.incubated.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.recovered_I_to_R.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.recovered_from_Is.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.into_I.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.into_Is.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.recovered_Is_to_R.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.recovered_Is_to_Rc.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.Npop_age_risk.set({static_cast<size_t>(n_age), static_cast<size_t>(n_risk)});
+    dim.compartment_share.set({static_cast<size_t>(n_age)});
+    dim.tt_seeded.set({static_cast<size_t>(no_seeded_changes)});
+    dim.seeded.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk), static_cast<size_t>(no_seeded_changes)});
+    dim.t_seeded.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.repro_weight.set({static_cast<size_t>(n_age), static_cast<size_t>(no_migration_changes)});
+    dim.repro_weight_now.set({static_cast<size_t>(n_age)});
+    dim.vaccinated_mums.set({static_cast<size_t>(n_age)});
+    dim.antibody_mums.set({static_cast<size_t>(n_age)});
+    dim.prop_maternal_vaccinated.set({static_cast<size_t>(n_age)});
+    dim.prop_maternal_natural.set({static_cast<size_t>(n_age)});
+    dim.S_available.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.E_available.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.I_available.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.R_available.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.Is_available.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.Rc_available.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
+    dim.Npop_age.set({static_cast<size_t>(n_age)});
+    dim.new_case.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
     std::vector<real_type> S0(dim.S0.size);
     dust2::r::read_real_array(parameters, dim.S0, S0.data(), "S0", true);
     std::vector<real_type> I0(dim.I0.size);
     dust2::r::read_real_array(parameters, dim.I0, I0.data(), "I0", true);
     std::vector<real_type> Rpop0(dim.Rpop0.size);
     dust2::r::read_real_array(parameters, dim.Rpop0, Rpop0.data(), "Rpop0", true);
-    std::vector<real_type> cfr_normal(dim.cfr_normal.size);
-    dust2::r::read_real_array(parameters, dim.cfr_normal, cfr_normal.data(), "cfr_normal", true);
     std::vector<real_type> prop_severe(dim.prop_severe.size);
     dust2::r::read_real_array(parameters, dim.prop_severe, prop_severe.data(), "prop_severe", true);
+    std::vector<real_type> cfr_normal(dim.cfr_normal.size);
+    dust2::r::read_real_array(parameters, dim.cfr_normal, cfr_normal.data(), "cfr_normal", true);
     std::vector<real_type> cfr_severe(dim.cfr_severe.size);
     dust2::r::read_real_array(parameters, dim.cfr_severe, cfr_severe.data(), "cfr_severe", true);
     std::vector<real_type> prop_complications(dim.prop_complications.size);
@@ -646,6 +649,12 @@ public:
     dust2::r::read_real_array(parameters, dim.seeded, seeded.data(), "seeded", true);
     std::vector<real_type> tt_seeded(dim.tt_seeded.size);
     dust2::r::read_real_array(parameters, dim.tt_seeded, tt_seeded.data(), "tt_seeded", true);
+    std::vector<real_type> tt_vaccination_coverage(dim.tt_vaccination_coverage.size);
+    dust2::r::read_real_array(parameters, dim.tt_vaccination_coverage, tt_vaccination_coverage.data(), "tt_vaccination_coverage", true);
+    std::vector<real_type> vaccination_coverage(dim.vaccination_coverage.size);
+    dust2::r::read_real_array(parameters, dim.vaccination_coverage, vaccination_coverage.data(), "vaccination_coverage", true);
+    std::vector<real_type> age_vaccination_beta_modifier(dim.age_vaccination_beta_modifier.size);
+    dust2::r::read_real_array(parameters, dim.age_vaccination_beta_modifier, age_vaccination_beta_modifier.data(), "age_vaccination_beta_modifier", true);
     std::vector<real_type> crude_death(dim.crude_death.size);
     dust2::r::read_real_array(parameters, dim.crude_death, crude_death.data(), "crude_death", true);
     std::vector<real_type> tt_death_changes(dim.tt_death_changes.size);
@@ -656,12 +665,6 @@ public:
     dust2::r::read_real_array(parameters, dim.tt_birth_changes, tt_birth_changes.data(), "tt_birth_changes", true);
     std::vector<real_type> aging_rate(dim.aging_rate.size);
     dust2::r::read_real_array(parameters, dim.aging_rate, aging_rate.data(), "aging_rate", true);
-    std::vector<real_type> tt_vaccination_coverage(dim.tt_vaccination_coverage.size);
-    dust2::r::read_real_array(parameters, dim.tt_vaccination_coverage, tt_vaccination_coverage.data(), "tt_vaccination_coverage", true);
-    std::vector<real_type> vaccination_coverage(dim.vaccination_coverage.size);
-    dust2::r::read_real_array(parameters, dim.vaccination_coverage, vaccination_coverage.data(), "vaccination_coverage", true);
-    std::vector<real_type> age_vaccination_beta_modifier(dim.age_vaccination_beta_modifier.size);
-    dust2::r::read_real_array(parameters, dim.age_vaccination_beta_modifier, age_vaccination_beta_modifier.data(), "age_vaccination_beta_modifier", true);
     std::vector<real_type> tt_migration(dim.tt_migration.size);
     dust2::r::read_real_array(parameters, dim.tt_migration, tt_migration.data(), "tt_migration", true);
     std::vector<real_type> migration_in_number(dim.migration_in_number.size);
@@ -676,32 +679,32 @@ public:
     dust2::r::read_real_array(parameters, dim.long_term_waning, long_term_waning.data(), "long_term_waning", true);
     const auto interpolate_migration = dust2::interpolate::InterpolateConstantArray<real_type, 3>(tt_migration, migration_in_number, dim.migration, "tt_migration", "migration_in_number");
     const auto interpolate_migration_distribution = dust2::interpolate::InterpolateConstantArray<real_type, 1>(tt_migration, migration_distribution_values, dim.migration_distribution, "tt_migration", "migration_distribution_values");
-    const auto interpolate_t_R0 = dust2::interpolate::InterpolateConstant(tt_R0, R0, "tt_R0", "R0");
-    const auto interpolate_t_seeded = dust2::interpolate::InterpolateConstantArray<real_type, 3>(tt_seeded, seeded, dim.t_seeded, "tt_seeded", "seeded");
     const auto interpolate_death_int = dust2::interpolate::InterpolateConstantArray<real_type, 2>(tt_death_changes, crude_death, dim.death_int, "tt_death_changes", "crude_death");
     const auto interpolate_repro_weight_now = dust2::interpolate::InterpolateConstantArray<real_type, 1>(tt_migration, repro_weight, dim.repro_weight_now, "tt_migration", "repro_weight");
     const auto interpolate_birth_int = dust2::interpolate::InterpolateConstantArray<real_type, 1>(tt_birth_changes, crude_birth, dim.birth_int, "tt_birth_changes", "crude_birth");
     const auto interpolate_vaccination_prop = dust2::interpolate::InterpolateConstantArray<real_type, 3>(tt_vaccination_coverage, vaccination_coverage, dim.vaccination_prop, "tt_vaccination_coverage", "vaccination_coverage");
+    const auto interpolate_t_R0 = dust2::interpolate::InterpolateConstant(tt_R0, R0, "tt_R0", "R0");
+    const auto interpolate_t_seeded = dust2::interpolate::InterpolateConstantArray<real_type, 3>(tt_seeded, seeded, dim.t_seeded, "tt_seeded", "seeded");
     shared_state::odin_internals_type odin;
     odin.packing.state = dust2::packing{
-      {"total_pop", {}},
       {"death_rate_flat", {}},
       {"birth_rate_flat", {}},
-      {"S_vaccinated", {}},
+      {"vac_prop", {}},
       {"Reff", {}},
       {"seeded_actual_sum", {}},
-      {"vac_prop", {}},
-      {"total_deaths", {}},
+      {"total_pop", {}},
       {"total_births", {}},
+      {"total_deaths", {}},
+      {"S_vaccinated", {}},
       {"total_vaccinated_out", {}},
       {"total_vaccinated_in", {}},
-      {"net_pop_change", {}},
       {"vaccinated_loss", {}},
+      {"net_pop_change", {}},
       {"aging_correct", {}},
       {"vaccination_correct", {}},
       {"waning_correct", {}},
-      {"per_capita_growth", {}},
       {"repro_pop_total", {}},
+      {"per_capita_growth", {}},
       {"S", std::vector<size_t>(dim.S.dim.begin(), dim.S.dim.end())},
       {"E", std::vector<size_t>(dim.E.dim.begin(), dim.E.dim.end())},
       {"I", std::vector<size_t>(dim.I.dim.begin(), dim.I.dim.end())},
@@ -712,7 +715,7 @@ public:
       {"new_case", std::vector<size_t>(dim.new_case.dim.begin(), dim.new_case.dim.end())}
     };
     odin.packing.state.copy_offset(odin.offset.state.begin());
-    return shared_state{odin, dim, n_age, n_vacc, n_risk, incubation_rate, recovery_rate, natural_immunity_waning, severe_recovery_rate, no_R0_changes, no_seeded_changes, no_death_changes, simp_birth_death, no_birth_changes, repro_low, repro_high, age_maternal_protection_ends, protection_weight_vacc, protection_weight_rec, no_vacc_changes, no_migration_changes, reporting_rate, R0_modifier, stochastic_birth, stochastic_vaccination, S0, I0, Rpop0, cfr_normal, prop_severe, cfr_severe, prop_complications, R0, tt_R0, contact_matrix, seeded, tt_seeded, crude_death, tt_death_changes, crude_birth, tt_birth_changes, aging_rate, tt_vaccination_coverage, vaccination_coverage, age_vaccination_beta_modifier, tt_migration, migration_in_number, migration_distribution_values, repro_weight, short_term_waning, long_term_waning, interpolate_migration, interpolate_migration_distribution, interpolate_t_R0, interpolate_t_seeded, interpolate_death_int, interpolate_repro_weight_now, interpolate_birth_int, interpolate_vaccination_prop};
+    return shared_state{odin, dim, n_age, n_vacc, n_risk, incubation_rate, recovery_rate, natural_immunity_waning, severe_recovery_rate, no_R0_changes, no_seeded_changes, no_vacc_changes, stochastic_vaccination, no_death_changes, no_birth_changes, repro_low, repro_high, simp_birth_death, stochastic_birth, age_maternal_protection_ends, protection_weight_vacc, protection_weight_rec, no_migration_changes, reporting_rate, R0_modifier, S0, I0, Rpop0, prop_severe, cfr_normal, cfr_severe, prop_complications, R0, tt_R0, contact_matrix, seeded, tt_seeded, tt_vaccination_coverage, vaccination_coverage, age_vaccination_beta_modifier, crude_death, tt_death_changes, crude_birth, tt_birth_changes, aging_rate, tt_migration, migration_in_number, migration_distribution_values, repro_weight, short_term_waning, long_term_waning, interpolate_migration, interpolate_migration_distribution, interpolate_death_int, interpolate_repro_weight_now, interpolate_birth_int, interpolate_vaccination_prop, interpolate_t_R0, interpolate_t_seeded};
   }
   static internal_state build_internal(const shared_state& shared) {
     std::vector<real_type> Npop_age_risk(shared.dim.Npop_age_risk.size);
@@ -736,11 +739,11 @@ public:
     std::vector<real_type> Rc_after_aging(shared.dim.Rc_after_aging.size);
     std::vector<real_type> migration(shared.dim.migration.size);
     std::vector<real_type> migration_distribution(shared.dim.migration_distribution.size);
-    std::vector<real_type> t_seeded(shared.dim.t_seeded.size);
     std::vector<real_type> death_int(shared.dim.death_int.size);
     std::vector<real_type> repro_weight_now(shared.dim.repro_weight_now.size);
     std::vector<real_type> birth_int(shared.dim.birth_int.size);
     std::vector<real_type> vaccination_prop(shared.dim.vaccination_prop.size);
+    std::vector<real_type> t_seeded(shared.dim.t_seeded.size);
     std::vector<real_type> waning_R(shared.dim.waning_R.size);
     std::vector<real_type> waning_Rc(shared.dim.waning_Rc.size);
     std::vector<real_type> vaccinating_out_of_E(shared.dim.vaccinating_out_of_E.size);
@@ -748,19 +751,20 @@ public:
     std::vector<real_type> vaccinating_out_of_R(shared.dim.vaccinating_out_of_R.size);
     std::vector<real_type> vaccinating_out_of_Is(shared.dim.vaccinating_out_of_Is.size);
     std::vector<real_type> vaccinating_out_of_Rc(shared.dim.vaccinating_out_of_Rc.size);
-    std::vector<real_type> seeded_actual(shared.dim.seeded_actual.size);
     std::vector<real_type> background_death(shared.dim.background_death.size);
     std::vector<real_type> reproductive_population(shared.dim.reproductive_population.size);
+    std::vector<real_type> seeded_actual(shared.dim.seeded_actual.size);
     std::vector<real_type> vaccinating_into_E(shared.dim.vaccinating_into_E.size);
     std::vector<real_type> vaccinating_into_I(shared.dim.vaccinating_into_I.size);
     std::vector<real_type> vaccinating_into_R(shared.dim.vaccinating_into_R.size);
     std::vector<real_type> vaccinating_into_Is(shared.dim.vaccinating_into_Is.size);
     std::vector<real_type> vaccinating_into_Rc(shared.dim.vaccinating_into_Rc.size);
     std::vector<real_type> migration_adjusted(shared.dim.migration_adjusted.size);
-    std::vector<real_type> infectious_period(shared.dim.infectious_period.size);
+    std::vector<real_type> compartment_share(shared.dim.compartment_share.size);
     std::vector<real_type> Npop_background_death(shared.dim.Npop_background_death.size);
     std::vector<real_type> prop_maternal_vaccinated(shared.dim.prop_maternal_vaccinated.size);
     std::vector<real_type> prop_maternal_natural(shared.dim.prop_maternal_natural.size);
+    std::vector<real_type> infectious_period(shared.dim.infectious_period.size);
     std::vector<real_type> E_after_vaccination(shared.dim.E_after_vaccination.size);
     std::vector<real_type> I_after_vaccination(shared.dim.I_after_vaccination.size);
     std::vector<real_type> R_after_vaccination(shared.dim.R_after_vaccination.size);
@@ -772,8 +776,8 @@ public:
     std::vector<real_type> migration_occuring_R(shared.dim.migration_occuring_R.size);
     std::vector<real_type> migration_occuring_Is(shared.dim.migration_occuring_Is.size);
     std::vector<real_type> migration_occuring_Rc(shared.dim.migration_occuring_Rc.size);
-    std::vector<real_type> beta(shared.dim.beta.size);
     std::vector<real_type> birth_rate(shared.dim.birth_rate.size);
+    std::vector<real_type> beta(shared.dim.beta.size);
     std::vector<real_type> waning_from_E_short(shared.dim.waning_from_E_short.size);
     std::vector<real_type> waning_from_E_long(shared.dim.waning_from_E_long.size);
     std::vector<real_type> waning_from_I_short(shared.dim.waning_from_I_short.size);
@@ -790,8 +794,8 @@ public:
     std::vector<real_type> migration_R(shared.dim.migration_R.size);
     std::vector<real_type> migration_Is(shared.dim.migration_Is.size);
     std::vector<real_type> migration_Rc(shared.dim.migration_Rc.size);
-    std::vector<real_type> beta_updated(shared.dim.beta_updated.size);
     std::vector<real_type> Births(shared.dim.Births.size);
+    std::vector<real_type> beta_updated(shared.dim.beta_updated.size);
     std::vector<real_type> aging_into_S(shared.dim.aging_into_S.size);
     std::vector<real_type> waning_to_E_long(shared.dim.waning_to_E_long.size);
     std::vector<real_type> waning_to_E_unvaccinated(shared.dim.waning_to_E_unvaccinated.size);
@@ -840,13 +844,13 @@ public:
     std::vector<real_type> S_after_waning(shared.dim.S_after_waning.size);
     std::vector<real_type> S_available(shared.dim.S_available.size);
     std::vector<real_type> S_death(shared.dim.S_death.size);
-    std::vector<real_type> ngm_unfolded(shared.dim.ngm_unfolded.size);
     std::vector<real_type> Npop_age(shared.dim.Npop_age.size);
+    std::vector<real_type> ngm_unfolded(shared.dim.ngm_unfolded.size);
     std::vector<real_type> lambda_raw(shared.dim.lambda_raw.size);
     std::vector<real_type> ngm(shared.dim.ngm.size);
     std::vector<real_type> lambda(shared.dim.lambda.size);
     std::vector<real_type> lambda_S(shared.dim.lambda_S.size);
-    return internal_state{Npop_age_risk, vaccinated_mums, antibody_mums, aging_out_of_S, aging_into_E, aging_out_of_E, aging_into_I, aging_out_of_I, aging_into_R, aging_out_of_R, aging_into_Is, aging_out_of_Is, aging_into_Rc, aging_out_of_Rc, E_after_aging, I_after_aging, R_after_aging, Is_after_aging, Rc_after_aging, migration, migration_distribution, t_seeded, death_int, repro_weight_now, birth_int, vaccination_prop, waning_R, waning_Rc, vaccinating_out_of_E, vaccinating_out_of_I, vaccinating_out_of_R, vaccinating_out_of_Is, vaccinating_out_of_Rc, seeded_actual, background_death, reproductive_population, vaccinating_into_E, vaccinating_into_I, vaccinating_into_R, vaccinating_into_Is, vaccinating_into_Rc, migration_adjusted, infectious_period, Npop_background_death, prop_maternal_vaccinated, prop_maternal_natural, E_after_vaccination, I_after_vaccination, R_after_vaccination, Is_after_vaccination, Rc_after_vaccination, migration_occuring_S, migration_occuring_E, migration_occuring_I, migration_occuring_R, migration_occuring_Is, migration_occuring_Rc, beta, birth_rate, waning_from_E_short, waning_from_E_long, waning_from_I_short, waning_from_I_long, waning_from_R_short, waning_from_R_long, waning_from_Is_short, waning_from_Is_long, waning_from_Rc_short, waning_from_Rc_long, migration_S, migration_E, migration_I, migration_R, migration_Is, migration_Rc, beta_updated, Births, aging_into_S, waning_to_E_long, waning_to_E_unvaccinated, waning_to_I_long, waning_to_I_unvaccinated, waning_to_R_long, waning_to_R_unvaccinated, waning_to_Is_long, waning_to_Is_unvaccinated, waning_to_Rc_long, waning_to_Rc_unvaccinated, S_after_aging, E_after_waning, I_after_waning, R_after_waning, Is_after_waning, Rc_after_waning, E_available, I_available, R_available, Rc_available, Is_available, vaccinating_out_of_S, incubated, recovered_I_to_R, recovered_from_Is, E_death, I_death, R_death, Is_death, Rc_death, vaccinating_into_S, inf_weighted, into_I, recovered_Is_to_R, S_after_vaccination, infectious_source, into_Is, recovered_Is_to_Rc, waning_from_S_short, waning_from_S_long, lambda_contact, waning_to_S_long, waning_to_S_unvaccinated, waning_to_S_short, S_after_waning, S_available, S_death, ngm_unfolded, Npop_age, lambda_raw, ngm, lambda, lambda_S};
+    return internal_state{Npop_age_risk, vaccinated_mums, antibody_mums, aging_out_of_S, aging_into_E, aging_out_of_E, aging_into_I, aging_out_of_I, aging_into_R, aging_out_of_R, aging_into_Is, aging_out_of_Is, aging_into_Rc, aging_out_of_Rc, E_after_aging, I_after_aging, R_after_aging, Is_after_aging, Rc_after_aging, migration, migration_distribution, death_int, repro_weight_now, birth_int, vaccination_prop, t_seeded, waning_R, waning_Rc, vaccinating_out_of_E, vaccinating_out_of_I, vaccinating_out_of_R, vaccinating_out_of_Is, vaccinating_out_of_Rc, background_death, reproductive_population, seeded_actual, vaccinating_into_E, vaccinating_into_I, vaccinating_into_R, vaccinating_into_Is, vaccinating_into_Rc, migration_adjusted, compartment_share, Npop_background_death, prop_maternal_vaccinated, prop_maternal_natural, infectious_period, E_after_vaccination, I_after_vaccination, R_after_vaccination, Is_after_vaccination, Rc_after_vaccination, migration_occuring_S, migration_occuring_E, migration_occuring_I, migration_occuring_R, migration_occuring_Is, migration_occuring_Rc, birth_rate, beta, waning_from_E_short, waning_from_E_long, waning_from_I_short, waning_from_I_long, waning_from_R_short, waning_from_R_long, waning_from_Is_short, waning_from_Is_long, waning_from_Rc_short, waning_from_Rc_long, migration_S, migration_E, migration_I, migration_R, migration_Is, migration_Rc, Births, beta_updated, aging_into_S, waning_to_E_long, waning_to_E_unvaccinated, waning_to_I_long, waning_to_I_unvaccinated, waning_to_R_long, waning_to_R_unvaccinated, waning_to_Is_long, waning_to_Is_unvaccinated, waning_to_Rc_long, waning_to_Rc_unvaccinated, S_after_aging, E_after_waning, I_after_waning, R_after_waning, Is_after_waning, Rc_after_waning, E_available, I_available, R_available, Rc_available, Is_available, vaccinating_out_of_S, incubated, recovered_I_to_R, recovered_from_Is, E_death, I_death, R_death, Is_death, Rc_death, vaccinating_into_S, inf_weighted, into_I, recovered_Is_to_R, S_after_vaccination, infectious_source, into_Is, recovered_Is_to_Rc, waning_from_S_short, waning_from_S_long, lambda_contact, waning_to_S_long, waning_to_S_unvaccinated, waning_to_S_short, S_after_waning, S_available, S_death, Npop_age, ngm_unfolded, lambda_raw, ngm, lambda, lambda_S};
   }
   static data_type build_data(cpp11::list data, const shared_state& shared) {
     auto serosurvey = std::vector<real_type>(shared.dim.serosurvey.size);
@@ -858,21 +862,21 @@ public:
     shared.recovery_rate = dust2::r::read_real(parameters, "recovery_rate", shared.recovery_rate);
     shared.natural_immunity_waning = dust2::r::read_real(parameters, "natural_immunity_waning", shared.natural_immunity_waning);
     shared.severe_recovery_rate = dust2::r::read_real(parameters, "severe_recovery_rate", shared.severe_recovery_rate);
-    shared.simp_birth_death = dust2::r::read_real(parameters, "simp_birth_death", shared.simp_birth_death);
+    shared.stochastic_vaccination = dust2::r::read_real(parameters, "stochastic_vaccination", shared.stochastic_vaccination);
     shared.repro_low = dust2::r::read_real(parameters, "repro_low", shared.repro_low);
     shared.repro_high = dust2::r::read_real(parameters, "repro_high", shared.repro_high);
+    shared.simp_birth_death = dust2::r::read_real(parameters, "simp_birth_death", shared.simp_birth_death);
+    shared.stochastic_birth = dust2::r::read_real(parameters, "stochastic_birth", shared.stochastic_birth);
     shared.age_maternal_protection_ends = dust2::r::read_real(parameters, "age_maternal_protection_ends", shared.age_maternal_protection_ends);
     shared.protection_weight_vacc = dust2::r::read_real(parameters, "protection_weight_vacc", shared.protection_weight_vacc);
     shared.protection_weight_rec = dust2::r::read_real(parameters, "protection_weight_rec", shared.protection_weight_rec);
     shared.reporting_rate = dust2::r::read_real(parameters, "reporting_rate", shared.reporting_rate);
     shared.R0_modifier = dust2::r::read_real(parameters, "R0_modifier", shared.R0_modifier);
-    shared.stochastic_birth = dust2::r::read_real(parameters, "stochastic_birth", shared.stochastic_birth);
-    shared.stochastic_vaccination = dust2::r::read_real(parameters, "stochastic_vaccination", shared.stochastic_vaccination);
     dust2::r::read_real_array(parameters, shared.dim.S0, shared.S0.data(), "S0", false);
     dust2::r::read_real_array(parameters, shared.dim.I0, shared.I0.data(), "I0", false);
     dust2::r::read_real_array(parameters, shared.dim.Rpop0, shared.Rpop0.data(), "Rpop0", false);
-    dust2::r::read_real_array(parameters, shared.dim.cfr_normal, shared.cfr_normal.data(), "cfr_normal", false);
     dust2::r::read_real_array(parameters, shared.dim.prop_severe, shared.prop_severe.data(), "prop_severe", false);
+    dust2::r::read_real_array(parameters, shared.dim.cfr_normal, shared.cfr_normal.data(), "cfr_normal", false);
     dust2::r::read_real_array(parameters, shared.dim.cfr_severe, shared.cfr_severe.data(), "cfr_severe", false);
     dust2::r::read_real_array(parameters, shared.dim.prop_complications, shared.prop_complications.data(), "prop_complications", false);
     dust2::r::read_real_array(parameters, shared.dim.R0, shared.R0.data(), "R0", false);
@@ -880,14 +884,14 @@ public:
     dust2::r::read_real_array(parameters, shared.dim.contact_matrix, shared.contact_matrix.data(), "contact_matrix", false);
     dust2::r::read_real_array(parameters, shared.dim.seeded, shared.seeded.data(), "seeded", false);
     dust2::r::read_real_array(parameters, shared.dim.tt_seeded, shared.tt_seeded.data(), "tt_seeded", false);
+    dust2::r::read_real_array(parameters, shared.dim.tt_vaccination_coverage, shared.tt_vaccination_coverage.data(), "tt_vaccination_coverage", false);
+    dust2::r::read_real_array(parameters, shared.dim.vaccination_coverage, shared.vaccination_coverage.data(), "vaccination_coverage", false);
+    dust2::r::read_real_array(parameters, shared.dim.age_vaccination_beta_modifier, shared.age_vaccination_beta_modifier.data(), "age_vaccination_beta_modifier", false);
     dust2::r::read_real_array(parameters, shared.dim.crude_death, shared.crude_death.data(), "crude_death", false);
     dust2::r::read_real_array(parameters, shared.dim.tt_death_changes, shared.tt_death_changes.data(), "tt_death_changes", false);
     dust2::r::read_real_array(parameters, shared.dim.crude_birth, shared.crude_birth.data(), "crude_birth", false);
     dust2::r::read_real_array(parameters, shared.dim.tt_birth_changes, shared.tt_birth_changes.data(), "tt_birth_changes", false);
     dust2::r::read_real_array(parameters, shared.dim.aging_rate, shared.aging_rate.data(), "aging_rate", false);
-    dust2::r::read_real_array(parameters, shared.dim.tt_vaccination_coverage, shared.tt_vaccination_coverage.data(), "tt_vaccination_coverage", false);
-    dust2::r::read_real_array(parameters, shared.dim.vaccination_coverage, shared.vaccination_coverage.data(), "vaccination_coverage", false);
-    dust2::r::read_real_array(parameters, shared.dim.age_vaccination_beta_modifier, shared.age_vaccination_beta_modifier.data(), "age_vaccination_beta_modifier", false);
     dust2::r::read_real_array(parameters, shared.dim.tt_migration, shared.tt_migration.data(), "tt_migration", false);
     dust2::r::read_real_array(parameters, shared.dim.migration_in_number, shared.migration_in_number.data(), "migration_in_number", false);
     dust2::r::read_real_array(parameters, shared.dim.migration_distribution_values, shared.migration_distribution_values.data(), "migration_distribution_values", false);
@@ -896,12 +900,12 @@ public:
     dust2::r::read_real_array(parameters, shared.dim.long_term_waning, shared.long_term_waning.data(), "long_term_waning", false);
     const auto interpolate_migration = dust2::interpolate::InterpolateConstantArray<real_type, 3>(shared.tt_migration, shared.migration_in_number, shared.dim.migration, "tt_migration", "migration_in_number");
     const auto interpolate_migration_distribution = dust2::interpolate::InterpolateConstantArray<real_type, 1>(shared.tt_migration, shared.migration_distribution_values, shared.dim.migration_distribution, "tt_migration", "migration_distribution_values");
-    const auto interpolate_t_R0 = dust2::interpolate::InterpolateConstant(shared.tt_R0, shared.R0, "tt_R0", "R0");
-    const auto interpolate_t_seeded = dust2::interpolate::InterpolateConstantArray<real_type, 3>(shared.tt_seeded, shared.seeded, shared.dim.t_seeded, "tt_seeded", "seeded");
     const auto interpolate_death_int = dust2::interpolate::InterpolateConstantArray<real_type, 2>(shared.tt_death_changes, shared.crude_death, shared.dim.death_int, "tt_death_changes", "crude_death");
     const auto interpolate_repro_weight_now = dust2::interpolate::InterpolateConstantArray<real_type, 1>(shared.tt_migration, shared.repro_weight, shared.dim.repro_weight_now, "tt_migration", "repro_weight");
     const auto interpolate_birth_int = dust2::interpolate::InterpolateConstantArray<real_type, 1>(shared.tt_birth_changes, shared.crude_birth, shared.dim.birth_int, "tt_birth_changes", "crude_birth");
     const auto interpolate_vaccination_prop = dust2::interpolate::InterpolateConstantArray<real_type, 3>(shared.tt_vaccination_coverage, shared.vaccination_coverage, shared.dim.vaccination_prop, "tt_vaccination_coverage", "vaccination_coverage");
+    const auto interpolate_t_R0 = dust2::interpolate::InterpolateConstant(shared.tt_R0, shared.R0, "tt_R0", "R0");
+    const auto interpolate_t_seeded = dust2::interpolate::InterpolateConstantArray<real_type, 3>(shared.tt_seeded, shared.seeded, shared.dim.t_seeded, "tt_seeded", "seeded");
   }
   static void update_internal(const shared_state& shared, internal_state& internal) {
   }
@@ -948,22 +952,15 @@ public:
         }
       }
     }
-    state[0] = dust2::array::sum<real_type>(shared.S0.data(), shared.dim.S0) + dust2::array::sum<real_type>(shared.I0.data(), shared.dim.I0) + dust2::array::sum<real_type>(shared.Rpop0.data(), shared.dim.Rpop0);
+    state[0] = 0;
+    state[1] = 0;
+    state[2] = 0;
+    state[3] = shared.R0[0];
+    state[4] = 0;
+    state[5] = dust2::array::sum<real_type>(shared.S0.data(), shared.dim.S0) + dust2::array::sum<real_type>(shared.I0.data(), shared.dim.I0) + dust2::array::sum<real_type>(shared.Rpop0.data(), shared.dim.Rpop0);
     for (size_t i = 1; i <= shared.dim.seropositive.size; ++i) {
       state[i - 1 + shared.odin.offset.state[24]] = 0;
     }
-    state[1] = 0;
-    state[2] = 0;
-    for (size_t i = 1; i <= shared.dim.new_case.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.new_case.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.new_case.dim[2]; ++k) {
-          state[i - 1 + (j - 1) * shared.dim.new_case.mult[1] + (k - 1) * shared.dim.new_case.mult[2] + shared.odin.offset.state[25]] = shared.I0[i - 1 + (j - 1) * shared.dim.I0.mult[1] + (k - 1) * shared.dim.I0.mult[2]];
-        }
-      }
-    }
-    state[3] = 0;
-    state[4] = shared.R0[0];
-    state[5] = 0;
     state[6] = 0;
     state[7] = 0;
     state[8] = 0;
@@ -976,6 +973,13 @@ public:
     state[15] = 0;
     state[16] = 0;
     state[17] = 0;
+    for (size_t i = 1; i <= shared.dim.new_case.dim[0]; ++i) {
+      for (size_t j = 1; j <= shared.dim.new_case.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.new_case.dim[2]; ++k) {
+          state[i - 1 + (j - 1) * shared.dim.new_case.mult[1] + (k - 1) * shared.dim.new_case.mult[2] + shared.odin.offset.state[25]] = shared.I0[i - 1 + (j - 1) * shared.dim.I0.mult[1] + (k - 1) * shared.dim.I0.mult[2]];
+        }
+      }
+    }
   }
   static void update(real_type time, real_type dt, const real_type* state, const shared_state& shared, internal_state& internal, rng_state_type& rng_state, real_type* state_next) {
     const auto * S = state + 18;
@@ -984,8 +988,8 @@ public:
     const auto * R = state + shared.odin.offset.state[21];
     const auto * Is = state + shared.odin.offset.state[22];
     const auto * Rc = state + shared.odin.offset.state[23];
+    const auto total_births = state[6];
     const auto total_deaths = state[7];
-    const auto total_births = state[8];
     const auto total_vaccinated_out = state[9];
     const auto total_vaccinated_in = state[10];
     const real_type N = dust2::array::sum<real_type>(S, shared.dim.S) + dust2::array::sum<real_type>(E, shared.dim.E) + dust2::array::sum<real_type>(I, shared.dim.I) + dust2::array::sum<real_type>(R, shared.dim.R) + dust2::array::sum<real_type>(Is, shared.dim.Is) + dust2::array::sum<real_type>(Rc, shared.dim.Rc);
@@ -1114,12 +1118,12 @@ public:
     }
     shared.interpolate_migration.eval(time, internal.migration);
     shared.interpolate_migration_distribution.eval(time, internal.migration_distribution);
-    const real_type t_R0 = shared.interpolate_t_R0.eval(time);
-    shared.interpolate_t_seeded.eval(time, internal.t_seeded);
     shared.interpolate_death_int.eval(time, internal.death_int);
     shared.interpolate_repro_weight_now.eval(time, internal.repro_weight_now);
     shared.interpolate_birth_int.eval(time, internal.birth_int);
     shared.interpolate_vaccination_prop.eval(time, internal.vaccination_prop);
+    const real_type t_R0 = shared.interpolate_t_R0.eval(time);
+    shared.interpolate_t_seeded.eval(time, internal.t_seeded);
     for (size_t i = 1; i <= shared.dim.waning_R.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.waning_R.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.waning_R.dim[2]; ++k) {
@@ -1170,20 +1174,21 @@ public:
       }
     }
     const real_type pos_neg_migration = (dust2::array::sum<real_type>(internal.migration.data(), shared.dim.migration) < 0 ? -1 : 1);
-    for (size_t i = 1; i <= shared.dim.seeded_actual.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.seeded_actual.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.seeded_actual.dim[2]; ++k) {
-          internal.seeded_actual[i - 1 + (j - 1) * shared.dim.seeded_actual.mult[1] + (k - 1) * shared.dim.seeded_actual.mult[2]] = (S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] < internal.t_seeded[i - 1 + (j - 1) * shared.dim.t_seeded.mult[1] + (k - 1) * shared.dim.t_seeded.mult[2]] ? S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] * shared.reporting_rate : internal.t_seeded[i - 1 + (j - 1) * shared.dim.t_seeded.mult[1] + (k - 1) * shared.dim.t_seeded.mult[2]] * shared.reporting_rate);
-        }
-      }
-    }
+    const real_type compartment_total_weight = dust2::array::sum<real_type>(internal.migration_distribution.data(), shared.dim.migration_distribution);
     for (size_t i = 1; i <= shared.dim.background_death.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.background_death.dim[1]; ++j) {
         internal.background_death[i - 1 + (j - 1) * shared.dim.background_death.mult[1]] = (shared.simp_birth_death == 1 ? monty::math::max<real_type>(monty::math::min<real_type>(shared.crude_death[i - 1 + (j - 1) * shared.dim.crude_death.mult[1]], 1), 0) : monty::math::max<real_type>(monty::math::min<real_type>(internal.death_int[i - 1 + (j - 1) * shared.dim.death_int.mult[1]], 1), 0));
       }
     }
     for (size_t i = 1; i <= shared.dim.reproductive_population.size; ++i) {
-      internal.reproductive_population[i - 1] = (i >= shared.repro_low && i <= shared.repro_high ? dust2::array::sum<real_type>(S, shared.dim.S, {i - 1, i - 1}, {0, shared.dim.S.dim[1] - 1}, {0, shared.dim.S.dim[2] - 1}) * internal.repro_weight_now[i - 1] + dust2::array::sum<real_type>(E, shared.dim.E, {i - 1, i - 1}, {0, shared.dim.E.dim[1] - 1}, {0, shared.dim.E.dim[2] - 1}) * internal.repro_weight_now[i - 1] + dust2::array::sum<real_type>(I, shared.dim.I, {i - 1, i - 1}, {0, shared.dim.I.dim[1] - 1}, {0, shared.dim.I.dim[2] - 1}) * internal.repro_weight_now[i - 1] + dust2::array::sum<real_type>(R, shared.dim.R, {i - 1, i - 1}, {0, shared.dim.R.dim[1] - 1}, {0, shared.dim.R.dim[2] - 1}) * internal.repro_weight_now[i - 1] + dust2::array::sum<real_type>(Is, shared.dim.Is, {i - 1, i - 1}, {0, shared.dim.Is.dim[1] - 1}, {0, shared.dim.Is.dim[2] - 1}) * internal.repro_weight_now[i - 1] + dust2::array::sum<real_type>(Rc, shared.dim.Rc, {i - 1, i - 1}, {0, shared.dim.Rc.dim[1] - 1}, {0, shared.dim.Rc.dim[2] - 1}) * internal.repro_weight_now[i - 1] : 0);
+      internal.reproductive_population[i - 1] = (i >= shared.repro_low && i <= shared.repro_high ? (dust2::array::sum<real_type>(S, shared.dim.S, {i - 1, i - 1}, {0, shared.dim.S.dim[1] - 1}, {0, shared.dim.S.dim[2] - 1}) + dust2::array::sum<real_type>(E, shared.dim.E, {i - 1, i - 1}, {0, shared.dim.E.dim[1] - 1}, {0, shared.dim.E.dim[2] - 1}) + dust2::array::sum<real_type>(I, shared.dim.I, {i - 1, i - 1}, {0, shared.dim.I.dim[1] - 1}, {0, shared.dim.I.dim[2] - 1}) + dust2::array::sum<real_type>(R, shared.dim.R, {i - 1, i - 1}, {0, shared.dim.R.dim[1] - 1}, {0, shared.dim.R.dim[2] - 1}) + dust2::array::sum<real_type>(Is, shared.dim.Is, {i - 1, i - 1}, {0, shared.dim.Is.dim[1] - 1}, {0, shared.dim.Is.dim[2] - 1}) + dust2::array::sum<real_type>(Rc, shared.dim.Rc, {i - 1, i - 1}, {0, shared.dim.Rc.dim[1] - 1}, {0, shared.dim.Rc.dim[2] - 1})) * internal.repro_weight_now[i - 1] : 0);
+    }
+    for (size_t i = 1; i <= shared.dim.seeded_actual.dim[0]; ++i) {
+      for (size_t j = 1; j <= shared.dim.seeded_actual.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.seeded_actual.dim[2]; ++k) {
+          internal.seeded_actual[i - 1 + (j - 1) * shared.dim.seeded_actual.mult[1] + (k - 1) * shared.dim.seeded_actual.mult[2]] = (S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] < internal.t_seeded[i - 1 + (j - 1) * shared.dim.t_seeded.mult[1] + (k - 1) * shared.dim.t_seeded.mult[2]] ? S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] * shared.reporting_rate : internal.t_seeded[i - 1 + (j - 1) * shared.dim.t_seeded.mult[1] + (k - 1) * shared.dim.t_seeded.mult[2]] * shared.reporting_rate);
+        }
+      }
     }
     for (size_t i = 1; i <= shared.dim.vaccinating_into_E.dim[0]; ++i) {
       for (size_t j = 1; j <= 2; ++j) {
@@ -1287,12 +1292,8 @@ public:
         }
       }
     }
-    for (size_t i = 1; i <= shared.dim.infectious_period.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.infectious_period.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.infectious_period.dim[2]; ++k) {
-          internal.infectious_period[i - 1 + (j - 1) * shared.dim.infectious_period.mult[1] + (k - 1) * shared.dim.infectious_period.mult[2]] = ((shared.severe_recovery_rate + shared.cfr_severe[i - 1] + internal.background_death[i - 1 + (k - 1) * shared.dim.background_death.mult[1]]) <= 0 || (shared.recovery_rate + shared.cfr_normal[i - 1] + internal.background_death[i - 1 + (k - 1) * shared.dim.background_death.mult[1]]) <= 0 ? 0 : (1 - shared.prop_severe[i - 1 + (j - 1) * shared.dim.prop_severe.mult[1] + (k - 1) * shared.dim.prop_severe.mult[2]]) / (shared.recovery_rate + shared.cfr_normal[i - 1] + internal.background_death[i - 1 + (k - 1) * shared.dim.background_death.mult[1]]) + shared.prop_severe[i - 1 + (j - 1) * shared.dim.prop_severe.mult[1] + (k - 1) * shared.dim.prop_severe.mult[2]] / (shared.severe_recovery_rate + shared.cfr_severe[i - 1] + internal.background_death[i - 1 + (k - 1) * shared.dim.background_death.mult[1]]));
-        }
-      }
+    for (size_t i = 1; i <= shared.dim.compartment_share.size; ++i) {
+      internal.compartment_share[i - 1] = internal.migration_distribution[i - 1] / compartment_total_weight;
     }
     for (size_t i = 1; i <= shared.dim.Npop_background_death.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.Npop_background_death.dim[1]; ++j) {
@@ -1304,6 +1305,13 @@ public:
     }
     for (size_t i = 1; i <= shared.dim.prop_maternal_natural.size; ++i) {
       internal.prop_maternal_natural[i - 1] = (internal.reproductive_population[i - 1] <= 0 ? 0 : internal.antibody_mums[i - 1] / internal.reproductive_population[i - 1]);
+    }
+    for (size_t i = 1; i <= shared.dim.infectious_period.dim[0]; ++i) {
+      for (size_t j = 1; j <= shared.dim.infectious_period.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.infectious_period.dim[2]; ++k) {
+          internal.infectious_period[i - 1 + (j - 1) * shared.dim.infectious_period.mult[1] + (k - 1) * shared.dim.infectious_period.mult[2]] = ((shared.severe_recovery_rate + shared.cfr_severe[i - 1 + (j - 1) * shared.dim.cfr_severe.mult[1] + (k - 1) * shared.dim.cfr_severe.mult[2]] + internal.background_death[i - 1 + (k - 1) * shared.dim.background_death.mult[1]]) <= 0 || (shared.recovery_rate + shared.cfr_normal[i - 1 + (j - 1) * shared.dim.cfr_normal.mult[1] + (k - 1) * shared.dim.cfr_normal.mult[2]] + internal.background_death[i - 1 + (k - 1) * shared.dim.background_death.mult[1]]) <= 0 ? 0 : (1 - shared.prop_severe[i - 1 + (j - 1) * shared.dim.prop_severe.mult[1] + (k - 1) * shared.dim.prop_severe.mult[2]]) / (shared.recovery_rate + shared.cfr_normal[i - 1 + (j - 1) * shared.dim.cfr_normal.mult[1] + (k - 1) * shared.dim.cfr_normal.mult[2]] + internal.background_death[i - 1 + (k - 1) * shared.dim.background_death.mult[1]]) + shared.prop_severe[i - 1 + (j - 1) * shared.dim.prop_severe.mult[1] + (k - 1) * shared.dim.prop_severe.mult[2]] / (shared.severe_recovery_rate + shared.cfr_severe[i - 1 + (j - 1) * shared.dim.cfr_severe.mult[1] + (k - 1) * shared.dim.cfr_severe.mult[2]] + internal.background_death[i - 1 + (k - 1) * shared.dim.background_death.mult[1]]));
+        }
+      }
     }
     for (size_t i = 1; i <= shared.dim.E_after_vaccination.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.E_after_vaccination.dim[1]; ++j) {
@@ -1343,44 +1351,47 @@ public:
     for (size_t i = 1; i <= shared.dim.migration_occuring_S.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.migration_occuring_S.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.migration_occuring_S.dim[2]; ++k) {
-          internal.migration_occuring_S[i - 1 + (j - 1) * shared.dim.migration_occuring_S.mult[1] + (k - 1) * shared.dim.migration_occuring_S.mult[2]] = (internal.migration_distribution[0] <= 0 || dust2::array::sum<real_type>(S, shared.dim.S) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] / dust2::array::sum<real_type>(S, shared.dim.S) * dust2::array::sum<real_type>(internal.migration_distribution.data(), shared.dim.migration_distribution, {0, 0}) / dust2::array::sum<real_type>(internal.migration_distribution.data(), shared.dim.migration_distribution)));
+          internal.migration_occuring_S[i - 1 + (j - 1) * shared.dim.migration_occuring_S.mult[1] + (k - 1) * shared.dim.migration_occuring_S.mult[2]] = (internal.migration_distribution[0] <= 0 || dust2::array::sum<real_type>(S, shared.dim.S) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] / dust2::array::sum<real_type>(S, shared.dim.S) * internal.compartment_share[0]));
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.migration_occuring_E.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.migration_occuring_E.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.migration_occuring_E.dim[2]; ++k) {
-          internal.migration_occuring_E[i - 1 + (j - 1) * shared.dim.migration_occuring_E.mult[1] + (k - 1) * shared.dim.migration_occuring_E.mult[2]] = (internal.migration_distribution[1] <= 0 || dust2::array::sum<real_type>(E, shared.dim.E) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), E[i - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2]] / dust2::array::sum<real_type>(E, shared.dim.E) * dust2::array::sum<real_type>(internal.migration_distribution.data(), shared.dim.migration_distribution, {1, 1}) / dust2::array::sum<real_type>(internal.migration_distribution.data(), shared.dim.migration_distribution)));
+          internal.migration_occuring_E[i - 1 + (j - 1) * shared.dim.migration_occuring_E.mult[1] + (k - 1) * shared.dim.migration_occuring_E.mult[2]] = (internal.migration_distribution[1] <= 0 || dust2::array::sum<real_type>(E, shared.dim.E) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), E[i - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2]] / dust2::array::sum<real_type>(E, shared.dim.E) * internal.compartment_share[1]));
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.migration_occuring_I.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.migration_occuring_I.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.migration_occuring_I.dim[2]; ++k) {
-          internal.migration_occuring_I[i - 1 + (j - 1) * shared.dim.migration_occuring_I.mult[1] + (k - 1) * shared.dim.migration_occuring_I.mult[2]] = (internal.migration_distribution[2] <= 0 || dust2::array::sum<real_type>(I, shared.dim.I) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), I[i - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2]] / dust2::array::sum<real_type>(I, shared.dim.I) * dust2::array::sum<real_type>(internal.migration_distribution.data(), shared.dim.migration_distribution, {2, 2}) / dust2::array::sum<real_type>(internal.migration_distribution.data(), shared.dim.migration_distribution)));
+          internal.migration_occuring_I[i - 1 + (j - 1) * shared.dim.migration_occuring_I.mult[1] + (k - 1) * shared.dim.migration_occuring_I.mult[2]] = (internal.migration_distribution[2] <= 0 || dust2::array::sum<real_type>(I, shared.dim.I) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), I[i - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2]] / dust2::array::sum<real_type>(I, shared.dim.I) * internal.compartment_share[2]));
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.migration_occuring_R.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.migration_occuring_R.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.migration_occuring_R.dim[2]; ++k) {
-          internal.migration_occuring_R[i - 1 + (j - 1) * shared.dim.migration_occuring_R.mult[1] + (k - 1) * shared.dim.migration_occuring_R.mult[2]] = (internal.migration_distribution[3] <= 0 || dust2::array::sum<real_type>(R, shared.dim.R) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), R[i - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2]] / dust2::array::sum<real_type>(R, shared.dim.R) * dust2::array::sum<real_type>(internal.migration_distribution.data(), shared.dim.migration_distribution, {3, 3}) / dust2::array::sum<real_type>(internal.migration_distribution.data(), shared.dim.migration_distribution)));
+          internal.migration_occuring_R[i - 1 + (j - 1) * shared.dim.migration_occuring_R.mult[1] + (k - 1) * shared.dim.migration_occuring_R.mult[2]] = (internal.migration_distribution[3] <= 0 || dust2::array::sum<real_type>(R, shared.dim.R) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), R[i - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2]] / dust2::array::sum<real_type>(R, shared.dim.R) * internal.compartment_share[3]));
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.migration_occuring_Is.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.migration_occuring_Is.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.migration_occuring_Is.dim[2]; ++k) {
-          internal.migration_occuring_Is[i - 1 + (j - 1) * shared.dim.migration_occuring_Is.mult[1] + (k - 1) * shared.dim.migration_occuring_Is.mult[2]] = (internal.migration_distribution[4] <= 0 || dust2::array::sum<real_type>(Is, shared.dim.Is) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), Is[i - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2]] / dust2::array::sum<real_type>(Is, shared.dim.Is) * dust2::array::sum<real_type>(internal.migration_distribution.data(), shared.dim.migration_distribution, {4, 4}) / dust2::array::sum<real_type>(internal.migration_distribution.data(), shared.dim.migration_distribution)));
+          internal.migration_occuring_Is[i - 1 + (j - 1) * shared.dim.migration_occuring_Is.mult[1] + (k - 1) * shared.dim.migration_occuring_Is.mult[2]] = (internal.migration_distribution[4] <= 0 || dust2::array::sum<real_type>(Is, shared.dim.Is) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), Is[i - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2]] / dust2::array::sum<real_type>(Is, shared.dim.Is) * internal.compartment_share[4]));
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.migration_occuring_Rc.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.migration_occuring_Rc.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.migration_occuring_Rc.dim[2]; ++k) {
-          internal.migration_occuring_Rc[i - 1 + (j - 1) * shared.dim.migration_occuring_Rc.mult[1] + (k - 1) * shared.dim.migration_occuring_Rc.mult[2]] = (internal.migration_distribution[5] <= 0 || dust2::array::sum<real_type>(Rc, shared.dim.Rc) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), Rc[i - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2]] / dust2::array::sum<real_type>(Rc, shared.dim.Rc) * dust2::array::sum<real_type>(internal.migration_distribution.data(), shared.dim.migration_distribution, {5, 5}) / dust2::array::sum<real_type>(internal.migration_distribution.data(), shared.dim.migration_distribution)));
+          internal.migration_occuring_Rc[i - 1 + (j - 1) * shared.dim.migration_occuring_Rc.mult[1] + (k - 1) * shared.dim.migration_occuring_Rc.mult[2]] = (internal.migration_distribution[5] <= 0 || dust2::array::sum<real_type>(Rc, shared.dim.Rc) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), Rc[i - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2]] / dust2::array::sum<real_type>(Rc, shared.dim.Rc) * internal.compartment_share[5]));
         }
       }
+    }
+    for (size_t i = 1; i <= shared.dim.birth_rate.size; ++i) {
+      internal.birth_rate[i - 1] = (internal.reproductive_population[i - 1] <= 0 ? 0 : dust2::array::sum<real_type>(internal.Npop_background_death.data(), shared.dim.Npop_background_death, {i - 1, i - 1}, {0, shared.dim.Npop_background_death.dim[1] - 1}) / internal.reproductive_population[i - 1]);
     }
     for (size_t i = 1; i <= shared.dim.beta.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.beta.dim[1]; ++j) {
@@ -1388,9 +1399,6 @@ public:
           internal.beta[i - 1 + (j - 1) * shared.dim.beta.mult[1] + (k - 1) * shared.dim.beta.mult[2]] = (internal.infectious_period[i - 1 + (j - 1) * shared.dim.infectious_period.mult[1] + (k - 1) * shared.dim.infectious_period.mult[2]] <= 0 ? 0 : (shared.R0_modifier * t_R0) / internal.infectious_period[i - 1 + (j - 1) * shared.dim.infectious_period.mult[1] + (k - 1) * shared.dim.infectious_period.mult[2]]);
         }
       }
-    }
-    for (size_t i = 1; i <= shared.dim.birth_rate.size; ++i) {
-      internal.birth_rate[i - 1] = (internal.reproductive_population[i - 1] <= 0 ? 0 : dust2::array::sum<real_type>(internal.Npop_background_death.data(), shared.dim.Npop_background_death, {i - 1, i - 1}, {0, shared.dim.Npop_background_death.dim[1] - 1}) / internal.reproductive_population[i - 1]);
     }
     for (size_t i = 1; i <= shared.dim.waning_from_E_short.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.waning_from_E_short.dim[1]; ++j) {
@@ -1465,54 +1473,54 @@ public:
     for (size_t i = 1; i <= shared.dim.migration_S.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.migration_S.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.migration_S.dim[2]; ++k) {
-          internal.migration_S[i - 1 + (j - 1) * shared.dim.migration_S.mult[1] + (k - 1) * shared.dim.migration_S.mult[2]] = (internal.migration_distribution[0] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, internal.migration_occuring_S[i - 1 + (j - 1) * shared.dim.migration_occuring_S.mult[1] + (k - 1) * shared.dim.migration_occuring_S.mult[2]], internal.migration_distribution[0]) / dust2::array::sum<real_type>(internal.migration_distribution.data(), shared.dim.migration_distribution));
+          internal.migration_S[i - 1 + (j - 1) * shared.dim.migration_S.mult[1] + (k - 1) * shared.dim.migration_S.mult[2]] = (internal.migration_distribution[0] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, internal.migration_occuring_S[i - 1 + (j - 1) * shared.dim.migration_occuring_S.mult[1] + (k - 1) * shared.dim.migration_occuring_S.mult[2]], internal.migration_distribution[0]) / compartment_total_weight);
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.migration_E.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.migration_E.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.migration_E.dim[2]; ++k) {
-          internal.migration_E[i - 1 + (j - 1) * shared.dim.migration_E.mult[1] + (k - 1) * shared.dim.migration_E.mult[2]] = (internal.migration_distribution[1] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, internal.migration_occuring_E[i - 1 + (j - 1) * shared.dim.migration_occuring_E.mult[1] + (k - 1) * shared.dim.migration_occuring_E.mult[2]], internal.migration_distribution[1]) / dust2::array::sum<real_type>(internal.migration_distribution.data(), shared.dim.migration_distribution));
+          internal.migration_E[i - 1 + (j - 1) * shared.dim.migration_E.mult[1] + (k - 1) * shared.dim.migration_E.mult[2]] = (internal.migration_distribution[1] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, internal.migration_occuring_E[i - 1 + (j - 1) * shared.dim.migration_occuring_E.mult[1] + (k - 1) * shared.dim.migration_occuring_E.mult[2]], internal.migration_distribution[1]) / compartment_total_weight);
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.migration_I.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.migration_I.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.migration_I.dim[2]; ++k) {
-          internal.migration_I[i - 1 + (j - 1) * shared.dim.migration_I.mult[1] + (k - 1) * shared.dim.migration_I.mult[2]] = (internal.migration_distribution[2] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, internal.migration_occuring_I[i - 1 + (j - 1) * shared.dim.migration_occuring_I.mult[1] + (k - 1) * shared.dim.migration_occuring_I.mult[2]], internal.migration_distribution[2]) / dust2::array::sum<real_type>(internal.migration_distribution.data(), shared.dim.migration_distribution));
+          internal.migration_I[i - 1 + (j - 1) * shared.dim.migration_I.mult[1] + (k - 1) * shared.dim.migration_I.mult[2]] = (internal.migration_distribution[2] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, internal.migration_occuring_I[i - 1 + (j - 1) * shared.dim.migration_occuring_I.mult[1] + (k - 1) * shared.dim.migration_occuring_I.mult[2]], internal.migration_distribution[2]) / compartment_total_weight);
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.migration_R.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.migration_R.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.migration_R.dim[2]; ++k) {
-          internal.migration_R[i - 1 + (j - 1) * shared.dim.migration_R.mult[1] + (k - 1) * shared.dim.migration_R.mult[2]] = (internal.migration_distribution[3] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, internal.migration_occuring_R[i - 1 + (j - 1) * shared.dim.migration_occuring_R.mult[1] + (k - 1) * shared.dim.migration_occuring_R.mult[2]], internal.migration_distribution[3]) / dust2::array::sum<real_type>(internal.migration_distribution.data(), shared.dim.migration_distribution));
+          internal.migration_R[i - 1 + (j - 1) * shared.dim.migration_R.mult[1] + (k - 1) * shared.dim.migration_R.mult[2]] = (internal.migration_distribution[3] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, internal.migration_occuring_R[i - 1 + (j - 1) * shared.dim.migration_occuring_R.mult[1] + (k - 1) * shared.dim.migration_occuring_R.mult[2]], internal.migration_distribution[3]) / compartment_total_weight);
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.migration_Is.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.migration_Is.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.migration_Is.dim[2]; ++k) {
-          internal.migration_Is[i - 1 + (j - 1) * shared.dim.migration_Is.mult[1] + (k - 1) * shared.dim.migration_Is.mult[2]] = (internal.migration_distribution[4] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, internal.migration_occuring_Is[i - 1 + (j - 1) * shared.dim.migration_occuring_Is.mult[1] + (k - 1) * shared.dim.migration_occuring_Is.mult[2]], internal.migration_distribution[4]) / dust2::array::sum<real_type>(internal.migration_distribution.data(), shared.dim.migration_distribution));
+          internal.migration_Is[i - 1 + (j - 1) * shared.dim.migration_Is.mult[1] + (k - 1) * shared.dim.migration_Is.mult[2]] = (internal.migration_distribution[4] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, internal.migration_occuring_Is[i - 1 + (j - 1) * shared.dim.migration_occuring_Is.mult[1] + (k - 1) * shared.dim.migration_occuring_Is.mult[2]], internal.migration_distribution[4]) / compartment_total_weight);
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.migration_Rc.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.migration_Rc.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.migration_Rc.dim[2]; ++k) {
-          internal.migration_Rc[i - 1 + (j - 1) * shared.dim.migration_Rc.mult[1] + (k - 1) * shared.dim.migration_Rc.mult[2]] = (internal.migration_distribution[5] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, internal.migration_occuring_Rc[i - 1 + (j - 1) * shared.dim.migration_occuring_Rc.mult[1] + (k - 1) * shared.dim.migration_occuring_Rc.mult[2]], internal.migration_distribution[5]) / dust2::array::sum<real_type>(internal.migration_distribution.data(), shared.dim.migration_distribution));
-        }
-      }
-    }
-    for (size_t i = 1; i <= shared.dim.beta_updated.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.beta_updated.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.beta_updated.dim[2]; ++k) {
-          internal.beta_updated[i - 1 + (j - 1) * shared.dim.beta_updated.mult[1] + (k - 1) * shared.dim.beta_updated.mult[2]] = (i <= shared.age_maternal_protection_ends ? internal.beta[i - 1 + (j - 1) * shared.dim.beta.mult[1] + (k - 1) * shared.dim.beta.mult[2]] * (1 - shared.age_vaccination_beta_modifier[i - 1 + (j - 1) * shared.dim.age_vaccination_beta_modifier.mult[1] + (k - 1) * shared.dim.age_vaccination_beta_modifier.mult[2]]) * (1 - (shared.protection_weight_vacc * internal.prop_maternal_vaccinated[k - 1] + shared.protection_weight_rec * internal.prop_maternal_natural[k - 1])) : (1 - shared.age_vaccination_beta_modifier[i - 1 + (j - 1) * shared.dim.age_vaccination_beta_modifier.mult[1] + (k - 1) * shared.dim.age_vaccination_beta_modifier.mult[2]]) * internal.beta[i - 1 + (j - 1) * shared.dim.beta.mult[1] + (k - 1) * shared.dim.beta.mult[2]]);
+          internal.migration_Rc[i - 1 + (j - 1) * shared.dim.migration_Rc.mult[1] + (k - 1) * shared.dim.migration_Rc.mult[2]] = (internal.migration_distribution[5] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, internal.migration_occuring_Rc[i - 1 + (j - 1) * shared.dim.migration_occuring_Rc.mult[1] + (k - 1) * shared.dim.migration_occuring_Rc.mult[2]], internal.migration_distribution[5]) / compartment_total_weight);
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.Births.size; ++i) {
       internal.Births[i - 1] = (internal.reproductive_population[i - 1] <= 0 ? 0 : (shared.simp_birth_death == 1 ? monty::random::binomial<real_type>(rng_state, internal.reproductive_population[i - 1], monty::math::max<real_type>(monty::math::min<real_type>(internal.birth_rate[i - 1] / 2, 1), 0)) : (shared.stochastic_birth == 1 ? monty::random::binomial<real_type>(rng_state, internal.reproductive_population[i - 1], monty::math::max<real_type>(monty::math::min<real_type>(internal.birth_int[i - 1] / 2, 1), 0)) : internal.reproductive_population[i - 1] * monty::math::max<real_type>(monty::math::min<real_type>(internal.birth_int[i - 1] / 2, 1), 0))));
+    }
+    for (size_t i = 1; i <= shared.dim.beta_updated.dim[0]; ++i) {
+      for (size_t j = 1; j <= shared.dim.beta_updated.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.beta_updated.dim[2]; ++k) {
+          internal.beta_updated[i - 1 + (j - 1) * shared.dim.beta_updated.mult[1] + (k - 1) * shared.dim.beta_updated.mult[2]] = (i <= shared.age_maternal_protection_ends ? internal.beta[i - 1 + (j - 1) * shared.dim.beta.mult[1] + (k - 1) * shared.dim.beta.mult[2]] * (1 - shared.age_vaccination_beta_modifier[i - 1 + (j - 1) * shared.dim.age_vaccination_beta_modifier.mult[1] + (k - 1) * shared.dim.age_vaccination_beta_modifier.mult[2]]) * (1 - (shared.protection_weight_vacc * internal.prop_maternal_vaccinated[k - 1] + shared.protection_weight_rec * internal.prop_maternal_natural[k - 1])) : internal.beta[i - 1 + (j - 1) * shared.dim.beta.mult[1] + (k - 1) * shared.dim.beta.mult[2]] * (1 - shared.age_vaccination_beta_modifier[i - 1 + (j - 1) * shared.dim.age_vaccination_beta_modifier.mult[1] + (k - 1) * shared.dim.age_vaccination_beta_modifier.mult[2]]));
+        }
+      }
     }
     for (size_t k = 1; k <= shared.dim.aging_into_S.dim[2]; ++k) {
       internal.aging_into_S[(k - 1) * shared.dim.aging_into_S.mult[2]] = dust2::array::sum<real_type>(internal.Births.data(), shared.dim.Births);
@@ -1709,7 +1717,7 @@ public:
     for (size_t i = 1; i <= shared.dim.I_death.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.I_death.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.I_death.dim[2]; ++k) {
-          internal.I_death[i - 1 + (j - 1) * shared.dim.I_death.mult[1] + (k - 1) * shared.dim.I_death.mult[2]] = (internal.I_available[i - 1 + (j - 1) * shared.dim.I_available.mult[1] + (k - 1) * shared.dim.I_available.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, internal.I_available[i - 1 + (j - 1) * shared.dim.I_available.mult[1] + (k - 1) * shared.dim.I_available.mult[2]], monty::math::max<real_type>(monty::math::min<real_type>(internal.background_death[i - 1 + (k - 1) * shared.dim.background_death.mult[1]], 1), 0) + monty::math::max<real_type>(shared.cfr_normal[i - 1], 0)));
+          internal.I_death[i - 1 + (j - 1) * shared.dim.I_death.mult[1] + (k - 1) * shared.dim.I_death.mult[2]] = (internal.I_available[i - 1 + (j - 1) * shared.dim.I_available.mult[1] + (k - 1) * shared.dim.I_available.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, internal.I_available[i - 1 + (j - 1) * shared.dim.I_available.mult[1] + (k - 1) * shared.dim.I_available.mult[2]], monty::math::max<real_type>(monty::math::min<real_type>(internal.background_death[i - 1 + (k - 1) * shared.dim.background_death.mult[1]], 1), 0) + monty::math::max<real_type>(shared.cfr_normal[i - 1 + (j - 1) * shared.dim.cfr_normal.mult[1] + (k - 1) * shared.dim.cfr_normal.mult[2]], 0)));
         }
       }
     }
@@ -1723,7 +1731,7 @@ public:
     for (size_t i = 1; i <= shared.dim.Is_death.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.Is_death.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.Is_death.dim[2]; ++k) {
-          internal.Is_death[i - 1 + (j - 1) * shared.dim.Is_death.mult[1] + (k - 1) * shared.dim.Is_death.mult[2]] = (internal.Is_available[i - 1 + (j - 1) * shared.dim.Is_available.mult[1] + (k - 1) * shared.dim.Is_available.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, internal.Is_available[i - 1 + (j - 1) * shared.dim.Is_available.mult[1] + (k - 1) * shared.dim.Is_available.mult[2]], monty::math::max<real_type>(monty::math::min<real_type>(internal.background_death[i - 1 + (k - 1) * shared.dim.background_death.mult[1]], 1), 0) + monty::math::max<real_type>(shared.cfr_severe[i - 1], 0)));
+          internal.Is_death[i - 1 + (j - 1) * shared.dim.Is_death.mult[1] + (k - 1) * shared.dim.Is_death.mult[2]] = (internal.Is_available[i - 1 + (j - 1) * shared.dim.Is_available.mult[1] + (k - 1) * shared.dim.Is_available.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, internal.Is_available[i - 1 + (j - 1) * shared.dim.Is_available.mult[1] + (k - 1) * shared.dim.Is_available.mult[2]], monty::math::max<real_type>(monty::math::min<real_type>(internal.background_death[i - 1 + (k - 1) * shared.dim.background_death.mult[1]], 1), 0) + monty::math::max<real_type>(shared.cfr_severe[i - 1 + (j - 1) * shared.dim.cfr_severe.mult[1] + (k - 1) * shared.dim.cfr_severe.mult[2]], 0)));
         }
       }
     }
@@ -1770,7 +1778,7 @@ public:
     for (size_t i = 1; i <= shared.dim.recovered_Is_to_R.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.recovered_Is_to_R.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.recovered_Is_to_R.dim[2]; ++k) {
-          internal.recovered_Is_to_R[i - 1 + (j - 1) * shared.dim.recovered_Is_to_R.mult[1] + (k - 1) * shared.dim.recovered_Is_to_R.mult[2]] = (internal.recovered_from_Is[i - 1 + (j - 1) * shared.dim.recovered_from_Is.mult[1] + (k - 1) * shared.dim.recovered_from_Is.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, internal.recovered_from_Is[i - 1 + (j - 1) * shared.dim.recovered_from_Is.mult[1] + (k - 1) * shared.dim.recovered_from_Is.mult[2]], monty::math::max<real_type>(monty::math::min<real_type>(1 - shared.prop_complications[i - 1], 1), 0)));
+          internal.recovered_Is_to_R[i - 1 + (j - 1) * shared.dim.recovered_Is_to_R.mult[1] + (k - 1) * shared.dim.recovered_Is_to_R.mult[2]] = (internal.recovered_from_Is[i - 1 + (j - 1) * shared.dim.recovered_from_Is.mult[1] + (k - 1) * shared.dim.recovered_from_Is.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, internal.recovered_from_Is[i - 1 + (j - 1) * shared.dim.recovered_from_Is.mult[1] + (k - 1) * shared.dim.recovered_from_Is.mult[2]], monty::math::max<real_type>(monty::math::min<real_type>(1 - shared.prop_complications[i - 1 + (j - 1) * shared.dim.prop_complications.mult[1] + (k - 1) * shared.dim.prop_complications.mult[2]], 1), 0)));
         }
       }
     }
@@ -1841,7 +1849,7 @@ public:
     for (size_t i = 1; i <= shared.dim.S_after_waning.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.S_after_waning.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.S_after_waning.dim[2]; ++k) {
-          internal.S_after_waning[i - 1 + (j - 1) * shared.dim.S_after_waning.mult[1] + (k - 1) * shared.dim.S_after_waning.mult[2]] = internal.S_after_vaccination[i - 1 + (j - 1) * shared.dim.S_after_vaccination.mult[1] + (k - 1) * shared.dim.S_after_vaccination.mult[2]] + internal.waning_to_S_long[i - 1 + (j - 1) * shared.dim.waning_to_S_long.mult[1] + (k - 1) * shared.dim.waning_to_S_long.mult[2]] + internal.waning_to_S_unvaccinated[i - 1 + (j - 1) * shared.dim.waning_to_S_unvaccinated.mult[1] + (k - 1) * shared.dim.waning_to_S_unvaccinated.mult[2]] - internal.waning_from_S_short[i - 1 + (j - 1) * shared.dim.waning_from_S_short.mult[1] + (k - 1) * shared.dim.waning_from_S_short.mult[2]] - internal.waning_from_S_long[i - 1 + (j - 1) * shared.dim.waning_from_S_long.mult[1] + (k - 1) * shared.dim.waning_from_S_long.mult[2]] + internal.waning_to_S_short[i - 1 + (j - 1) * shared.dim.waning_to_S_short.mult[1] + (k - 1) * shared.dim.waning_to_S_short.mult[2]];
+          internal.S_after_waning[i - 1 + (j - 1) * shared.dim.S_after_waning.mult[1] + (k - 1) * shared.dim.S_after_waning.mult[2]] = internal.S_after_vaccination[i - 1 + (j - 1) * shared.dim.S_after_vaccination.mult[1] + (k - 1) * shared.dim.S_after_vaccination.mult[2]] + internal.waning_to_S_long[i - 1 + (j - 1) * shared.dim.waning_to_S_long.mult[1] + (k - 1) * shared.dim.waning_to_S_long.mult[2]] + internal.waning_to_S_unvaccinated[i - 1 + (j - 1) * shared.dim.waning_to_S_unvaccinated.mult[1] + (k - 1) * shared.dim.waning_to_S_unvaccinated.mult[2]] + internal.waning_to_S_short[i - 1 + (j - 1) * shared.dim.waning_to_S_short.mult[1] + (k - 1) * shared.dim.waning_to_S_short.mult[2]] - internal.waning_from_S_short[i - 1 + (j - 1) * shared.dim.waning_from_S_short.mult[1] + (k - 1) * shared.dim.waning_from_S_short.mult[2]] - internal.waning_from_S_long[i - 1 + (j - 1) * shared.dim.waning_from_S_long.mult[1] + (k - 1) * shared.dim.waning_from_S_long.mult[2]];
         }
       }
     }
@@ -1859,6 +1867,9 @@ public:
         }
       }
     }
+    for (size_t i = 1; i <= shared.dim.Npop_age.size; ++i) {
+      internal.Npop_age[i - 1] = dust2::array::sum<real_type>(internal.S_available.data(), shared.dim.S_available, {i - 1, i - 1}, {0, shared.dim.S_available.dim[1] - 1}, {0, shared.dim.S_available.dim[2] - 1}) + dust2::array::sum<real_type>(internal.E_available.data(), shared.dim.E_available, {i - 1, i - 1}, {0, shared.dim.E_available.dim[1] - 1}, {0, shared.dim.E_available.dim[2] - 1}) + dust2::array::sum<real_type>(internal.I_available.data(), shared.dim.I_available, {i - 1, i - 1}, {0, shared.dim.I_available.dim[1] - 1}, {0, shared.dim.I_available.dim[2] - 1}) + dust2::array::sum<real_type>(internal.R_available.data(), shared.dim.R_available, {i - 1, i - 1}, {0, shared.dim.R_available.dim[1] - 1}, {0, shared.dim.R_available.dim[2] - 1}) + dust2::array::sum<real_type>(internal.Is_available.data(), shared.dim.Is_available, {i - 1, i - 1}, {0, shared.dim.Is_available.dim[1] - 1}, {0, shared.dim.Is_available.dim[2] - 1}) + dust2::array::sum<real_type>(internal.Rc_available.data(), shared.dim.Rc_available, {i - 1, i - 1}, {0, shared.dim.Rc_available.dim[1] - 1}, {0, shared.dim.Rc_available.dim[2] - 1});
+    }
     for (size_t i = 1; i <= shared.dim.ngm_unfolded.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.ngm_unfolded.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.ngm_unfolded.dim[2]; ++k) {
@@ -1867,9 +1878,6 @@ public:
           }
         }
       }
-    }
-    for (size_t i = 1; i <= shared.dim.Npop_age.size; ++i) {
-      internal.Npop_age[i - 1] = dust2::array::sum<real_type>(internal.S_available.data(), shared.dim.S_available, {i - 1, i - 1}, {0, shared.dim.S_available.dim[1] - 1}, {0, shared.dim.S_available.dim[2] - 1}) + dust2::array::sum<real_type>(internal.E_available.data(), shared.dim.E_available, {i - 1, i - 1}, {0, shared.dim.E_available.dim[1] - 1}, {0, shared.dim.E_available.dim[2] - 1}) + dust2::array::sum<real_type>(internal.I_available.data(), shared.dim.I_available, {i - 1, i - 1}, {0, shared.dim.I_available.dim[1] - 1}, {0, shared.dim.I_available.dim[2] - 1}) + dust2::array::sum<real_type>(internal.R_available.data(), shared.dim.R_available, {i - 1, i - 1}, {0, shared.dim.R_available.dim[1] - 1}, {0, shared.dim.R_available.dim[2] - 1}) + dust2::array::sum<real_type>(internal.Is_available.data(), shared.dim.Is_available, {i - 1, i - 1}, {0, shared.dim.Is_available.dim[1] - 1}, {0, shared.dim.Is_available.dim[2] - 1}) + dust2::array::sum<real_type>(internal.Rc_available.data(), shared.dim.Rc_available, {i - 1, i - 1}, {0, shared.dim.Rc_available.dim[1] - 1}, {0, shared.dim.Rc_available.dim[2] - 1});
     }
     for (size_t i = 1; i <= shared.dim.lambda_raw.size; ++i) {
       internal.lambda_raw[i - 1] = (internal.Npop_age[i - 1] <= 0 ? 0 : dust2::array::sum<real_type>(internal.lambda_contact.data(), shared.dim.lambda_contact, {i - 1, i - 1}, {0, shared.dim.lambda_contact.dim[1] - 1}) / internal.Npop_age[i - 1]);
@@ -1933,12 +1941,27 @@ public:
         }
       }
     }
-    state_next[0] = N;
+    state_next[0] = (dust2::array::sum<real_type>(internal.S_death.data(), shared.dim.S_death) + dust2::array::sum<real_type>(internal.E_death.data(), shared.dim.E_death) + dust2::array::sum<real_type>(internal.I_death.data(), shared.dim.I_death) + dust2::array::sum<real_type>(internal.R_death.data(), shared.dim.R_death) + dust2::array::sum<real_type>(internal.Is_death.data(), shared.dim.Is_death) + dust2::array::sum<real_type>(internal.Rc_death.data(), shared.dim.Rc_death)) / N;
+    state_next[1] = dust2::array::sum<real_type>(internal.Births.data(), shared.dim.Births) / N;
+    state_next[2] = dust2::array::sum<real_type>(internal.vaccination_prop.data(), shared.dim.vaccination_prop);
+    state_next[3] = (shared.n_age <= 0 ? 0 : dust2::array::sum<real_type>(internal.ngm.data(), shared.dim.ngm) / shared.n_age);
+    state_next[4] = dust2::array::sum<real_type>(internal.seeded_actual.data(), shared.dim.seeded_actual);
+    state_next[5] = N;
     for (size_t i = 1; i <= shared.dim.seropositive.size; ++i) {
       state_next[i - 1 + shared.odin.offset.state[24]] = (dust2::array::sum<real_type>(S, shared.dim.S, {i - 1, i - 1}, {1, shared.n_vacc - 1}, {0, shared.dim.S.dim[2] - 1}) + dust2::array::sum<real_type>(I, shared.dim.I, {i - 1, i - 1}, {0, shared.dim.I.dim[1] - 1}, {0, shared.dim.I.dim[2] - 1}) + dust2::array::sum<real_type>(Is, shared.dim.Is, {i - 1, i - 1}, {0, shared.dim.Is.dim[1] - 1}, {0, shared.dim.Is.dim[2] - 1}) + dust2::array::sum<real_type>(R, shared.dim.R, {i - 1, i - 1}, {0, shared.dim.R.dim[1] - 1}, {0, shared.dim.R.dim[2] - 1}) + dust2::array::sum<real_type>(Rc, shared.dim.Rc, {i - 1, i - 1}, {0, shared.dim.Rc.dim[1] - 1}, {0, shared.dim.Rc.dim[2] - 1})) / internal.Npop_age[i - 1];
     }
-    state_next[1] = (dust2::array::sum<real_type>(internal.S_death.data(), shared.dim.S_death) + dust2::array::sum<real_type>(internal.E_death.data(), shared.dim.E_death) + dust2::array::sum<real_type>(internal.I_death.data(), shared.dim.I_death) + dust2::array::sum<real_type>(internal.R_death.data(), shared.dim.R_death) + dust2::array::sum<real_type>(internal.Is_death.data(), shared.dim.Is_death) + dust2::array::sum<real_type>(internal.Rc_death.data(), shared.dim.Rc_death)) / N;
-    state_next[2] = dust2::array::sum<real_type>(internal.Births.data(), shared.dim.Births) / N;
+    state_next[6] = dust2::array::sum<real_type>(internal.Births.data(), shared.dim.Births);
+    state_next[7] = dust2::array::sum<real_type>(internal.S_death.data(), shared.dim.S_death) + dust2::array::sum<real_type>(internal.E_death.data(), shared.dim.E_death) + dust2::array::sum<real_type>(internal.I_death.data(), shared.dim.I_death) + dust2::array::sum<real_type>(internal.R_death.data(), shared.dim.R_death) + dust2::array::sum<real_type>(internal.Is_death.data(), shared.dim.Is_death) + dust2::array::sum<real_type>(internal.Rc_death.data(), shared.dim.Rc_death);
+    state_next[8] = dust2::array::sum<real_type>(internal.vaccinating_out_of_S.data(), shared.dim.vaccinating_out_of_S);
+    state_next[9] = dust2::array::sum<real_type>(internal.vaccinating_out_of_S.data(), shared.dim.vaccinating_out_of_S) + dust2::array::sum<real_type>(internal.vaccinating_out_of_E.data(), shared.dim.vaccinating_out_of_E) + dust2::array::sum<real_type>(internal.vaccinating_out_of_I.data(), shared.dim.vaccinating_out_of_I) + dust2::array::sum<real_type>(internal.vaccinating_out_of_R.data(), shared.dim.vaccinating_out_of_R) + dust2::array::sum<real_type>(internal.vaccinating_out_of_Is.data(), shared.dim.vaccinating_out_of_Is) + dust2::array::sum<real_type>(internal.vaccinating_out_of_Rc.data(), shared.dim.vaccinating_out_of_Rc);
+    state_next[10] = dust2::array::sum<real_type>(internal.vaccinating_into_S.data(), shared.dim.vaccinating_into_S) + dust2::array::sum<real_type>(internal.vaccinating_into_E.data(), shared.dim.vaccinating_into_E) + dust2::array::sum<real_type>(internal.vaccinating_into_I.data(), shared.dim.vaccinating_into_I) + dust2::array::sum<real_type>(internal.vaccinating_into_R.data(), shared.dim.vaccinating_into_R) + dust2::array::sum<real_type>(internal.vaccinating_into_Is.data(), shared.dim.vaccinating_into_Is) + dust2::array::sum<real_type>(internal.vaccinating_into_Rc.data(), shared.dim.vaccinating_into_Rc);
+    state_next[11] = total_vaccinated_out - total_vaccinated_in;
+    state_next[12] = total_births - total_deaths;
+    state_next[13] = dust2::array::sum<real_type>(internal.aging_into_E.data(), shared.dim.aging_into_E) + dust2::array::sum<real_type>(internal.aging_into_I.data(), shared.dim.aging_into_I) + dust2::array::sum<real_type>(internal.aging_into_R.data(), shared.dim.aging_into_R) - dust2::array::sum<real_type>(internal.aging_out_of_E.data(), shared.dim.aging_out_of_E) - dust2::array::sum<real_type>(internal.aging_out_of_I.data(), shared.dim.aging_out_of_I) - dust2::array::sum<real_type>(internal.aging_out_of_R.data(), shared.dim.aging_out_of_R);
+    state_next[14] = dust2::array::sum<real_type>(internal.vaccinating_into_S.data(), shared.dim.vaccinating_into_S) - dust2::array::sum<real_type>(internal.vaccinating_out_of_S.data(), shared.dim.vaccinating_out_of_S);
+    state_next[15] = dust2::array::sum<real_type>(internal.waning_to_S_short.data(), shared.dim.waning_to_S_short) + dust2::array::sum<real_type>(internal.waning_to_S_long.data(), shared.dim.waning_to_S_long) + dust2::array::sum<real_type>(internal.waning_to_S_unvaccinated.data(), shared.dim.waning_to_S_unvaccinated) - dust2::array::sum<real_type>(internal.waning_from_S_short.data(), shared.dim.waning_from_S_short) - dust2::array::sum<real_type>(internal.waning_from_S_long.data(), shared.dim.waning_from_S_long);
+    state_next[16] = dust2::array::sum<real_type>(internal.reproductive_population.data(), shared.dim.reproductive_population);
+    state_next[17] = (dust2::array::sum<real_type>(internal.Births.data(), shared.dim.Births) - dust2::array::sum<real_type>(internal.S_death.data(), shared.dim.S_death)) / dust2::array::sum<real_type>(internal.reproductive_population.data(), shared.dim.reproductive_population);
     for (size_t i = 1; i <= shared.dim.new_case.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.new_case.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.new_case.dim[2]; ++k) {
@@ -1946,21 +1969,6 @@ public:
         }
       }
     }
-    state_next[3] = dust2::array::sum<real_type>(internal.vaccinating_out_of_S.data(), shared.dim.vaccinating_out_of_S);
-    state_next[4] = (shared.n_age <= 0 ? 0 : dust2::array::sum<real_type>(internal.ngm.data(), shared.dim.ngm) / shared.n_age);
-    state_next[5] = dust2::array::sum<real_type>(internal.seeded_actual.data(), shared.dim.seeded_actual);
-    state_next[6] = dust2::array::sum<real_type>(internal.vaccination_prop.data(), shared.dim.vaccination_prop);
-    state_next[7] = dust2::array::sum<real_type>(internal.S_death.data(), shared.dim.S_death) + dust2::array::sum<real_type>(internal.E_death.data(), shared.dim.E_death) + dust2::array::sum<real_type>(internal.I_death.data(), shared.dim.I_death) + dust2::array::sum<real_type>(internal.R_death.data(), shared.dim.R_death) + dust2::array::sum<real_type>(internal.Is_death.data(), shared.dim.Is_death) + dust2::array::sum<real_type>(internal.Rc_death.data(), shared.dim.Rc_death);
-    state_next[8] = dust2::array::sum<real_type>(internal.Births.data(), shared.dim.Births);
-    state_next[9] = dust2::array::sum<real_type>(internal.vaccinating_out_of_S.data(), shared.dim.vaccinating_out_of_S) + dust2::array::sum<real_type>(internal.vaccinating_out_of_E.data(), shared.dim.vaccinating_out_of_E) + dust2::array::sum<real_type>(internal.vaccinating_out_of_I.data(), shared.dim.vaccinating_out_of_I) + dust2::array::sum<real_type>(internal.vaccinating_out_of_R.data(), shared.dim.vaccinating_out_of_R) + dust2::array::sum<real_type>(internal.vaccinating_out_of_Is.data(), shared.dim.vaccinating_out_of_Is) + dust2::array::sum<real_type>(internal.vaccinating_out_of_Rc.data(), shared.dim.vaccinating_out_of_Rc);
-    state_next[10] = dust2::array::sum<real_type>(internal.vaccinating_into_S.data(), shared.dim.vaccinating_into_S) + dust2::array::sum<real_type>(internal.vaccinating_into_E.data(), shared.dim.vaccinating_into_E) + dust2::array::sum<real_type>(internal.vaccinating_into_I.data(), shared.dim.vaccinating_into_I) + dust2::array::sum<real_type>(internal.vaccinating_into_R.data(), shared.dim.vaccinating_into_R) + dust2::array::sum<real_type>(internal.vaccinating_into_Is.data(), shared.dim.vaccinating_into_Is) + dust2::array::sum<real_type>(internal.vaccinating_into_Rc.data(), shared.dim.vaccinating_into_Rc);
-    state_next[11] = total_births - total_deaths;
-    state_next[12] = total_vaccinated_out - total_vaccinated_in;
-    state_next[13] = dust2::array::sum<real_type>(internal.aging_into_E.data(), shared.dim.aging_into_E) + dust2::array::sum<real_type>(internal.aging_into_I.data(), shared.dim.aging_into_I) + dust2::array::sum<real_type>(internal.aging_into_R.data(), shared.dim.aging_into_R) - dust2::array::sum<real_type>(internal.aging_out_of_E.data(), shared.dim.aging_out_of_E) - dust2::array::sum<real_type>(internal.aging_out_of_I.data(), shared.dim.aging_out_of_I) - dust2::array::sum<real_type>(internal.aging_out_of_R.data(), shared.dim.aging_out_of_R);
-    state_next[14] = dust2::array::sum<real_type>(internal.vaccinating_into_S.data(), shared.dim.vaccinating_into_S) - dust2::array::sum<real_type>(internal.vaccinating_out_of_S.data(), shared.dim.vaccinating_out_of_S);
-    state_next[15] = dust2::array::sum<real_type>(internal.waning_to_S_long.data(), shared.dim.waning_to_S_long) + dust2::array::sum<real_type>(internal.waning_to_S_unvaccinated.data(), shared.dim.waning_to_S_unvaccinated) + dust2::array::sum<real_type>(internal.waning_to_S_short.data(), shared.dim.waning_to_S_short) - dust2::array::sum<real_type>(internal.waning_from_S_short.data(), shared.dim.waning_from_S_short) - dust2::array::sum<real_type>(internal.waning_from_S_long.data(), shared.dim.waning_from_S_long);
-    state_next[16] = (dust2::array::sum<real_type>(internal.Births.data(), shared.dim.Births) - dust2::array::sum<real_type>(internal.S_death.data(), shared.dim.S_death)) / dust2::array::sum<real_type>(internal.reproductive_population.data(), shared.dim.reproductive_population);
-    state_next[17] = dust2::array::sum<real_type>(internal.reproductive_population.data(), shared.dim.reproductive_population);
   }
   static real_type compare_data(real_type time, const real_type* state, const data_type& data, const shared_state& shared, internal_state& internal, rng_state_type& rng_state) {
     auto unless_nan = [](real_type x) { return std::isnan(x) ? 0 : x; };

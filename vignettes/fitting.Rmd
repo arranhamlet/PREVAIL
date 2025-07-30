@@ -43,7 +43,7 @@ Whether you're working with simulated data or real-world observations, this appr
 
 First we need to load all of the packages required. Note that there is the inclusion of **dust2** and **monty** which are used to fit the models.
 
-```{r load-packages}
+```{r load-packages, eval = F}
 if (!require("pacman")) install.packages("pacman")
 pacman::p_load(
   PREVAIL,   # The core package with custom data processing and model fitting
@@ -65,7 +65,7 @@ We construct this as a simple `data.frame` with one row, where:
 - `time` gives the time in days
 - `serosurvey` is a list-column containing a numeric vector of age-specific seroprevalence values
 
-```{r define-serodata}
+```{r define-serodata, eval = F}
 serodata <- data.frame(
   time = 365 * 4,
   serosurvey = I(list(rep(0.2, 17)))
@@ -83,7 +83,7 @@ This is done using the custom_data_process_wrapper() function, which handles all
 
 Here we’ll use Kenya ("KEN") as the example country and measles as the disease, with R0 set to 15:
 
-```{r generate-parameters}
+```{r generate-parameters, eval = F}
 params <- PREVAIL::custom_data_process_wrapper(
   iso = "KEN",
   disease = "measles",
@@ -109,7 +109,7 @@ We first create a character vector listing the parameter names. Then we define t
 
 We then use `monty_dsl()` from the **monty** package to define a prior distribution for each parameter. These are independent normal distributions with mean 1 and standard deviation 1, meaning we expect the true value to be around 1, but allow some flexibility.
 
-```{r define-priors}
+```{r define-priors, eval = F}
 parameters_to_fit <- c("reporting_rate", "R0_modifier")
 domain <- matrix(c(0, 2, 0, 2), nrow = 2, byrow = TRUE)
 
@@ -127,7 +127,7 @@ Now that we’ve defined the parameters to fit, their priors, and the bounds in 
 
 We use the function `fit_transmission_model()` to do this. It performs [**particle MCMC (PMCMC)**](https://www.sciencedirect.com/science/article/pii/S1755436519300301) to estimate the parameter values that best explain the serosurvey data. Under the hood, it uses the **dust2** model engine to simulate trajectories, and the **monty** package to handle priors, domains, and sampling.
 
-```{r fit1}
+```{r fit1, eval = F}
 fit1 <- fit_transmission_model(
   parameters = params,
   serodata = serodata,
@@ -166,7 +166,7 @@ Once the initial PMCMC run has completed, we can inspect the results visually us
 
 The output `fit1` contains a list of `ggplot2` objects under `fit1$plots`, including both the model time series and the age-specific fit to the serosurvey.
 
-```{r fit1-plots}
+```{r fit1-plots, eval = F}
 print(fit1$plots$combined)
 print(fit1$plots$sero)
 ```
@@ -190,7 +190,7 @@ By doing this, we can centre our second fit around the most likely parameter val
 
 We extract the MAP and SDs like this:
 
-```{r map-values}
+```{r map-values, eval = F}
 samples_mat <- t(drop(fit1$samples$pars[, , 1]))
 colnames(samples_mat) <- c("reporting_rate", "R0_modifier")
 
@@ -216,7 +216,7 @@ We also want to update the **proposal distribution**, which determines how new p
 
 We update everything like this:
 
-```{r refined-prior}
+```{r refined-prior, eval = F}
 domain2 <- generate_domain_from_map(map_vals, margin = 0.25)
 
 sd_from_domain <- apply(domain2, 1, function(x) diff(x) / 2)
@@ -249,7 +249,7 @@ The goal here is not to start from scratch but to **focus the search** in the re
 
 We also supply an `initial` parameter, which sets the starting point of the MCMC chain to the MAP estimate from the first run. This avoids wasting steps early on trying to get to the right part of parameter space.
 
-```{r fit2}
+```{r fit2, eval = F}
 fit2 <- fit_transmission_model(
   parameters = params,
   serodata = serodata,
@@ -281,7 +281,7 @@ Once both PMCMC runs are complete, it’s helpful to **visually compare the outp
 
 We’ll use trace plots to check convergence and overlay the seroprevalence fits using `combine_ggplot()`.
 
-```{r compare-fits}
+```{r compare-fits, eval=F}
 fit1$plots$trace + ggtitle("Fit 1: Wide Prior")
 fit2$plots$trace + ggtitle("Fit 2: MAP-Centered Prior")
 

@@ -297,7 +297,7 @@ We can see here that our 2nd attempt at fitting produced a much better fit than 
 
 We can also print the MAP estimates from the first round:
 
-```{r print-map}
+```{r print-map, eval = F}
 cat("MAP Estimates from Fit 1:\n")
 print(map_vals)
 ```

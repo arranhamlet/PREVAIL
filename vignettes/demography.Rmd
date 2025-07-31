@@ -2,7 +2,7 @@
 title: "Customising demography"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Demography}
+  %\VignetteIndexEntry{demography}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 

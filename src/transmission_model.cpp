@@ -212,7 +212,6 @@ public:
       dust2::array::dimensions<3> recovered_Is_to_R;
       dust2::array::dimensions<3> recovered_Is_to_Rc;
       dust2::array::dimensions<2> Npop_age_risk;
-      dust2::array::dimensions<1> compartment_share;
       dust2::array::dimensions<1> tt_seeded;
       dust2::array::dimensions<4> seeded;
       dust2::array::dimensions<3> t_seeded;
@@ -331,7 +330,6 @@ public:
     std::vector<real_type> vaccinating_into_Is;
     std::vector<real_type> vaccinating_into_Rc;
     std::vector<real_type> migration_adjusted;
-    std::vector<real_type> compartment_share;
     std::vector<real_type> Npop_background_death;
     std::vector<real_type> prop_maternal_vaccinated;
     std::vector<real_type> prop_maternal_natural;
@@ -591,7 +589,6 @@ public:
     dim.recovered_Is_to_R.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
     dim.recovered_Is_to_Rc.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
     dim.Npop_age_risk.set({static_cast<size_t>(n_age), static_cast<size_t>(n_risk)});
-    dim.compartment_share.set({static_cast<size_t>(n_age)});
     dim.tt_seeded.set({static_cast<size_t>(no_seeded_changes)});
     dim.seeded.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk), static_cast<size_t>(no_seeded_changes)});
     dim.t_seeded.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
@@ -744,7 +741,6 @@ public:
     std::vector<real_type> vaccinating_into_Is(shared.dim.vaccinating_into_Is.size);
     std::vector<real_type> vaccinating_into_Rc(shared.dim.vaccinating_into_Rc.size);
     std::vector<real_type> migration_adjusted(shared.dim.migration_adjusted.size);
-    std::vector<real_type> compartment_share(shared.dim.compartment_share.size);
     std::vector<real_type> Npop_background_death(shared.dim.Npop_background_death.size);
     std::vector<real_type> prop_maternal_vaccinated(shared.dim.prop_maternal_vaccinated.size);
     std::vector<real_type> prop_maternal_natural(shared.dim.prop_maternal_natural.size);
@@ -829,7 +825,7 @@ public:
     std::vector<real_type> ngm(shared.dim.ngm.size);
     std::vector<real_type> lambda(shared.dim.lambda.size);
     std::vector<real_type> lambda_S(shared.dim.lambda_S.size);
-    return internal_state{Npop_age_risk, vaccinated_mums, antibody_mums, aging_into_E, aging_out_of_E, aging_into_I, aging_out_of_I, aging_into_R, aging_out_of_R, aging_into_Is, aging_out_of_Is, aging_into_Rc, aging_out_of_Rc, E_after_aging, I_after_aging, R_after_aging, Is_after_aging, Rc_after_aging, migration, migration_distribution, death_int, repro_weight_now, birth_int, vaccination_prop, t_seeded, waning_R, waning_Rc, vaccinating_out_of_E, vaccinating_out_of_I, vaccinating_out_of_R, vaccinating_out_of_Is, vaccinating_out_of_Rc, background_death, reproductive_population, seeded_actual, vaccinating_into_E, vaccinating_into_I, vaccinating_into_R, vaccinating_into_Is, vaccinating_into_Rc, migration_adjusted, compartment_share, Npop_background_death, prop_maternal_vaccinated, prop_maternal_natural, infectious_period, E_after_vaccination, I_after_vaccination, R_after_vaccination, Is_after_vaccination, Rc_after_vaccination, birth_rate, beta, waning_from_E_short, waning_from_E_long, waning_from_I_short, waning_from_I_long, waning_from_R_short, waning_from_R_long, waning_from_Is_short, waning_from_Is_long, waning_from_Rc_short, waning_from_Rc_long, migration_S, migration_E, migration_I, migration_R, migration_Is, migration_Rc, Births, beta_updated, aging_into_S, waning_to_E_long, waning_to_E_unvaccinated, waning_to_I_long, waning_to_I_unvaccinated, waning_to_R_long, waning_to_R_unvaccinated, waning_to_Is_long, waning_to_Is_unvaccinated, waning_to_Rc_long, waning_to_Rc_unvaccinated, aging_out_of_S, E_after_waning, I_after_waning, R_after_waning, Is_after_waning, Rc_after_waning, E_available, I_available, R_available, Rc_available, Is_available, S_after_aging, incubated, recovered_I_to_R, recovered_from_Is, E_death, I_death, R_death, Is_death, Rc_death, vaccinating_out_of_S, inf_weighted, into_I, recovered_Is_to_R, vaccinating_into_S, infectious_source, into_Is, recovered_Is_to_Rc, S_after_vaccination, lambda_contact, waning_from_S_short, waning_from_S_long, waning_to_S_long, waning_to_S_unvaccinated, waning_to_S_short, S_after_waning, S_available, S_death, Npop_age, ngm_unfolded, lambda_raw, ngm, lambda, lambda_S};
+    return internal_state{Npop_age_risk, vaccinated_mums, antibody_mums, aging_into_E, aging_out_of_E, aging_into_I, aging_out_of_I, aging_into_R, aging_out_of_R, aging_into_Is, aging_out_of_Is, aging_into_Rc, aging_out_of_Rc, E_after_aging, I_after_aging, R_after_aging, Is_after_aging, Rc_after_aging, migration, migration_distribution, death_int, repro_weight_now, birth_int, vaccination_prop, t_seeded, waning_R, waning_Rc, vaccinating_out_of_E, vaccinating_out_of_I, vaccinating_out_of_R, vaccinating_out_of_Is, vaccinating_out_of_Rc, background_death, reproductive_population, seeded_actual, vaccinating_into_E, vaccinating_into_I, vaccinating_into_R, vaccinating_into_Is, vaccinating_into_Rc, migration_adjusted, Npop_background_death, prop_maternal_vaccinated, prop_maternal_natural, infectious_period, E_after_vaccination, I_after_vaccination, R_after_vaccination, Is_after_vaccination, Rc_after_vaccination, birth_rate, beta, waning_from_E_short, waning_from_E_long, waning_from_I_short, waning_from_I_long, waning_from_R_short, waning_from_R_long, waning_from_Is_short, waning_from_Is_long, waning_from_Rc_short, waning_from_Rc_long, migration_S, migration_E, migration_I, migration_R, migration_Is, migration_Rc, Births, beta_updated, aging_into_S, waning_to_E_long, waning_to_E_unvaccinated, waning_to_I_long, waning_to_I_unvaccinated, waning_to_R_long, waning_to_R_unvaccinated, waning_to_Is_long, waning_to_Is_unvaccinated, waning_to_Rc_long, waning_to_Rc_unvaccinated, aging_out_of_S, E_after_waning, I_after_waning, R_after_waning, Is_after_waning, Rc_after_waning, E_available, I_available, R_available, Rc_available, Is_available, S_after_aging, incubated, recovered_I_to_R, recovered_from_Is, E_death, I_death, R_death, Is_death, Rc_death, vaccinating_out_of_S, inf_weighted, into_I, recovered_Is_to_R, vaccinating_into_S, infectious_source, into_Is, recovered_Is_to_Rc, S_after_vaccination, lambda_contact, waning_from_S_short, waning_from_S_long, waning_to_S_long, waning_to_S_unvaccinated, waning_to_S_short, S_after_waning, S_available, S_death, Npop_age, ngm_unfolded, lambda_raw, ngm, lambda, lambda_S};
   }
   static data_type build_data(cpp11::list data, const shared_state& shared) {
     auto serosurvey = std::vector<real_type>(shared.dim.serosurvey.size);
@@ -973,6 +969,12 @@ public:
     const auto total_vaccinated_out = state[9];
     const auto total_vaccinated_in = state[10];
     const real_type N = dust2::array::sum<real_type>(S, shared.dim.S) + dust2::array::sum<real_type>(E, shared.dim.E) + dust2::array::sum<real_type>(I, shared.dim.I) + dust2::array::sum<real_type>(R, shared.dim.R) + dust2::array::sum<real_type>(Is, shared.dim.Is) + dust2::array::sum<real_type>(Rc, shared.dim.Rc);
+    const real_type migration_prop_S = dust2::array::sum<real_type>(S, shared.dim.S) / N;
+    const real_type migration_prop_E = dust2::array::sum<real_type>(E, shared.dim.E) / N;
+    const real_type migration_prop_I = dust2::array::sum<real_type>(I, shared.dim.I) / N;
+    const real_type migration_prop_R = dust2::array::sum<real_type>(R, shared.dim.R) / N;
+    const real_type migration_prop_Is = dust2::array::sum<real_type>(Is, shared.dim.Is) / N;
+    const real_type migration_prop_Rc = dust2::array::sum<real_type>(Rc, shared.dim.Rc) / N;
     for (size_t i = 1; i <= shared.dim.Npop_age_risk.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.Npop_age_risk.dim[1]; ++j) {
         internal.Npop_age_risk[i - 1 + (j - 1) * shared.dim.Npop_age_risk.mult[1]] = dust2::array::sum<real_type>(S, shared.dim.S, {i - 1, i - 1}, {0, shared.dim.S.dim[1] - 1}, {j - 1, j - 1}) + dust2::array::sum<real_type>(E, shared.dim.E, {i - 1, i - 1}, {0, shared.dim.E.dim[1] - 1}, {j - 1, j - 1}) + dust2::array::sum<real_type>(I, shared.dim.I, {i - 1, i - 1}, {0, shared.dim.I.dim[1] - 1}, {j - 1, j - 1}) + dust2::array::sum<real_type>(R, shared.dim.R, {i - 1, i - 1}, {0, shared.dim.R.dim[1] - 1}, {j - 1, j - 1}) + dust2::array::sum<real_type>(Is, shared.dim.Is, {i - 1, i - 1}, {0, shared.dim.Is.dim[1] - 1}, {j - 1, j - 1}) + dust2::array::sum<real_type>(Rc, shared.dim.Rc, {i - 1, i - 1}, {0, shared.dim.Rc.dim[1] - 1}, {j - 1, j - 1});
@@ -1147,7 +1149,6 @@ public:
       }
     }
     const real_type pos_neg_migration = (dust2::array::sum<real_type>(internal.migration.data(), shared.dim.migration) < 0 ? -1 : 1);
-    const real_type compartment_total_weight = dust2::array::sum<real_type>(internal.migration_distribution.data(), shared.dim.migration_distribution);
     for (size_t i = 1; i <= shared.dim.background_death.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.background_death.dim[1]; ++j) {
         internal.background_death[i - 1 + (j - 1) * shared.dim.background_death.mult[1]] = (shared.simp_birth_death == 1 ? monty::math::max<real_type>(monty::math::min<real_type>(shared.crude_death[i - 1 + (j - 1) * shared.dim.crude_death.mult[1]], 1), 0) : monty::math::max<real_type>(monty::math::min<real_type>(internal.death_int[i - 1 + (j - 1) * shared.dim.death_int.mult[1]], 1), 0));
@@ -1265,9 +1266,6 @@ public:
         }
       }
     }
-    for (size_t i = 1; i <= shared.dim.compartment_share.size; ++i) {
-      internal.compartment_share[i - 1] = internal.migration_distribution[i - 1] / compartment_total_weight;
-    }
     for (size_t i = 1; i <= shared.dim.Npop_background_death.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.Npop_background_death.dim[1]; ++j) {
         internal.Npop_background_death[i - 1 + (j - 1) * shared.dim.Npop_background_death.mult[1]] = (internal.Npop_age_risk[i - 1 + (j - 1) * shared.dim.Npop_age_risk.mult[1]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, internal.Npop_age_risk[i - 1 + (j - 1) * shared.dim.Npop_age_risk.mult[1]], monty::math::max<real_type>(monty::math::min<real_type>(internal.background_death[i - 1 + (j - 1) * shared.dim.background_death.mult[1]], 1), 0)));
@@ -1321,7 +1319,12 @@ public:
         }
       }
     }
-    const real_type migration_rate = dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted) / N;
+    const real_type migration_occuring_S = (internal.migration_distribution[0] <= 0 || dust2::array::sum<real_type>(S, shared.dim.S) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), migration_prop_S));
+    const real_type migration_occuring_E = (internal.migration_distribution[0] <= 0 || dust2::array::sum<real_type>(E, shared.dim.E) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), migration_prop_E));
+    const real_type migration_occuring_I = (internal.migration_distribution[0] <= 0 || dust2::array::sum<real_type>(I, shared.dim.I) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), migration_prop_I));
+    const real_type migration_occuring_R = (internal.migration_distribution[0] <= 0 || dust2::array::sum<real_type>(R, shared.dim.R) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), migration_prop_R));
+    const real_type migration_occuring_Is = (internal.migration_distribution[0] <= 0 || dust2::array::sum<real_type>(Is, shared.dim.Is) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), migration_prop_Is));
+    const real_type migration_occuring_Rc = (internal.migration_distribution[0] <= 0 || dust2::array::sum<real_type>(Rc, shared.dim.Rc) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), migration_prop_Rc));
     for (size_t i = 1; i <= shared.dim.birth_rate.size; ++i) {
       internal.birth_rate[i - 1] = (internal.reproductive_population[i - 1] <= 0 ? 0 : dust2::array::sum<real_type>(internal.Npop_background_death.data(), shared.dim.Npop_background_death, {i - 1, i - 1}, {0, shared.dim.Npop_background_death.dim[1] - 1}) / internal.reproductive_population[i - 1]);
     }
@@ -1405,42 +1408,42 @@ public:
     for (size_t i = 1; i <= shared.dim.migration_S.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.migration_S.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.migration_S.dim[2]; ++k) {
-          internal.migration_S[i - 1 + (j - 1) * shared.dim.migration_S.mult[1] + (k - 1) * shared.dim.migration_S.mult[2]] = (S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]], migration_rate * internal.compartment_share[0]));
+          internal.migration_S[i - 1 + (j - 1) * shared.dim.migration_S.mult[1] + (k - 1) * shared.dim.migration_S.mult[2]] = (migration_occuring_S <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, migration_occuring_S, S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] / dust2::array::sum<real_type>(S, shared.dim.S)));
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.migration_E.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.migration_E.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.migration_E.dim[2]; ++k) {
-          internal.migration_E[i - 1 + (j - 1) * shared.dim.migration_E.mult[1] + (k - 1) * shared.dim.migration_E.mult[2]] = (E[i - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, E[i - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2]], migration_rate * internal.compartment_share[1]));
+          internal.migration_E[i - 1 + (j - 1) * shared.dim.migration_E.mult[1] + (k - 1) * shared.dim.migration_E.mult[2]] = (migration_occuring_E <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, migration_occuring_E, E[i - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2]] / dust2::array::sum<real_type>(E, shared.dim.E)));
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.migration_I.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.migration_I.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.migration_I.dim[2]; ++k) {
-          internal.migration_I[i - 1 + (j - 1) * shared.dim.migration_I.mult[1] + (k - 1) * shared.dim.migration_I.mult[2]] = (I[i - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, I[i - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2]], migration_rate * internal.compartment_share[2]));
+          internal.migration_I[i - 1 + (j - 1) * shared.dim.migration_I.mult[1] + (k - 1) * shared.dim.migration_I.mult[2]] = (migration_occuring_I <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, migration_occuring_I, I[i - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2]] / dust2::array::sum<real_type>(I, shared.dim.I)));
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.migration_R.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.migration_R.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.migration_R.dim[2]; ++k) {
-          internal.migration_R[i - 1 + (j - 1) * shared.dim.migration_R.mult[1] + (k - 1) * shared.dim.migration_R.mult[2]] = (R[i - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, R[i - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2]], migration_rate * internal.compartment_share[3]));
+          internal.migration_R[i - 1 + (j - 1) * shared.dim.migration_R.mult[1] + (k - 1) * shared.dim.migration_R.mult[2]] = (migration_occuring_R <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, migration_occuring_R, R[i - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2]] / dust2::array::sum<real_type>(R, shared.dim.R)));
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.migration_Is.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.migration_Is.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.migration_Is.dim[2]; ++k) {
-          internal.migration_Is[i - 1 + (j - 1) * shared.dim.migration_Is.mult[1] + (k - 1) * shared.dim.migration_Is.mult[2]] = (Is[i - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, Is[i - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2]], migration_rate * internal.compartment_share[4]));
+          internal.migration_Is[i - 1 + (j - 1) * shared.dim.migration_Is.mult[1] + (k - 1) * shared.dim.migration_Is.mult[2]] = (migration_occuring_Is <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, migration_occuring_Is, Is[i - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2]] / dust2::array::sum<real_type>(Is, shared.dim.Is)));
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.migration_Rc.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.migration_Rc.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.migration_Rc.dim[2]; ++k) {
-          internal.migration_Rc[i - 1 + (j - 1) * shared.dim.migration_Rc.mult[1] + (k - 1) * shared.dim.migration_Rc.mult[2]] = (Rc[i - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, Rc[i - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2]], migration_rate * internal.compartment_share[5]));
+          internal.migration_Rc[i - 1 + (j - 1) * shared.dim.migration_Rc.mult[1] + (k - 1) * shared.dim.migration_Rc.mult[2]] = (migration_occuring_Rc <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, migration_occuring_Rc, Rc[i - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2]] / dust2::array::sum<real_type>(Rc, shared.dim.Rc)));
         }
       }
     }

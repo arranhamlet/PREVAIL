@@ -163,12 +163,6 @@ public:
       dust2::array::dimensions<3> migration_R;
       dust2::array::dimensions<3> migration_Is;
       dust2::array::dimensions<3> migration_Rc;
-      dust2::array::dimensions<3> migration_occuring_S;
-      dust2::array::dimensions<3> migration_occuring_E;
-      dust2::array::dimensions<3> migration_occuring_I;
-      dust2::array::dimensions<3> migration_occuring_R;
-      dust2::array::dimensions<3> migration_occuring_Is;
-      dust2::array::dimensions<3> migration_occuring_Rc;
       dust2::array::dimensions<1> Births;
       dust2::array::dimensions<1> reproductive_population;
       dust2::array::dimensions<1> birth_rate;
@@ -345,12 +339,6 @@ public:
     std::vector<real_type> R_after_vaccination;
     std::vector<real_type> Is_after_vaccination;
     std::vector<real_type> Rc_after_vaccination;
-    std::vector<real_type> migration_occuring_S;
-    std::vector<real_type> migration_occuring_E;
-    std::vector<real_type> migration_occuring_I;
-    std::vector<real_type> migration_occuring_R;
-    std::vector<real_type> migration_occuring_Is;
-    std::vector<real_type> migration_occuring_Rc;
     std::vector<real_type> birth_rate;
     std::vector<real_type> beta;
     std::vector<real_type> waning_from_E_short;
@@ -554,12 +542,6 @@ public:
     dim.migration_R.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
     dim.migration_Is.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
     dim.migration_Rc.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.migration_occuring_S.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.migration_occuring_E.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.migration_occuring_I.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.migration_occuring_R.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.migration_occuring_Is.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    dim.migration_occuring_Rc.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
     dim.Births.set({static_cast<size_t>(n_age)});
     dim.reproductive_population.set({static_cast<size_t>(n_age)});
     dim.birth_rate.set({static_cast<size_t>(n_risk)});
@@ -770,12 +752,6 @@ public:
     std::vector<real_type> R_after_vaccination(shared.dim.R_after_vaccination.size);
     std::vector<real_type> Is_after_vaccination(shared.dim.Is_after_vaccination.size);
     std::vector<real_type> Rc_after_vaccination(shared.dim.Rc_after_vaccination.size);
-    std::vector<real_type> migration_occuring_S(shared.dim.migration_occuring_S.size);
-    std::vector<real_type> migration_occuring_E(shared.dim.migration_occuring_E.size);
-    std::vector<real_type> migration_occuring_I(shared.dim.migration_occuring_I.size);
-    std::vector<real_type> migration_occuring_R(shared.dim.migration_occuring_R.size);
-    std::vector<real_type> migration_occuring_Is(shared.dim.migration_occuring_Is.size);
-    std::vector<real_type> migration_occuring_Rc(shared.dim.migration_occuring_Rc.size);
     std::vector<real_type> birth_rate(shared.dim.birth_rate.size);
     std::vector<real_type> beta(shared.dim.beta.size);
     std::vector<real_type> waning_from_E_short(shared.dim.waning_from_E_short.size);
@@ -851,7 +827,7 @@ public:
     std::vector<real_type> ngm(shared.dim.ngm.size);
     std::vector<real_type> lambda(shared.dim.lambda.size);
     std::vector<real_type> lambda_S(shared.dim.lambda_S.size);
-    return internal_state{Npop_age_risk, vaccinated_mums, antibody_mums, aging_into_E, aging_out_of_E, aging_into_I, aging_out_of_I, aging_into_R, aging_out_of_R, aging_into_Is, aging_out_of_Is, aging_into_Rc, aging_out_of_Rc, E_after_aging, I_after_aging, R_after_aging, Is_after_aging, Rc_after_aging, migration, migration_distribution, death_int, repro_weight_now, birth_int, vaccination_prop, t_seeded, waning_R, waning_Rc, vaccinating_out_of_E, vaccinating_out_of_I, vaccinating_out_of_R, vaccinating_out_of_Is, vaccinating_out_of_Rc, background_death, reproductive_population, seeded_actual, vaccinating_into_E, vaccinating_into_I, vaccinating_into_R, vaccinating_into_Is, vaccinating_into_Rc, migration_adjusted, compartment_share, Npop_background_death, prop_maternal_vaccinated, prop_maternal_natural, infectious_period, E_after_vaccination, I_after_vaccination, R_after_vaccination, Is_after_vaccination, Rc_after_vaccination, migration_occuring_S, migration_occuring_E, migration_occuring_I, migration_occuring_R, migration_occuring_Is, migration_occuring_Rc, birth_rate, beta, waning_from_E_short, waning_from_E_long, waning_from_I_short, waning_from_I_long, waning_from_R_short, waning_from_R_long, waning_from_Is_short, waning_from_Is_long, waning_from_Rc_short, waning_from_Rc_long, migration_S, migration_E, migration_I, migration_R, migration_Is, migration_Rc, Births, beta_updated, aging_into_S, waning_to_E_long, waning_to_E_unvaccinated, waning_to_I_long, waning_to_I_unvaccinated, waning_to_R_long, waning_to_R_unvaccinated, waning_to_Is_long, waning_to_Is_unvaccinated, waning_to_Rc_long, waning_to_Rc_unvaccinated, aging_out_of_S, E_after_waning, I_after_waning, R_after_waning, Is_after_waning, Rc_after_waning, E_available, I_available, R_available, Rc_available, Is_available, S_after_aging, incubated, recovered_I_to_R, recovered_from_Is, E_death, I_death, R_death, Is_death, Rc_death, vaccinating_out_of_S, inf_weighted, into_I, recovered_Is_to_R, vaccinating_into_S, infectious_source, into_Is, recovered_Is_to_Rc, S_after_vaccination, lambda_contact, waning_from_S_short, waning_from_S_long, waning_to_S_long, waning_to_S_unvaccinated, waning_to_S_short, S_after_waning, S_available, S_death, Npop_age, ngm_unfolded, lambda_raw, ngm, lambda, lambda_S};
+    return internal_state{Npop_age_risk, vaccinated_mums, antibody_mums, aging_into_E, aging_out_of_E, aging_into_I, aging_out_of_I, aging_into_R, aging_out_of_R, aging_into_Is, aging_out_of_Is, aging_into_Rc, aging_out_of_Rc, E_after_aging, I_after_aging, R_after_aging, Is_after_aging, Rc_after_aging, migration, migration_distribution, death_int, repro_weight_now, birth_int, vaccination_prop, t_seeded, waning_R, waning_Rc, vaccinating_out_of_E, vaccinating_out_of_I, vaccinating_out_of_R, vaccinating_out_of_Is, vaccinating_out_of_Rc, background_death, reproductive_population, seeded_actual, vaccinating_into_E, vaccinating_into_I, vaccinating_into_R, vaccinating_into_Is, vaccinating_into_Rc, migration_adjusted, compartment_share, Npop_background_death, prop_maternal_vaccinated, prop_maternal_natural, infectious_period, E_after_vaccination, I_after_vaccination, R_after_vaccination, Is_after_vaccination, Rc_after_vaccination, birth_rate, beta, waning_from_E_short, waning_from_E_long, waning_from_I_short, waning_from_I_long, waning_from_R_short, waning_from_R_long, waning_from_Is_short, waning_from_Is_long, waning_from_Rc_short, waning_from_Rc_long, migration_S, migration_E, migration_I, migration_R, migration_Is, migration_Rc, Births, beta_updated, aging_into_S, waning_to_E_long, waning_to_E_unvaccinated, waning_to_I_long, waning_to_I_unvaccinated, waning_to_R_long, waning_to_R_unvaccinated, waning_to_Is_long, waning_to_Is_unvaccinated, waning_to_Rc_long, waning_to_Rc_unvaccinated, aging_out_of_S, E_after_waning, I_after_waning, R_after_waning, Is_after_waning, Rc_after_waning, E_available, I_available, R_available, Rc_available, Is_available, S_after_aging, incubated, recovered_I_to_R, recovered_from_Is, E_death, I_death, R_death, Is_death, Rc_death, vaccinating_out_of_S, inf_weighted, into_I, recovered_Is_to_R, vaccinating_into_S, infectious_source, into_Is, recovered_Is_to_Rc, S_after_vaccination, lambda_contact, waning_from_S_short, waning_from_S_long, waning_to_S_long, waning_to_S_unvaccinated, waning_to_S_short, S_after_waning, S_available, S_death, Npop_age, ngm_unfolded, lambda_raw, ngm, lambda, lambda_S};
   }
   static data_type build_data(cpp11::list data, const shared_state& shared) {
     auto serosurvey = std::vector<real_type>(shared.dim.serosurvey.size);
@@ -1343,48 +1319,7 @@ public:
         }
       }
     }
-    for (size_t i = 1; i <= shared.dim.migration_occuring_S.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.migration_occuring_S.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.migration_occuring_S.dim[2]; ++k) {
-          internal.migration_occuring_S[i - 1 + (j - 1) * shared.dim.migration_occuring_S.mult[1] + (k - 1) * shared.dim.migration_occuring_S.mult[2]] = (internal.migration_distribution[0] <= 0 || dust2::array::sum<real_type>(S, shared.dim.S) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] / dust2::array::sum<real_type>(S, shared.dim.S) * internal.compartment_share[0]));
-        }
-      }
-    }
-    for (size_t i = 1; i <= shared.dim.migration_occuring_E.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.migration_occuring_E.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.migration_occuring_E.dim[2]; ++k) {
-          internal.migration_occuring_E[i - 1 + (j - 1) * shared.dim.migration_occuring_E.mult[1] + (k - 1) * shared.dim.migration_occuring_E.mult[2]] = (internal.migration_distribution[1] <= 0 || dust2::array::sum<real_type>(E, shared.dim.E) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), E[i - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2]] / dust2::array::sum<real_type>(E, shared.dim.E) * internal.compartment_share[1]));
-        }
-      }
-    }
-    for (size_t i = 1; i <= shared.dim.migration_occuring_I.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.migration_occuring_I.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.migration_occuring_I.dim[2]; ++k) {
-          internal.migration_occuring_I[i - 1 + (j - 1) * shared.dim.migration_occuring_I.mult[1] + (k - 1) * shared.dim.migration_occuring_I.mult[2]] = (internal.migration_distribution[2] <= 0 || dust2::array::sum<real_type>(I, shared.dim.I) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), I[i - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2]] / dust2::array::sum<real_type>(I, shared.dim.I) * internal.compartment_share[2]));
-        }
-      }
-    }
-    for (size_t i = 1; i <= shared.dim.migration_occuring_R.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.migration_occuring_R.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.migration_occuring_R.dim[2]; ++k) {
-          internal.migration_occuring_R[i - 1 + (j - 1) * shared.dim.migration_occuring_R.mult[1] + (k - 1) * shared.dim.migration_occuring_R.mult[2]] = (internal.migration_distribution[3] <= 0 || dust2::array::sum<real_type>(R, shared.dim.R) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), R[i - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2]] / dust2::array::sum<real_type>(R, shared.dim.R) * internal.compartment_share[3]));
-        }
-      }
-    }
-    for (size_t i = 1; i <= shared.dim.migration_occuring_Is.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.migration_occuring_Is.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.migration_occuring_Is.dim[2]; ++k) {
-          internal.migration_occuring_Is[i - 1 + (j - 1) * shared.dim.migration_occuring_Is.mult[1] + (k - 1) * shared.dim.migration_occuring_Is.mult[2]] = (internal.migration_distribution[4] <= 0 || dust2::array::sum<real_type>(Is, shared.dim.Is) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), Is[i - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2]] / dust2::array::sum<real_type>(Is, shared.dim.Is) * internal.compartment_share[4]));
-        }
-      }
-    }
-    for (size_t i = 1; i <= shared.dim.migration_occuring_Rc.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.migration_occuring_Rc.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.migration_occuring_Rc.dim[2]; ++k) {
-          internal.migration_occuring_Rc[i - 1 + (j - 1) * shared.dim.migration_occuring_Rc.mult[1] + (k - 1) * shared.dim.migration_occuring_Rc.mult[2]] = (internal.migration_distribution[5] <= 0 || dust2::array::sum<real_type>(Rc, shared.dim.Rc) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), Rc[i - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2]] / dust2::array::sum<real_type>(Rc, shared.dim.Rc) * internal.compartment_share[5]));
-        }
-      }
-    }
+    const real_type migration_rate = dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted) / N;
     for (size_t i = 1; i <= shared.dim.birth_rate.size; ++i) {
       internal.birth_rate[i - 1] = (internal.reproductive_population[i - 1] <= 0 ? 0 : dust2::array::sum<real_type>(internal.Npop_background_death.data(), shared.dim.Npop_background_death, {i - 1, i - 1}, {0, shared.dim.Npop_background_death.dim[1] - 1}) / internal.reproductive_population[i - 1]);
     }
@@ -1468,42 +1403,42 @@ public:
     for (size_t i = 1; i <= shared.dim.migration_S.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.migration_S.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.migration_S.dim[2]; ++k) {
-          internal.migration_S[i - 1 + (j - 1) * shared.dim.migration_S.mult[1] + (k - 1) * shared.dim.migration_S.mult[2]] = (internal.migration_distribution[0] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, internal.migration_occuring_S[i - 1 + (j - 1) * shared.dim.migration_occuring_S.mult[1] + (k - 1) * shared.dim.migration_occuring_S.mult[2]], internal.migration_distribution[0]) / compartment_total_weight);
+          internal.migration_S[i - 1 + (j - 1) * shared.dim.migration_S.mult[1] + (k - 1) * shared.dim.migration_S.mult[2]] = (S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]], migration_rate * internal.compartment_share[0]));
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.migration_E.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.migration_E.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.migration_E.dim[2]; ++k) {
-          internal.migration_E[i - 1 + (j - 1) * shared.dim.migration_E.mult[1] + (k - 1) * shared.dim.migration_E.mult[2]] = (internal.migration_distribution[1] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, internal.migration_occuring_E[i - 1 + (j - 1) * shared.dim.migration_occuring_E.mult[1] + (k - 1) * shared.dim.migration_occuring_E.mult[2]], internal.migration_distribution[1]) / compartment_total_weight);
+          internal.migration_E[i - 1 + (j - 1) * shared.dim.migration_E.mult[1] + (k - 1) * shared.dim.migration_E.mult[2]] = (E[i - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, E[i - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2]], migration_rate * internal.compartment_share[1]));
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.migration_I.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.migration_I.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.migration_I.dim[2]; ++k) {
-          internal.migration_I[i - 1 + (j - 1) * shared.dim.migration_I.mult[1] + (k - 1) * shared.dim.migration_I.mult[2]] = (internal.migration_distribution[2] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, internal.migration_occuring_I[i - 1 + (j - 1) * shared.dim.migration_occuring_I.mult[1] + (k - 1) * shared.dim.migration_occuring_I.mult[2]], internal.migration_distribution[2]) / compartment_total_weight);
+          internal.migration_I[i - 1 + (j - 1) * shared.dim.migration_I.mult[1] + (k - 1) * shared.dim.migration_I.mult[2]] = (I[i - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, I[i - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2]], migration_rate * internal.compartment_share[2]));
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.migration_R.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.migration_R.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.migration_R.dim[2]; ++k) {
-          internal.migration_R[i - 1 + (j - 1) * shared.dim.migration_R.mult[1] + (k - 1) * shared.dim.migration_R.mult[2]] = (internal.migration_distribution[3] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, internal.migration_occuring_R[i - 1 + (j - 1) * shared.dim.migration_occuring_R.mult[1] + (k - 1) * shared.dim.migration_occuring_R.mult[2]], internal.migration_distribution[3]) / compartment_total_weight);
+          internal.migration_R[i - 1 + (j - 1) * shared.dim.migration_R.mult[1] + (k - 1) * shared.dim.migration_R.mult[2]] = (R[i - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, R[i - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2]], migration_rate * internal.compartment_share[3]));
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.migration_Is.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.migration_Is.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.migration_Is.dim[2]; ++k) {
-          internal.migration_Is[i - 1 + (j - 1) * shared.dim.migration_Is.mult[1] + (k - 1) * shared.dim.migration_Is.mult[2]] = (internal.migration_distribution[4] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, internal.migration_occuring_Is[i - 1 + (j - 1) * shared.dim.migration_occuring_Is.mult[1] + (k - 1) * shared.dim.migration_occuring_Is.mult[2]], internal.migration_distribution[4]) / compartment_total_weight);
+          internal.migration_Is[i - 1 + (j - 1) * shared.dim.migration_Is.mult[1] + (k - 1) * shared.dim.migration_Is.mult[2]] = (Is[i - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, Is[i - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2]], migration_rate * internal.compartment_share[4]));
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.migration_Rc.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.migration_Rc.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.migration_Rc.dim[2]; ++k) {
-          internal.migration_Rc[i - 1 + (j - 1) * shared.dim.migration_Rc.mult[1] + (k - 1) * shared.dim.migration_Rc.mult[2]] = (internal.migration_distribution[5] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, internal.migration_occuring_Rc[i - 1 + (j - 1) * shared.dim.migration_occuring_Rc.mult[1] + (k - 1) * shared.dim.migration_occuring_Rc.mult[2]], internal.migration_distribution[5]) / compartment_total_weight);
+          internal.migration_Rc[i - 1 + (j - 1) * shared.dim.migration_Rc.mult[1] + (k - 1) * shared.dim.migration_Rc.mult[2]] = (Rc[i - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, Rc[i - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2]], migration_rate * internal.compartment_share[5]));
         }
       }
     }
@@ -1866,7 +1801,7 @@ public:
     for (size_t i = 1; i <= shared.dim.S_available.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.S_available.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.S_available.dim[2]; ++k) {
-          internal.S_available[i - 1 + (j - 1) * shared.dim.S_available.mult[1] + (k - 1) * shared.dim.S_available.mult[2]] = internal.S_after_waning[i - 1 + (j - 1) * shared.dim.S_after_waning.mult[1] + (k - 1) * shared.dim.S_after_waning.mult[2]] + internal.migration_occuring_S[i - 1 + (j - 1) * shared.dim.migration_occuring_S.mult[1] + (k - 1) * shared.dim.migration_occuring_S.mult[2]] * pos_neg_migration;
+          internal.S_available[i - 1 + (j - 1) * shared.dim.S_available.mult[1] + (k - 1) * shared.dim.S_available.mult[2]] = internal.S_after_waning[i - 1 + (j - 1) * shared.dim.S_after_waning.mult[1] + (k - 1) * shared.dim.S_after_waning.mult[2]] + internal.migration_S[i - 1 + (j - 1) * shared.dim.migration_S.mult[1] + (k - 1) * shared.dim.migration_S.mult[2]] * pos_neg_migration;
         }
       }
     }

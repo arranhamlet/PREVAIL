@@ -48,7 +48,7 @@ serosurvey[] ~ Poisson(seropositive[i])
 # Define transition flows into and out of compartments: infection, progression, recovery, seeding, background and disease-specific mortality.
 # -- Available population for transitions (post-waning + migration) --
 
-S_available[, , ]  <- S_after_waning[i, j, k]  + migration_occuring_S[i, j, k] * pos_neg_migration
+S_available[, , ]  <- S_after_waning[i, j, k]  + migration_S[i, j, k] * pos_neg_migration
 E_available[, , ]  <- E_after_waning[i, j, k]  + migration_E[i, j, k] * pos_neg_migration
 I_available[, , ]  <- I_after_waning[i, j, k]  + migration_I[i, j, k] * pos_neg_migration
 R_available[, , ]  <- R_after_waning[i, j, k]  + migration_R[i, j, k] * pos_neg_migration
@@ -331,6 +331,7 @@ migration_distribution <- interpolate(tt_migration, migration_distribution_value
 # Determine migration direction and magnitude
 pos_neg_migration <- if (sum(migration) < 0) -1 else 1
 migration_adjusted[, , ] <- migration[i, j, k] * pos_neg_migration
+migration_rate <- sum(migration_adjusted)/N
 
 # Precompute total distribution weight (avoids recomputing in every block)
 compartment_total_weight <- sum(migration_distribution)
@@ -339,40 +340,23 @@ compartment_total_weight <- sum(migration_distribution)
 compartment_share[] <- migration_distribution[i] / compartment_total_weight
 
 # Susceptible (S)
-migration_occuring_S[, , ] <- if (migration_distribution[1] <= 0 || sum(S) <= 0) 0 else
-  Binomial(sum(migration_adjusted), S[i, j, k] / sum(S) * compartment_share[1])
-migration_S[, , ] <- if (migration_distribution[1] <= 0) 0 else
-  Binomial(migration_occuring_S[i, j, k], migration_distribution[1]) / compartment_total_weight
+migration_S[, , ] <- if(S[i, j, k] <= 0) 0 else Binomial(S[i, j, k], migration_rate * compartment_share[1])
 
 # Exposed (E)
-migration_occuring_E[, , ] <- if (migration_distribution[2] <= 0 || sum(E) <= 0) 0 else
-  Binomial(sum(migration_adjusted), E[i, j, k] / sum(E) * compartment_share[2])
-migration_E[, , ] <- if (migration_distribution[2] <= 0) 0 else
-  Binomial(migration_occuring_E[i, j, k], migration_distribution[2]) / compartment_total_weight
+migration_E[, , ] <- if(E[i, j, k] <= 0) 0 else Binomial(E[i, j, k], migration_rate * compartment_share[2])
 
 # Infectious (I)
-migration_occuring_I[, , ] <- if (migration_distribution[3] <= 0 || sum(I) <= 0) 0 else
-  Binomial(sum(migration_adjusted), I[i, j, k] / sum(I) * compartment_share[3])
-migration_I[, , ] <- if (migration_distribution[3] <= 0) 0 else
-  Binomial(migration_occuring_I[i, j, k], migration_distribution[3]) / compartment_total_weight
+migration_I[, , ] <- if(I[i, j, k] <= 0) 0 else Binomial(I[i, j, k], migration_rate * compartment_share[3])
 
 # Recovered (R)
-migration_occuring_R[, , ] <- if (migration_distribution[4] <= 0 || sum(R) <= 0) 0 else
-  Binomial(sum(migration_adjusted), R[i, j, k] / sum(R) * compartment_share[4])
-migration_R[, , ] <- if (migration_distribution[4] <= 0) 0 else
-  Binomial(migration_occuring_R[i, j, k], migration_distribution[4]) / compartment_total_weight
+migration_R[, , ] <- if(R[i, j, k] <= 0) 0 else Binomial(R[i, j, k], migration_rate * compartment_share[4])
 
 # Severe Infectious (Is)
-migration_occuring_Is[, , ] <- if (migration_distribution[5] <= 0 || sum(Is) <= 0) 0 else
-  Binomial(sum(migration_adjusted), Is[i, j, k] / sum(Is) * compartment_share[5])
-migration_Is[, , ] <- if (migration_distribution[5] <= 0) 0 else
-  Binomial(migration_occuring_Is[i, j, k], migration_distribution[5]) / compartment_total_weight
+migration_Is[, , ] <- if(Is[i, j, k] <= 0) 0 else Binomial(Is[i, j, k], migration_rate * compartment_share[5])
 
 # Recovered with Complications (Rc)
-migration_occuring_Rc[, , ] <- if (migration_distribution[6] <= 0 || sum(Rc) <= 0) 0 else
-  Binomial(sum(migration_adjusted), Rc[i, j, k] / sum(Rc) * compartment_share[6])
-migration_Rc[, , ] <- if (migration_distribution[6] <= 0) 0 else
-  Binomial(migration_occuring_Rc[i, j, k], migration_distribution[6]) / compartment_total_weight
+migration_Rc[, , ] <- if(Rc[i, j, k] <= 0) 0 else Binomial(Rc[i, j, k], migration_rate * compartment_share[6])
+
 
 # ------------------------------------------------------------------------------
 # USER PARAMETERS — All parameters passed into the model
@@ -737,13 +721,6 @@ dim(migration_I)   <- c(n_age, n_vacc, n_risk)
 dim(migration_R)   <- c(n_age, n_vacc, n_risk)
 dim(migration_Is)  <- c(n_age, n_vacc, n_risk)
 dim(migration_Rc)  <- c(n_age, n_vacc, n_risk)
-
-dim(migration_occuring_S)  <- c(n_age, n_vacc, n_risk)
-dim(migration_occuring_E)  <- c(n_age, n_vacc, n_risk)
-dim(migration_occuring_I)  <- c(n_age, n_vacc, n_risk)
-dim(migration_occuring_R)  <- c(n_age, n_vacc, n_risk)
-dim(migration_occuring_Is) <- c(n_age, n_vacc, n_risk)
-dim(migration_occuring_Rc) <- c(n_age, n_vacc, n_risk)
 
 # -- 8. BIRTH & DEATH CALCULATIONS --
 dim(Births)                 <- n_age

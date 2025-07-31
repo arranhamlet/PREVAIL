@@ -1,20 +1,3 @@
 url: https://arranhamlet.github.io/PREVAIL/
-articles:
-  - title: "Getting Started"
-    contents:
-      - getting_started
-  - title: "Demography"
-    contents:
-      - demography
-  - title: "Disease"
-    contents:
-      - disease
-  - title: "Vaccination"
-    contents:
-      - vaccination
-  - title: "Fitting"
-    contents:
-      - fitting
 template:
   bootstrap: 5
-

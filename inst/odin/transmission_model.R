@@ -128,15 +128,17 @@ recovered_Is_to_Rc[, , ] <- recovered_from_Is[i, j, k] - recovered_Is_to_R[i, j,
 #Compute aging flows and post-aging compartment states for all modelled compartments.
 
 # Susceptible (S)
-aging_into_S[1, 1, ]            <- sum(Births)  # Newborns enter first age & vacc group
-aging_into_S[2:n_age, , ]       <- S[i - 1, j, k] * max(min(aging_rate[i - 1], 1), 0)
-aging_out_of_S[1:(n_age - 1), , ] <- S[i, j, k] * max(min(aging_rate[i], 1), 0)
-S_after_aging[, , ]             <- S[i, j, k] + aging_into_S[i, j, k] - aging_out_of_S[i, j, k]
+aging_into_S[1, 1, ]              <- sum(Births)  # Newborns enter first age & vacc group
+aging_into_S[2:n_age, , ]         <- S[i - 1, j, k] * max(min(aging_rate[i - 1], 1), 0)
+# Delay aging out of just-arrived newborns
+aging_out_of_S[1, , ]             <- max(S[i, j, k] - aging_into_S[1, 1, k], 0) * max(min(aging_rate[1], 1), 0)
+aging_out_of_S[2:(n_age - 1), , ] <- S[i, j, k] * max(min(aging_rate[i], 1), 0)
+S_after_aging[, , ]               <- S[i, j, k] + aging_into_S[i, j, k] - aging_out_of_S[i, j, k]
 
 # Exposed (E)
-aging_into_E[2:n_age, , ]       <- E[i - 1, j, k] * max(min(aging_rate[i - 1], 1), 0)
+aging_into_E[2:n_age, , ]         <- E[i - 1, j, k] * max(min(aging_rate[i - 1], 1), 0)
 aging_out_of_E[1:(n_age - 1), , ] <- E[i, j, k] * max(min(aging_rate[i], 1), 0)
-E_after_aging[, , ]             <- E[i, j, k] + aging_into_E[i, j, k] - aging_out_of_E[i, j, k]
+E_after_aging[, , ]               <- E[i, j, k] + aging_into_E[i, j, k] - aging_out_of_E[i, j, k]
 
 # Infectious (I)
 aging_into_I[2:n_age, , ]       <- I[i - 1, j, k] * max(min(aging_rate[i - 1], 1), 0)
@@ -929,6 +931,9 @@ initial(repro_pop_total) <- 0
 # Per-capita population growth (based on S deaths and births)
 update(per_capita_growth) <- (sum(Births) - sum(S_death)) / sum(reproductive_population)
 initial(per_capita_growth) <- 0
+
+update(early_loss_check) <- sum(aging_out_of_S[1, , ]) - sum(aging_into_S[1, , ])
+initial(early_loss_check) <- 0
 
 # ------------------------------------------------------------------------------
 # 7. CASES

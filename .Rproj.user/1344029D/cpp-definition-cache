@@ -1,13 +1,13 @@
 [
     {
         "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/cpp11.cpp",
-        "file_last_write": 1753886675.0,
+        "file_last_write": 1753968185.0,
         "definitions": [],
         "hidden": true
     },
     {
         "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-        "file_last_write": 1753886638.0,
+        "file_last_write": 1753967716.0,
         "definitions": [
             {
                 "usr": "c:@S@transmission_model",
@@ -37,6 +37,26 @@
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
                 "line": 63,
                 "column": 12,
+                "hidden": false
+            },
+            {
+                "usr": "c:@S@transmission_model@S@shared_state@S@odin_internals_type@S@transmission_model.cpp@5611",
+                "kind": 3,
+                "parent_name": "",
+                "name": "",
+                "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
+                "line": 64,
+                "column": 7,
+                "hidden": false
+            },
+            {
+                "usr": "c:@S@transmission_model@S@shared_state@S@odin_internals_type@S@transmission_model.cpp@5676",
+                "kind": 3,
+                "parent_name": "",
+                "name": "",
+                "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
+                "line": 67,
+                "column": 7,
                 "hidden": false
             },
             {
@@ -95,7 +115,7 @@
                 "parent_name": "transmission_model",
                 "name": "build_internal(const transmission_model::shared_state &)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 722,
+                "line": 723,
                 "column": 25,
                 "hidden": false
             },
@@ -105,7 +125,7 @@
                 "parent_name": "transmission_model",
                 "name": "build_data(cpp11::list, const transmission_model::shared_state &)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 857,
+                "line": 858,
                 "column": 20,
                 "hidden": false
             },
@@ -115,7 +135,7 @@
                 "parent_name": "transmission_model",
                 "name": "update_shared(cpp11::list, transmission_model::shared_state &)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 862,
+                "line": 863,
                 "column": 15,
                 "hidden": false
             },
@@ -125,7 +145,7 @@
                 "parent_name": "transmission_model",
                 "name": "update_internal(const transmission_model::shared_state &, transmission_model::internal_state &)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 912,
+                "line": 913,
                 "column": 15,
                 "hidden": false
             },
@@ -135,7 +155,7 @@
                 "parent_name": "transmission_model",
                 "name": "initial(transmission_model::real_type, const transmission_model::shared_state &, transmission_model::internal_state &, transmission_model::rng_state_type &, transmission_model::real_type *)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 914,
+                "line": 915,
                 "column": 15,
                 "hidden": false
             },
@@ -145,7 +165,7 @@
                 "parent_name": "transmission_model",
                 "name": "update(transmission_model::real_type, transmission_model::real_type, const transmission_model::real_type *, const transmission_model::shared_state &, transmission_model::internal_state &, transmission_model::rng_state_type &, transmission_model::real_type *)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 986,
+                "line": 988,
                 "column": 15,
                 "hidden": false
             },
@@ -155,7 +175,7 @@
                 "parent_name": "transmission_model",
                 "name": "compare_data(transmission_model::real_type, const transmission_model::real_type *, const transmission_model::data_type &, const transmission_model::shared_state &, transmission_model::internal_state &, transmission_model::rng_state_type &)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 1975,
+                "line": 1986,
                 "column": 20,
                 "hidden": false
             },
@@ -165,7 +185,7 @@
                 "parent_name": "",
                 "name": "dust2_system_transmission_model_alloc(cpp11::list, cpp11::sexp, cpp11::list, cpp11::sexp, cpp11::sexp, cpp11::sexp, cpp11::sexp, cpp11::sexp)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 1992,
+                "line": 2003,
                 "column": 6,
                 "hidden": false
             },
@@ -175,7 +195,7 @@
                 "parent_name": "",
                 "name": "dust2_system_transmission_model_run_to_time(cpp11::sexp, cpp11::sexp)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 1996,
+                "line": 2007,
                 "column": 6,
                 "hidden": false
             },
@@ -185,7 +205,7 @@
                 "parent_name": "",
                 "name": "dust2_system_transmission_model_state(cpp11::sexp, cpp11::sexp, cpp11::sexp, cpp11::sexp, bool, bool)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 2001,
+                "line": 2012,
                 "column": 6,
                 "hidden": false
             },
@@ -195,7 +215,7 @@
                 "parent_name": "",
                 "name": "dust2_system_transmission_model_time(cpp11::sexp)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 2006,
+                "line": 2017,
                 "column": 6,
                 "hidden": false
             },
@@ -205,7 +225,7 @@
                 "parent_name": "",
                 "name": "dust2_system_transmission_model_set_state_initial(cpp11::sexp)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 2011,
+                "line": 2022,
                 "column": 6,
                 "hidden": false
             },
@@ -215,7 +235,7 @@
                 "parent_name": "",
                 "name": "dust2_system_transmission_model_set_state(cpp11::sexp, cpp11::list)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 2016,
+                "line": 2027,
                 "column": 6,
                 "hidden": false
             },
@@ -225,7 +245,7 @@
                 "parent_name": "",
                 "name": "dust2_system_transmission_model_reorder(cpp11::sexp, cpp11::integers)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 2021,
+                "line": 2032,
                 "column": 6,
                 "hidden": false
             },
@@ -235,7 +255,7 @@
                 "parent_name": "",
                 "name": "dust2_system_transmission_model_rng_state(cpp11::sexp)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 2026,
+                "line": 2037,
                 "column": 6,
                 "hidden": false
             },
@@ -245,7 +265,7 @@
                 "parent_name": "",
                 "name": "dust2_system_transmission_model_set_rng_state(cpp11::sexp, cpp11::sexp)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 2031,
+                "line": 2042,
                 "column": 6,
                 "hidden": false
             },
@@ -255,7 +275,7 @@
                 "parent_name": "",
                 "name": "dust2_system_transmission_model_set_time(cpp11::sexp, cpp11::sexp)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 2036,
+                "line": 2047,
                 "column": 6,
                 "hidden": false
             },
@@ -265,7 +285,7 @@
                 "parent_name": "",
                 "name": "dust2_system_transmission_model_update_pars(cpp11::sexp, cpp11::list)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 2041,
+                "line": 2052,
                 "column": 6,
                 "hidden": false
             },
@@ -275,7 +295,7 @@
                 "parent_name": "",
                 "name": "dust2_system_transmission_model_simulate(cpp11::sexp, cpp11::sexp, cpp11::sexp, bool, bool)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 2046,
+                "line": 2057,
                 "column": 6,
                 "hidden": false
             },
@@ -285,7 +305,7 @@
                 "parent_name": "",
                 "name": "dust2_unfilter_transmission_model_alloc(cpp11::list, cpp11::sexp, cpp11::sexp, cpp11::list, cpp11::list, cpp11::sexp, cpp11::sexp, cpp11::sexp)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 2051,
+                "line": 2062,
                 "column": 6,
                 "hidden": false
             },
@@ -295,7 +315,7 @@
                 "parent_name": "",
                 "name": "dust2_filter_transmission_model_alloc(cpp11::list, cpp11::sexp, cpp11::sexp, cpp11::list, cpp11::list, cpp11::sexp, cpp11::sexp, cpp11::sexp, cpp11::sexp)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 2056,
+                "line": 2067,
                 "column": 6,
                 "hidden": false
             },
@@ -305,7 +325,7 @@
                 "parent_name": "",
                 "name": "dust2_system_transmission_model_compare_data(cpp11::sexp, cpp11::list, bool, bool)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 2060,
+                "line": 2071,
                 "column": 6,
                 "hidden": false
             },
@@ -315,7 +335,7 @@
                 "parent_name": "",
                 "name": "dust2_unfilter_transmission_model_update_pars(cpp11::sexp, cpp11::list, cpp11::sexp)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 2065,
+                "line": 2076,
                 "column": 6,
                 "hidden": false
             },
@@ -325,7 +345,7 @@
                 "parent_name": "",
                 "name": "dust2_unfilter_transmission_model_run(cpp11::sexp, cpp11::sexp, bool, cpp11::sexp, bool, cpp11::sexp, cpp11::sexp, bool, bool)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 2070,
+                "line": 2081,
                 "column": 6,
                 "hidden": false
             },
@@ -335,7 +355,7 @@
                 "parent_name": "",
                 "name": "dust2_unfilter_transmission_model_last_trajectories(cpp11::sexp, bool, bool, bool)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 2075,
+                "line": 2086,
                 "column": 6,
                 "hidden": false
             },
@@ -345,7 +365,7 @@
                 "parent_name": "",
                 "name": "dust2_unfilter_transmission_model_last_snapshots(cpp11::sexp, bool, bool, bool)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 2080,
+                "line": 2091,
                 "column": 6,
                 "hidden": false
             },
@@ -355,7 +375,7 @@
                 "parent_name": "",
                 "name": "dust2_unfilter_transmission_model_last_state(cpp11::sexp, bool, bool, bool)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 2085,
+                "line": 2096,
                 "column": 6,
                 "hidden": false
             },
@@ -365,7 +385,7 @@
                 "parent_name": "",
                 "name": "dust2_filter_transmission_model_update_pars(cpp11::sexp, cpp11::list, cpp11::sexp)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 2090,
+                "line": 2101,
                 "column": 6,
                 "hidden": false
             },
@@ -375,7 +395,7 @@
                 "parent_name": "",
                 "name": "dust2_filter_transmission_model_run(cpp11::sexp, cpp11::sexp, bool, cpp11::sexp, bool, cpp11::sexp, cpp11::sexp, bool, bool)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 2095,
+                "line": 2106,
                 "column": 6,
                 "hidden": false
             },
@@ -385,7 +405,7 @@
                 "parent_name": "",
                 "name": "dust2_filter_transmission_model_last_trajectories(cpp11::sexp, bool, bool, bool)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 2100,
+                "line": 2111,
                 "column": 6,
                 "hidden": false
             },
@@ -395,7 +415,7 @@
                 "parent_name": "",
                 "name": "dust2_filter_transmission_model_last_snapshots(cpp11::sexp, bool, bool, bool)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 2105,
+                "line": 2116,
                 "column": 6,
                 "hidden": false
             },
@@ -405,7 +425,7 @@
                 "parent_name": "",
                 "name": "dust2_filter_transmission_model_last_state(cpp11::sexp, bool, bool, bool)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 2110,
+                "line": 2121,
                 "column": 6,
                 "hidden": false
             },
@@ -415,7 +435,7 @@
                 "parent_name": "",
                 "name": "dust2_filter_transmission_model_rng_state(cpp11::sexp)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 2115,
+                "line": 2126,
                 "column": 6,
                 "hidden": false
             },
@@ -425,7 +445,7 @@
                 "parent_name": "",
                 "name": "dust2_filter_transmission_model_set_rng_state(cpp11::sexp, cpp11::sexp)",
                 "file": "C:/Users/ah1114/Documents/Imperial/VPD_conflict/packages/PREVAIL/src/transmission_model.cpp",
-                "line": 2120,
+                "line": 2131,
                 "column": 6,
                 "hidden": false
             }

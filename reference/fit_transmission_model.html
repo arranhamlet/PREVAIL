@@ -118,26 +118,18 @@ containing numeric vectors of observed seropositivity by age.</p></dd>
     <p>A named list containing:</p><dl><dt>samples</dt>
 <dd><p>The output from <code><a href="https://mrc-ide.github.io/monty/reference/monty_sample.html" class="external-link">monty_sample</a></code>, including sampled parameters and log-likelihoods.</p></dd>
 
-  <dt>prior</dt>
-<dd><p>The prior object used in the fit.</p></dd>
+  <dt>posterior</dt>
+<dd><p>The final posterior object used for inference.</p></dd>
 
-  <dt>parameters_alt</dt>
-<dd><p>A named list of parameters with MAP values substituted for those fitted.</p></dd>
+  <dt>summarised_draws</dt>
+<dd><p>Summary statistics (e.g., mean, median, quantiles) for each parameter from the posterior samples.</p></dd>
 
-  <dt>initial</dt>
-<dd><p>The named list of initial values used (either user-supplied or default).</p></dd>
-
-  <dt>domain</dt>
-<dd><p>The matrix of parameter bounds used during the fit.</p></dd>
-
-  <dt>vcv</dt>
-<dd><p>The variance-covariance matrix used in the random walk sampler.</p></dd>
-
-  <dt>fitted_parameters</dt>
-<dd><p>Character vector of parameters that were fitted.</p></dd>
+  <dt>all_states</dt>
+<dd><p>The full simulated state trajectories from the model for both base and fitted parameter sets.</p></dd>
 
   <dt>plots</dt>
-<dd><p>A list of ggplot2 trace and log-likelihood plots: <code>trace</code>, <code>loglik</code>, and <code>combined</code>.</p></dd>
+<dd><p>A list of <span class="pkg">ggplot2</span> objects including trace plots, log-likelihood plot, combined trace-loglik plot, and seropositivity plot:
+    <code>trace</code>, <code>loglik</code>, <code>combined</code>, <code>sero</code>.</p></dd>
 
 
 </dl></div>

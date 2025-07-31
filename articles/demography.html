@@ -72,12 +72,12 @@
 </h2>
 <p>This vignette introduces how demographic processes are represented
 and customized in the PREVAIL model.</p>
-<p><br> Demography is a critical foundation for infectious disease
-models like PREVAIL because the underlying population structure directly
-shapes both current immunity profiles and future epidemic projections.
-Age distribution, birth rates, death rates, and migration all influence
-how susceptible, immune, and at-risk populations evolve over time. Just
-as importantly, demographic structure determines the configuration of
+<p>Demography is a critical foundation for infectious disease models
+like PREVAIL because the underlying population structure directly shapes
+both current immunity profiles and future epidemic projections. Age
+distribution, birth rates, death rates, and migration all influence how
+susceptible, immune, and at-risk populations evolve over time. Just as
+importantly, demographic structure determines the configuration of
 contact matrices, which define how different age groups interact and
 transmit infection within the population. Accurately capturing these
 dynamics allows the model to reflect realistic patterns of immunity
@@ -86,7 +86,6 @@ This is especially important for long-term projections or settings with
 rapid demographic change, where shifts in both population structure and
 contact patterns can substantially alter the risk of outbreaks and the
 effectiveness of interventions.</p>
-<p><br></p>
 <p>While the model has built in data to handle each of these aspects, if
 the user has their own data we can flexibly integrate this into the
 model design. This hopefully allows the user to end up with better
@@ -99,7 +98,6 @@ the end of this section, you will be able to flexibly adapt demographic
 assumptions—such as age groupings, population movement, and vital
 rates—to match your data sources or scenario needs, ensuring that model
 results accurately reflect your setting of interest.</p>
-<p><br></p>
 </div>
 <div class="section level2">
 <h2 id="prepare-your-custom-data">1. Prepare your custom data<a class="anchor" aria-label="anchor" href="#prepare-your-custom-data"></a>
@@ -223,6 +221,41 @@ and ages 20-50, then we would still be able to include this.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>  <span style="text-decoration: underline;">1</span>973 20-29     3</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>  <span style="text-decoration: underline;">1</span>974 20-29     5</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>  <span style="text-decoration: underline;">1</span>975 20-29     4</span></span></code></pre></div>
+<p>Ages that are not present in the data, but required by the model
+(those 0-100) will take the values of the nearest age and year.</p>
+</div>
+<div class="section level4">
+<h4 id="contact-matricies">Contact matricies<a class="anchor" aria-label="anchor" href="#contact-matricies"></a>
+</h4>
+<p>Contact matricies require a slightly different formatting. They are
+time independent in our model, are so do not require a <code>year</code>
+column. However, they require an <code>age_from</code>,
+<code>age_to</code>, and <code>value</code> column.</p>
+<p>The same logic around auto-filling missing years, and the inclusion
+of ranges “-” and how it fills in the values as described previously
+applies.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">custom_contact</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span></span>
+<span>  age_from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"15-30"</span>, <span class="st">"31-50"</span>, <span class="st">"50+"</span><span class="op">)</span>,</span>
+<span>  age_to <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"15-30"</span>, <span class="st">"31-50"</span>, <span class="st">"50+"</span><span class="op">)</span></span>
+<span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">age_from</span>, <span class="va">age_to</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span></span>
+<span>    value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">pmax</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">1</span>, mean <span class="op">=</span> <span class="fl">3</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, <span class="fl">0</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">custom_contact</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 3</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># Groups:   age_from, age_to [6]</span></span></span>
+<span><span class="co">#&gt;   age_from age_to value</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 15-30    15-30   3.57</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 31-50    15-30   4.19</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 50+      15-30   1.93</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 15-30    31-50   2.47</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 31-50    31-50   3.36</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 50+      31-50   2.97</span></span></code></pre></div>
+<p>Values are normalized during the parameter smoothing process.</p>
 </div>
 </div>
 <div class="section level2">
@@ -262,7 +295,7 @@ the inbuilt data).</p>
 at the appropriate point. So to run the model with our custom_mortality
 data.frame, we would fill in our initial arguments as usual, and then
 specify <code>custom_mortality = custom_mortality_df</code>.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">custom_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/custom_data_process_wrapper.html">custom_data_process_wrapper</a></span><span class="op">(</span></span>
 <span>    iso <span class="op">=</span> <span class="st">"GBR"</span>,</span>
 <span>    disease <span class="op">=</span> <span class="st">"measles"</span>,</span>
@@ -271,7 +304,7 @@ specify <code>custom_mortality = custom_mortality_df</code>.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p>and if we wanted to run the model with our custom mortality and
 migration it would be:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">custom_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/custom_data_process_wrapper.html">custom_data_process_wrapper</a></span><span class="op">(</span></span>
 <span>    iso <span class="op">=</span> <span class="st">"GBR"</span>,</span>
 <span>    disease <span class="op">=</span> <span class="st">"measles"</span>,</span>
@@ -291,7 +324,7 @@ running it, especially when you have multiple custom datasets.</em></p>
 </h2>
 <p>As described in the vignette, Getting Started with PREVAIL, to run
 the model we then just have to supply the parameters required.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">custom_model_run</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_model_unpack_results.html">run_model_unpack_results</a></span><span class="op">(</span></span>
 <span>  params <span class="op">=</span> <span class="va">custom_params</span>,</span>
 <span>  no_runs <span class="op">=</span> <span class="fl">1</span></span>

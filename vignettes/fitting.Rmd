@@ -57,7 +57,7 @@ pacman::p_load(
 )
 ```
 
-## 2. Define the serosurvey data
+# 2. Define the serosurvey data
 
 Before we fit the model, we need some data to fit it to. In this example, we’ll create a **simulated serosurvey**, which assumes 20% seroprevalence across all 17 age groups at a single timepoint: 4 years after the start of the simulation (i.e., day 1460).
 

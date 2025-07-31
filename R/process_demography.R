@@ -76,7 +76,7 @@ process_demography <- function(
     contact_matricies[[iso]]
   }
 
-  reformatted_contact_matrix <- reformat_contact_matrix(country_contact, age_groups)
+  reformatted_contact_matrix <- if(length(contact_matricies) == 1)  country_contact else update_contact_matrix(country_contact, age_groups)
   reformatted_contact_matrix <- symmetrize_contact_matrix(reformatted_contact_matrix, pop = pop_all[nrow(pop_all), ])
   reformatted_contact_matrix <- project_to_symmetric_doubly_stochastic(reformatted_contact_matrix)
 

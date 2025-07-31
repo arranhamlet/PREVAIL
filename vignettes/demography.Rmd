@@ -24,15 +24,11 @@ library(magrittr)
 
 This vignette introduces how demographic processes are represented and customized in the PREVAIL model. 
 
-<br />
 Demography is a critical foundation for infectious disease models like PREVAIL because the underlying population structure directly shapes both current immunity profiles and future epidemic projections. Age distribution, birth rates, death rates, and migration all influence how susceptible, immune, and at-risk populations evolve over time. Just as importantly, demographic structure determines the configuration of contact matrices, which define how different age groups interact and transmit infection within the population. Accurately capturing these dynamics allows the model to reflect realistic patterns of immunity buildup, population turnover, and the flow of infection between groups. This is especially important for long-term projections or settings with rapid demographic change, where shifts in both 
 population structure and contact patterns can substantially alter the risk of outbreaks and the effectiveness of interventions.
 
-<br />
-
 While the model has built in data to handle each of these aspects, if the user has their own data we can flexibly integrate this into the model design. This hopefully allows the user to end up with better estimates of population level immunity, and the impact of different scenarios. We explain how users can define and modify the age structure (from single-year to multi-year age groups), specify age-specific or overall rates for migration, deaths, and births, and contact matricies. Each of these have substantial implications for simulation outputs. By the end of this section, you will be able to flexibly adapt demographic assumptions—such as age groupings, population movement, and vital rates—to match your data sources or scenario needs, ensuring that model results accurately reflect your setting of interest.
 
-<br />
 
 # 1. Prepare your custom data
 
@@ -107,6 +103,29 @@ custom_mortality <- expand.grid(
 
 head(custom_mortality)
 ```
+
+Ages that are not present in the data, but required by the model (those 0-100) will take the values of the nearest age and year.
+
+### Contact matricies
+
+Contact matricies require a slightly different formatting. They are time independent in our model, are so do not require a `year` column. However, they require an `age_from`, `age_to`, and `value` column.
+
+The same logic around auto-filling missing years, and the inclusion of ranges "-" and how it fills in the values as described previously applies.
+
+```{r, eval = T}
+custom_contact <- expand.grid(
+  age_from = c("15-30", "31-50", "50+"),
+  age_to = c("15-30", "31-50", "50+")
+) %>%
+  group_by(age_from, age_to) %>%
+  mutate(
+    value = pmax(rnorm(1, mean = 3, sd = 1), 0)
+  )
+
+head(custom_contact)
+```
+
+Values are normalized during the parameter smoothing process.
 
 # 2. Customising our demographic parameters
 

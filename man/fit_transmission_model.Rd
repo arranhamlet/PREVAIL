@@ -43,13 +43,11 @@ containing numeric vectors of observed seropositivity by age.}
 A named list containing:
 \describe{
   \item{samples}{The output from \code{\link[monty]{monty_sample}}, including sampled parameters and log-likelihoods.}
-  \item{prior}{The prior object used in the fit.}
-  \item{parameters_alt}{A named list of parameters with MAP values substituted for those fitted.}
-  \item{initial}{The named list of initial values used (either user-supplied or default).}
-  \item{domain}{The matrix of parameter bounds used during the fit.}
-  \item{vcv}{The variance-covariance matrix used in the random walk sampler.}
-  \item{fitted_parameters}{Character vector of parameters that were fitted.}
-  \item{plots}{A list of ggplot2 trace and log-likelihood plots: \code{trace}, \code{loglik}, and \code{combined}.}
+  \item{posterior}{The final posterior object used for inference.}
+  \item{summarised_draws}{Summary statistics (e.g., mean, median, quantiles) for each parameter from the posterior samples.}
+  \item{all_states}{The full simulated state trajectories from the model for both base and fitted parameter sets.}
+  \item{plots}{A list of \pkg{ggplot2} objects including trace plots, log-likelihood plot, combined trace-loglik plot, and seropositivity plot:
+    \code{trace}, \code{loglik}, \code{combined}, \code{sero}.}
 }
 }
 \description{

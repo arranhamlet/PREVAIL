@@ -20,13 +20,11 @@
 #' @return A named list containing:
 #' \describe{
 #'   \item{samples}{The output from \code{\link[monty]{monty_sample}}, including sampled parameters and log-likelihoods.}
-#'   \item{prior}{The prior object used in the fit.}
-#'   \item{parameters_alt}{A named list of parameters with MAP values substituted for those fitted.}
-#'   \item{initial}{The named list of initial values used (either user-supplied or default).}
-#'   \item{domain}{The matrix of parameter bounds used during the fit.}
-#'   \item{vcv}{The variance-covariance matrix used in the random walk sampler.}
-#'   \item{fitted_parameters}{Character vector of parameters that were fitted.}
-#'   \item{plots}{A list of ggplot2 trace and log-likelihood plots: \code{trace}, \code{loglik}, and \code{combined}.}
+#'   \item{posterior}{The final posterior object used for inference.}
+#'   \item{summarised_draws}{Summary statistics (e.g., mean, median, quantiles) for each parameter from the posterior samples.}
+#'   \item{all_states}{The full simulated state trajectories from the model for both base and fitted parameter sets.}
+#'   \item{plots}{A list of \pkg{ggplot2} objects including trace plots, log-likelihood plot, combined trace-loglik plot, and seropositivity plot:
+#'     \code{trace}, \code{loglik}, \code{combined}, \code{sero}.}
 #' }
 #'
 #' @importFrom monty monty_dsl monty_packer monty_sampler_random_walk monty_sample
@@ -36,7 +34,7 @@
 #' @importFrom patchwork plot_layout
 #' @importFrom dplyr filter mutate rename bind_rows
 #' @importFrom tidyr pivot_longer
-#' @importFrom tibble tibble
+#' @importFrom posterior summarise_draws as_draws_df
 #'
 #' @examples
 #' \dontrun{
@@ -73,6 +71,11 @@ fit_transmission_model <- function(
   )
 
   # Create parameter packer
+  # Remove parameters that we want to fit if already found in the provided parameter list
+  if(any(names(parameters) %in% fitted_parameters)){
+    parameters <- parameters[-which(names(parameters) %in% fitted_parameters)]
+  }
+
   sir_packer <- monty::monty_packer(fitted_parameters, fixed = parameters)
   likelihood <- dust2::dust_likelihood_monty(filter, sir_packer)
 
@@ -111,8 +114,11 @@ fit_transmission_model <- function(
     n_chains = n_chains
   )
 
+  # Summarise draws
+  sum_draws <- posterior::summarise_draws(posterior::as_draws_df(samples))
+
   # Format trace output
-  trace_df <- tibble::tibble(iteration = seq_len(n_steps))
+  trace_df <- data.frame(iteration = seq_len(n_steps))
   for (i in seq_along(fitted_parameters)) {
     trace_df[[fitted_parameters[i]]] <- drop(samples$pars[i, , 1])
   }
@@ -143,8 +149,8 @@ fit_transmission_model <- function(
   # MAP parameters
   best_idx <- which.max(samples$density[, 1])
   parameters_alt <- parameters
-  for (i in seq_along(fitted_parameters)) {
-    parameters_alt[[fitted_parameters[i]]] <- samples$pars[i, best_idx, 1]
+  for (i in fitted_parameters) {
+    parameters_alt[[fitted_parameters[i]]] <- sum_draws %>% filter(variable == i) %>% pull(median)
   }
 
   # Simulate model
@@ -156,13 +162,13 @@ fit_transmission_model <- function(
   all_states <- dust2::dust_unpack_state(sys, y)
 
   # Format sero output
-  sero_obs_df <- tibble::tibble(
+  sero_obs_df <- data.frame(
     time = seq_along(all_states$seropositive[4, 1, ]),
     base = all_states$seropositive[4, 1, ],
     fitted = all_states$seropositive[4, 2, ]
   ) %>% tidyr::pivot_longer(-time, names_to = "source", values_to = "value")
 
-  sero_true_df <- tibble::tibble(
+  sero_true_df <- data.frame(
     time = serodata$time[1],
     value = unlist(serodata$serosurvey[[1]]),
     source = "data"
@@ -185,6 +191,7 @@ fit_transmission_model <- function(
   list(
     samples = samples,
     posterior = posterior,
+    summarised_draws = sum_draws,
     all_states = all_states,
     plots = list(trace = p_trace, loglik = p_loglik,
                  combined = combined_plot, sero = p_sero)

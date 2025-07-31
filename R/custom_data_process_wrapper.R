@@ -91,7 +91,7 @@ custom_data_process_wrapper <- function(
   if (all(!is.na(custom_fertility)))            datasets$fertility            <- reformat_demographic_data(custom_data = custom_fertility, age_required = 15:49, iso = iso, years = years_all, fill_method = "closest", value_allocation = "maintain")
   if (all(!is.na(custom_mortality)))            datasets$mortality            <- reformat_demographic_data(custom_data = custom_mortality, age_required = 0:100, iso = iso, years = years_all, fill_method = "closest", value_allocation = "maintain")
   if (all(!is.na(custom_population)))           datasets$population_all       <- reformat_demographic_data(custom_data = custom_population, age_required = 0:100, iso = iso, years = years_all, fill_method = "closest", value_allocation = "split")
-  if (all(!is.na(custom_contact_matricies)))    datasets$contact_matricies    <- custom_contact_matricies
+  if (all(!is.na(custom_contact_matricies)))    datasets$contact_matricies    <- reformat_contact_matrix(custom_data = custom_contact_matricies, iso = iso, age_required = 0:100, fill_method = "closest", value_allocation = "maintain")
   if (all(!is.na(custom_routine_vaccination)))  datasets$routine_vaccination  <- reformat_vaccination(custom_data = custom_routine_vaccination, iso = iso, disease = disease)
   if (all(!is.na(custom_sia_vaccination)))      datasets$sia_vaccination      <- reformat_vaccination(custom_data = custom_sia_vaccination, iso = iso, disease = disease)
   if (all(!is.na(custom_disease_data)))         datasets$disease_data         <- reformat_cases(custom_data = custom_disease_data, iso = iso, disease = disease)

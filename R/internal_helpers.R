@@ -1,10 +1,10 @@
-#' Reformat Contact Matrix to Match Age Vector
+#' Update Contact Matrix to Match Age Vector
 #'
-#' Reformats a raw contact matrix (with 5-year age intervals) to match a specified age vector.
+#' Updates a raw contact matrix (with 5-year age intervals) to match a specified age vector.
 #' Assigns contact rates by nearest-neighbor matching between raw age bins and target age values.
 #'
 #' @param contact_matrix_raw A square matrix of contact rates, indexed by 5-year age groups.
-#' @param age_vector A numeric vector of target age values to which the matrix should be reformatted.
+#' @param age_vector A numeric vector of target age values to which the matrix should be updated.
 #'
 #' @return A square matrix of contact rates with dimensions matching `age_vector`.
 #'
@@ -12,7 +12,7 @@
 #' @import magrittr
 #' @useDynLib PREVAIL, .registration = TRUE
 #' @keywords internal
-reformat_contact_matrix <- function(contact_matrix_raw, age_vector) {
+update_contact_matrix <- function(contact_matrix_raw, age_vector) {
 
   # Define 5-year age groups, discarding the 0–4 bin
   age_group <- seq(0, 80, by = 5)

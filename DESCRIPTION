@@ -38,6 +38,7 @@ Imports:
     patchwork,
     collapse,
     scales,
+    posterior,
     monty
 Remotes:
     mrc-ide/dust2,

@@ -43,7 +43,7 @@ data_load_process_wrapper <- function(
     routine_vaccination    = PREVAIL::WHO_vaccination_routine,
     sia_vaccination        = PREVAIL::VIMC_vaccination_sia,
     disease_data           = PREVAIL::WHO_disease_reports,
-    schedule               = PREVAIL::WHO_vaccination_schedule,
+    vaccination_schedule   = PREVAIL::WHO_vaccination_schedule,
     pre1980                = PREVAIL::vaccination_pre1980,
     disease_parameters     = PREVAIL::disease_parameters %>% dplyr::filter(tolower(disease) == !!disease),
     vaccine_parameters     = PREVAIL::vaccine_parameters %>% dplyr::filter(disease == !!disease)
@@ -73,7 +73,7 @@ data_load_process_wrapper <- function(
     processed_vaccination = preprocessed$processed_vaccination_data,
     processed_vaccination_sia = preprocessed$processed_vaccination_sia,
     processed_case = preprocessed$processed_case_data,
-    vaccination_schedule = datasets$schedule %>% dplyr::filter(iso3 == iso),
+    vaccination_schedule = datasets$vaccination_schedule %>% dplyr::filter(iso3 == iso),
     vaccination_pre1980 = datasets$pre1980,
     vaccine_parameters = datasets$vaccine_parameters,
     disease_parameters = datasets$disease_parameters,
@@ -82,8 +82,8 @@ data_load_process_wrapper <- function(
 
   # ---- Time Scaling and Change Points ----
   times <- list(
-    mig  = base::sort(with(preprocessed$processed_demographic_data, base::floor(c(tt_migration, base::max(tt_migration) + 1) * 365))),
-    vac  = base::sort(with(cv_params, base::floor(c(tt_vaccination, base::max(tt_vaccination) + 1) * 365))),
+    mig  = base::sort(base::floor(preprocessed$processed_demographic_data$tt_migration * 365)),
+    vac  = base::sort(base::floor(cv_params$tt_vaccination * 365)),
     seed = base::sort(base::floor(cv_params$tt_seeded))
   )
 
@@ -116,7 +116,7 @@ data_load_process_wrapper <- function(
     n_risk                       = preprocessed$processed_demographic_data$input_data$n_risk,
     population                   = inputs$population,
     female_population            = inputs$female_population,
-    repro_weight = aging_reproduction$repro_weight,
+    repro_weight                 = aging_reproduction$repro_weight,
     contact_matrix               = inputs$contact_matrix,
     S0                           = inputs$N0,
     Rpop0                        = 0,

@@ -134,8 +134,8 @@ custom_data_process_wrapper <- function(
 
   # ---- Time Scaling and Change Points ----
   times <- list(
-    mig  = base::sort(with(preprocessed$processed_demographic_data, base::floor(c(tt_migration, base::max(tt_migration) + 1) * 365))),
-    vac  = base::sort(with(cv_params, base::floor(c(tt_vaccination, base::max(tt_vaccination) + 1) * 365))),
+    mig  = base::sort(base::floor(preprocessed$processed_demographic_data$tt_migration * 365)),
+    vac  = base::sort(base::floor(cv_params$tt_vaccination * 365)),
     seed = base::sort(base::floor(cv_params$tt_seeded))
   )
 

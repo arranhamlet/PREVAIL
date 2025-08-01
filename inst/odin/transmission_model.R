@@ -130,34 +130,34 @@ recovered_Is_to_Rc[, , ] <- recovered_from_Is[i, j, k] - recovered_Is_to_R[i, j,
 # Susceptible (S)
 aging_into_S[1, 1, ]              <- sum(Births)  # Newborns enter first age & vacc group
 aging_into_S[2:n_age, , ]         <- S[i - 1, j, k] * max(min(aging_rate[i - 1], 1), 0)
-# Delay aging out of just-arrived newborns
-aging_out_of_S[1, , ]             <- max(S[i, j, k] - aging_into_S[1, 1, k], 0) * max(min(aging_rate[1], 1), 0)
-aging_out_of_S[2:(n_age - 1), , ] <- S[i, j, k] * max(min(aging_rate[i], 1), 0)
+aging_out_of_S[1, , ] <- max(S[1, j, k] - aging_into_S[1, 1, k], 0) * aging_rate[1]
+aging_out_of_S[2:n_age, , ] <- S[i, j, k] * max(min(aging_rate[i], 1), 0)
+
 S_after_aging[, , ]               <- S[i, j, k] + aging_into_S[i, j, k] - aging_out_of_S[i, j, k]
 
 # Exposed (E)
 aging_into_E[2:n_age, , ]         <- E[i - 1, j, k] * max(min(aging_rate[i - 1], 1), 0)
-aging_out_of_E[1:(n_age - 1), , ] <- E[i, j, k] * max(min(aging_rate[i], 1), 0)
+aging_out_of_E[1:n_age, , ] <- E[i, j, k] * max(min(aging_rate[i], 1), 0)
 E_after_aging[, , ]               <- E[i, j, k] + aging_into_E[i, j, k] - aging_out_of_E[i, j, k]
 
 # Infectious (I)
 aging_into_I[2:n_age, , ]       <- I[i - 1, j, k] * max(min(aging_rate[i - 1], 1), 0)
-aging_out_of_I[1:(n_age - 1), , ] <- I[i, j, k] * max(min(aging_rate[i], 1), 0)
+aging_out_of_I[1:n_age, , ] <- I[i, j, k] * max(min(aging_rate[i], 1), 0)
 I_after_aging[, , ]             <- I[i, j, k] + aging_into_I[i, j, k] - aging_out_of_I[i, j, k]
 
 # Recovered (R)
 aging_into_R[2:n_age, , ]       <- R[i - 1, j, k] * max(min(aging_rate[i - 1], 1), 0)
-aging_out_of_R[1:(n_age - 1), , ] <- R[i, j, k] * max(min(aging_rate[i], 1), 0)
+aging_out_of_R[1:n_age, , ] <- R[i, j, k] * max(min(aging_rate[i], 1), 0)
 R_after_aging[, , ]             <- R[i, j, k] + aging_into_R[i, j, k] - aging_out_of_R[i, j, k]
 
 # Severe Infectious (Is)
 aging_into_Is[2:n_age, , ]       <- Is[i - 1, j, k] * max(min(aging_rate[i - 1], 1), 0)
-aging_out_of_Is[1:(n_age - 1), , ] <- Is[i, j, k] * max(min(aging_rate[i], 1), 0)
+aging_out_of_Is[1:n_age, , ] <- Is[i, j, k] * max(min(aging_rate[i], 1), 0)
 Is_after_aging[, , ]             <- Is[i, j, k] + aging_into_Is[i, j, k] - aging_out_of_Is[i, j, k]
 
 # Recovered with Complications (Rc)
 aging_into_Rc[2:n_age, , ]       <- Rc[i - 1, j, k] * max(min(aging_rate[i - 1], 1), 0)
-aging_out_of_Rc[1:(n_age - 1), , ] <- Rc[i, j, k] * max(min(aging_rate[i], 1), 0)
+aging_out_of_Rc[1:n_age, , ] <- Rc[i, j, k] * max(min(aging_rate[i], 1), 0)
 Rc_after_aging[, , ]             <- Rc[i, j, k] + aging_into_Rc[i, j, k] - aging_out_of_Rc[i, j, k]
 
 # ------------------------------------------------------------------------------
@@ -484,7 +484,7 @@ death_int <- interpolate(tt_death_changes, crude_death, "constant")
 # Background death rate: fixed or time-varying
 background_death[, ] <- if (simp_birth_death == 1)
   max(min(crude_death[i, j, 1], 1), 0) else
-  max(min(death_int[i, j], 1), 0)
+    max(min(death_int[i, j], 1), 0)
 
 # Binomial draw for background deaths per age-risk group
 Npop_background_death[, ] <- if (Npop_age_risk[i, j] <= 0) 0 else
@@ -564,7 +564,7 @@ beta_updated[, , ] <- if (i <= age_maternal_protection_ends)
   (1 - age_vaccination_beta_modifier[i, j, k]) *
   (1 - (protection_weight_vacc * prop_maternal_vaccinated[k] +
           protection_weight_rec  * prop_maternal_natural[k])) else
-  beta[i, j, k] * (1 - age_vaccination_beta_modifier[i, j, k])
+            beta[i, j, k] * (1 - age_vaccination_beta_modifier[i, j, k])
 
 # 7. FORCE OF INFECTION
 
@@ -605,7 +605,7 @@ t_seeded <- interpolate(tt_seeded, seeded, "constant")
 # Capped seeding into S → I: no more than susceptible
 seeded_actual[, , ] <- if (S[i, j, k] < t_seeded[i, j, k])
   S[i, j, k] * reporting_rate else
-  t_seeded[i, j, k] * reporting_rate
+    t_seeded[i, j, k] * reporting_rate
 
 # Track total seedings
 update(seeded_actual_sum) <- sum(seeded_actual)
@@ -865,28 +865,6 @@ initial(total_deaths) <- 0
 update(S_vaccinated) <- sum(vaccinating_out_of_S)
 initial(S_vaccinated) <- 0
 
-# Total movement OUT of each compartment due to vaccination
-update(total_vaccinated_out) <- sum(vaccinating_out_of_S) +
-  sum(vaccinating_out_of_E) +
-  sum(vaccinating_out_of_I) +
-  sum(vaccinating_out_of_R) +
-  sum(vaccinating_out_of_Is) +
-  sum(vaccinating_out_of_Rc)
-initial(total_vaccinated_out) <- 0
-
-# Total movement INTO each compartment due to vaccination
-update(total_vaccinated_in) <- sum(vaccinating_into_S) +
-  sum(vaccinating_into_E) +
-  sum(vaccinating_into_I) +
-  sum(vaccinating_into_R) +
-  sum(vaccinating_into_Is) +
-  sum(vaccinating_into_Rc)
-initial(total_vaccinated_in) <- 0
-
-# Net vaccinated loss (should be ~0 if population conserved)
-update(vaccinated_loss) <- total_vaccinated_out - total_vaccinated_in
-initial(vaccinated_loss) <- 0
-
 # ------------------------------------------------------------------------------
 # 5. CONSISTENCY CHECKS
 # ------------------------------------------------------------------------------
@@ -895,22 +873,14 @@ initial(vaccinated_loss) <- 0
 update(net_pop_change) <- total_births - total_deaths
 initial(net_pop_change) <- 0
 
-# Aging flow conservation check
-update(aging_correct) <- sum(aging_into_E) + sum(aging_into_I) + sum(aging_into_R) -
-  sum(aging_out_of_E) - sum(aging_out_of_I) - sum(aging_out_of_R)
-initial(aging_correct) <- 0
+update(early_loss_check) <- sum(Births) - sum(aging_out_of_S[1, , ])
+initial(early_loss_check) <- 0
 
-# Vaccination flow conservation check
-update(vaccination_correct) <- sum(vaccinating_into_S) - sum(vaccinating_out_of_S)
-initial(vaccination_correct) <- 0
+update(early_migration) <- sum(migration_S[1, , ]) * pos_neg_migration
+initial(early_migration) <- 0
 
-# Waning flow conservation check
-update(waning_correct) <- sum(waning_to_S_short) +
-  sum(waning_to_S_long) +
-  sum(waning_to_S_unvaccinated) -
-  sum(waning_from_S_short) -
-  sum(waning_from_S_long)
-initial(waning_correct) <- 0
+update(net_S1) <- sum(S[1, , ]) + sum(aging_into_S[1, , ]) - sum(aging_out_of_S[1, , ]) - sum(S_death[1, , ])
+initial(net_S1) <- 0
 
 # ------------------------------------------------------------------------------
 # 6. POPULATION GROWTH METRICS
@@ -923,9 +893,6 @@ initial(repro_pop_total) <- 0
 # Per-capita population growth (based on S deaths and births)
 update(per_capita_growth) <- (sum(Births) - sum(S_death)) / sum(reproductive_population)
 initial(per_capita_growth) <- 0
-
-update(early_loss_check) <- sum(aging_out_of_S[1, , ]) - sum(aging_into_S[1, , ])
-initial(early_loss_check) <- 0
 
 # ------------------------------------------------------------------------------
 # 7. CASES

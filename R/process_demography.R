@@ -48,7 +48,7 @@ process_demography <- function(
 
   n_vacc <- if (number_of_vaccines == 0) 1 else number_of_vaccines * 2 + 1
 
-  years_all <- get_years(1950:lubridate::year(base::Sys.Date()), start = year_start, end = year_end)
+  years_all <- get_years(1950:base::max(migration$year), start = year_start, end = year_end)
   time_run_for <- length(years_all)
   time_all <- 0:(time_run_for - 1)
 

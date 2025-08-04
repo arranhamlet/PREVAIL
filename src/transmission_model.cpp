@@ -8,9 +8,9 @@
 // [[dust2::parameter(n_age, type = "int", rank = 0, required = TRUE, constant = TRUE)]]
 // [[dust2::parameter(n_vacc, type = "int", rank = 0, required = TRUE, constant = TRUE)]]
 // [[dust2::parameter(n_risk, type = "int", rank = 0, required = TRUE, constant = TRUE)]]
-// [[dust2::parameter(S0, type = "real_type", rank = 3, required = TRUE, constant = FALSE)]]
-// [[dust2::parameter(I0, type = "real_type", rank = 3, required = TRUE, constant = FALSE)]]
-// [[dust2::parameter(Rpop0, type = "real_type", rank = 3, required = TRUE, constant = FALSE)]]
+// [[dust2::parameter(S0, type = "int", rank = 3, required = TRUE, constant = FALSE)]]
+// [[dust2::parameter(I0, type = "int", rank = 3, required = TRUE, constant = FALSE)]]
+// [[dust2::parameter(Rpop0, type = "int", rank = 3, required = TRUE, constant = FALSE)]]
 // [[dust2::parameter(incubation_rate, type = "real_type", rank = 0, required = TRUE, constant = FALSE)]]
 // [[dust2::parameter(recovery_rate, type = "real_type", rank = 0, required = TRUE, constant = FALSE)]]
 // [[dust2::parameter(natural_immunity_waning, type = "real_type", rank = 0, required = TRUE, constant = FALSE)]]
@@ -65,7 +65,7 @@ public:
         dust2::packing state;
       } packing;
       struct {
-        std::array<size_t, 23> state;
+        std::array<size_t, 16> state;
       } offset;
     } odin;
     struct dim_type {
@@ -253,9 +253,9 @@ public:
     int no_migration_changes;
     real_type reporting_rate;
     real_type R0_modifier;
-    std::vector<real_type> S0;
-    std::vector<real_type> I0;
-    std::vector<real_type> Rpop0;
+    std::vector<int> S0;
+    std::vector<int> I0;
+    std::vector<int> Rpop0;
     std::vector<real_type> prop_severe;
     std::vector<real_type> cfr_normal;
     std::vector<real_type> cfr_severe;
@@ -293,20 +293,15 @@ public:
     std::vector<real_type> vaccinated_mums;
     std::vector<real_type> antibody_mums;
     std::vector<real_type> aging_into_E;
-    std::vector<real_type> aging_out_of_E;
     std::vector<real_type> aging_into_I;
-    std::vector<real_type> aging_out_of_I;
     std::vector<real_type> aging_into_R;
-    std::vector<real_type> aging_out_of_R;
     std::vector<real_type> aging_into_Is;
-    std::vector<real_type> aging_out_of_Is;
     std::vector<real_type> aging_into_Rc;
+    std::vector<real_type> aging_out_of_E;
+    std::vector<real_type> aging_out_of_I;
+    std::vector<real_type> aging_out_of_R;
+    std::vector<real_type> aging_out_of_Is;
     std::vector<real_type> aging_out_of_Rc;
-    std::vector<real_type> E_after_aging;
-    std::vector<real_type> I_after_aging;
-    std::vector<real_type> R_after_aging;
-    std::vector<real_type> Is_after_aging;
-    std::vector<real_type> Rc_after_aging;
     std::vector<real_type> migration;
     std::vector<real_type> migration_distribution;
     std::vector<real_type> death_int;
@@ -314,6 +309,14 @@ public:
     std::vector<real_type> birth_int;
     std::vector<real_type> vaccination_prop;
     std::vector<real_type> t_seeded;
+    std::vector<real_type> E_after_aging;
+    std::vector<real_type> I_after_aging;
+    std::vector<real_type> R_after_aging;
+    std::vector<real_type> Is_after_aging;
+    std::vector<real_type> Rc_after_aging;
+    std::vector<real_type> background_death;
+    std::vector<real_type> reproductive_population;
+    std::vector<real_type> seeded_actual;
     std::vector<real_type> waning_R;
     std::vector<real_type> waning_Rc;
     std::vector<real_type> vaccinating_out_of_E;
@@ -321,26 +324,32 @@ public:
     std::vector<real_type> vaccinating_out_of_R;
     std::vector<real_type> vaccinating_out_of_Is;
     std::vector<real_type> vaccinating_out_of_Rc;
-    std::vector<real_type> background_death;
-    std::vector<real_type> reproductive_population;
-    std::vector<real_type> seeded_actual;
-    std::vector<real_type> vaccinating_into_E;
-    std::vector<real_type> vaccinating_into_I;
-    std::vector<real_type> vaccinating_into_R;
-    std::vector<real_type> vaccinating_into_Is;
-    std::vector<real_type> vaccinating_into_Rc;
     std::vector<real_type> migration_adjusted;
     std::vector<real_type> Npop_background_death;
     std::vector<real_type> prop_maternal_vaccinated;
     std::vector<real_type> prop_maternal_natural;
     std::vector<real_type> infectious_period;
+    std::vector<real_type> vaccinating_into_E;
+    std::vector<real_type> vaccinating_into_I;
+    std::vector<real_type> vaccinating_into_R;
+    std::vector<real_type> vaccinating_into_Is;
+    std::vector<real_type> vaccinating_into_Rc;
+    std::vector<real_type> birth_rate;
+    std::vector<real_type> beta;
     std::vector<real_type> E_after_vaccination;
     std::vector<real_type> I_after_vaccination;
     std::vector<real_type> R_after_vaccination;
     std::vector<real_type> Is_after_vaccination;
     std::vector<real_type> Rc_after_vaccination;
-    std::vector<real_type> birth_rate;
-    std::vector<real_type> beta;
+    std::vector<real_type> migration_S;
+    std::vector<real_type> migration_E;
+    std::vector<real_type> migration_I;
+    std::vector<real_type> migration_R;
+    std::vector<real_type> migration_Is;
+    std::vector<real_type> migration_Rc;
+    std::vector<real_type> Births;
+    std::vector<real_type> beta_updated;
+    std::vector<real_type> aging_into_S;
     std::vector<real_type> waning_from_E_short;
     std::vector<real_type> waning_from_E_long;
     std::vector<real_type> waning_from_I_short;
@@ -351,15 +360,7 @@ public:
     std::vector<real_type> waning_from_Is_long;
     std::vector<real_type> waning_from_Rc_short;
     std::vector<real_type> waning_from_Rc_long;
-    std::vector<real_type> migration_S;
-    std::vector<real_type> migration_E;
-    std::vector<real_type> migration_I;
-    std::vector<real_type> migration_R;
-    std::vector<real_type> migration_Is;
-    std::vector<real_type> migration_Rc;
-    std::vector<real_type> Births;
-    std::vector<real_type> beta_updated;
-    std::vector<real_type> aging_into_S;
+    std::vector<real_type> aging_out_of_S;
     std::vector<real_type> waning_to_E_long;
     std::vector<real_type> waning_to_E_unvaccinated;
     std::vector<real_type> waning_to_I_long;
@@ -370,7 +371,7 @@ public:
     std::vector<real_type> waning_to_Is_unvaccinated;
     std::vector<real_type> waning_to_Rc_long;
     std::vector<real_type> waning_to_Rc_unvaccinated;
-    std::vector<real_type> aging_out_of_S;
+    std::vector<real_type> S_after_aging;
     std::vector<real_type> E_after_waning;
     std::vector<real_type> I_after_waning;
     std::vector<real_type> R_after_waning;
@@ -381,7 +382,7 @@ public:
     std::vector<real_type> R_available;
     std::vector<real_type> Rc_available;
     std::vector<real_type> Is_available;
-    std::vector<real_type> S_after_aging;
+    std::vector<real_type> vaccinating_out_of_S;
     std::vector<real_type> incubated;
     std::vector<real_type> recovered_I_to_R;
     std::vector<real_type> recovered_from_Is;
@@ -390,18 +391,17 @@ public:
     std::vector<real_type> R_death;
     std::vector<real_type> Is_death;
     std::vector<real_type> Rc_death;
-    std::vector<real_type> vaccinating_out_of_S;
+    std::vector<real_type> vaccinating_into_S;
     std::vector<real_type> inf_weighted;
     std::vector<real_type> into_I;
     std::vector<real_type> recovered_Is_to_R;
-    std::vector<real_type> vaccinating_into_S;
+    std::vector<real_type> S_after_vaccination;
     std::vector<real_type> infectious_source;
     std::vector<real_type> into_Is;
     std::vector<real_type> recovered_Is_to_Rc;
-    std::vector<real_type> S_after_vaccination;
-    std::vector<real_type> lambda_contact;
     std::vector<real_type> waning_from_S_short;
     std::vector<real_type> waning_from_S_long;
+    std::vector<real_type> lambda_contact;
     std::vector<real_type> waning_to_S_long;
     std::vector<real_type> waning_to_S_unvaccinated;
     std::vector<real_type> waning_to_S_short;
@@ -606,12 +606,12 @@ public:
     dim.Rc_available.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
     dim.Npop_age.set({static_cast<size_t>(n_age)});
     dim.new_case.set({static_cast<size_t>(n_age), static_cast<size_t>(n_vacc), static_cast<size_t>(n_risk)});
-    std::vector<real_type> S0(dim.S0.size);
-    dust2::r::read_real_array(parameters, dim.S0, S0.data(), "S0", true);
-    std::vector<real_type> I0(dim.I0.size);
-    dust2::r::read_real_array(parameters, dim.I0, I0.data(), "I0", true);
-    std::vector<real_type> Rpop0(dim.Rpop0.size);
-    dust2::r::read_real_array(parameters, dim.Rpop0, Rpop0.data(), "Rpop0", true);
+    std::vector<int> S0(dim.S0.size);
+    dust2::r::read_int_array(parameters, dim.S0, S0.data(), "S0", true);
+    std::vector<int> I0(dim.I0.size);
+    dust2::r::read_int_array(parameters, dim.I0, I0.data(), "I0", true);
+    std::vector<int> Rpop0(dim.Rpop0.size);
+    dust2::r::read_int_array(parameters, dim.Rpop0, Rpop0.data(), "Rpop0", true);
     std::vector<real_type> prop_severe(dim.prop_severe.size);
     dust2::r::read_real_array(parameters, dim.prop_severe, prop_severe.data(), "prop_severe", true);
     std::vector<real_type> cfr_normal(dim.cfr_normal.size);
@@ -668,8 +668,6 @@ public:
     const auto interpolate_t_seeded = dust2::interpolate::InterpolateConstantArray<real_type, 3>(tt_seeded, seeded, dim.t_seeded, "tt_seeded", "seeded");
     shared_state::odin_internals_type odin;
     odin.packing.state = dust2::packing{
-      {"death_rate_flat", {}},
-      {"birth_rate_flat", {}},
       {"vac_prop", {}},
       {"Reff", {}},
       {"seeded_actual_sum", {}},
@@ -678,11 +676,6 @@ public:
       {"total_deaths", {}},
       {"S_vaccinated", {}},
       {"net_pop_change", {}},
-      {"early_loss_check", {}},
-      {"early_migration", {}},
-      {"net_S1", {}},
-      {"repro_pop_total", {}},
-      {"per_capita_growth", {}},
       {"S", std::vector<size_t>(dim.S.dim.begin(), dim.S.dim.end())},
       {"E", std::vector<size_t>(dim.E.dim.begin(), dim.E.dim.end())},
       {"I", std::vector<size_t>(dim.I.dim.begin(), dim.I.dim.end())},
@@ -700,20 +693,15 @@ public:
     std::vector<real_type> vaccinated_mums(shared.dim.vaccinated_mums.size);
     std::vector<real_type> antibody_mums(shared.dim.antibody_mums.size);
     std::vector<real_type> aging_into_E(shared.dim.aging_into_E.size);
-    std::vector<real_type> aging_out_of_E(shared.dim.aging_out_of_E.size);
     std::vector<real_type> aging_into_I(shared.dim.aging_into_I.size);
-    std::vector<real_type> aging_out_of_I(shared.dim.aging_out_of_I.size);
     std::vector<real_type> aging_into_R(shared.dim.aging_into_R.size);
-    std::vector<real_type> aging_out_of_R(shared.dim.aging_out_of_R.size);
     std::vector<real_type> aging_into_Is(shared.dim.aging_into_Is.size);
-    std::vector<real_type> aging_out_of_Is(shared.dim.aging_out_of_Is.size);
     std::vector<real_type> aging_into_Rc(shared.dim.aging_into_Rc.size);
+    std::vector<real_type> aging_out_of_E(shared.dim.aging_out_of_E.size);
+    std::vector<real_type> aging_out_of_I(shared.dim.aging_out_of_I.size);
+    std::vector<real_type> aging_out_of_R(shared.dim.aging_out_of_R.size);
+    std::vector<real_type> aging_out_of_Is(shared.dim.aging_out_of_Is.size);
     std::vector<real_type> aging_out_of_Rc(shared.dim.aging_out_of_Rc.size);
-    std::vector<real_type> E_after_aging(shared.dim.E_after_aging.size);
-    std::vector<real_type> I_after_aging(shared.dim.I_after_aging.size);
-    std::vector<real_type> R_after_aging(shared.dim.R_after_aging.size);
-    std::vector<real_type> Is_after_aging(shared.dim.Is_after_aging.size);
-    std::vector<real_type> Rc_after_aging(shared.dim.Rc_after_aging.size);
     std::vector<real_type> migration(shared.dim.migration.size);
     std::vector<real_type> migration_distribution(shared.dim.migration_distribution.size);
     std::vector<real_type> death_int(shared.dim.death_int.size);
@@ -721,6 +709,14 @@ public:
     std::vector<real_type> birth_int(shared.dim.birth_int.size);
     std::vector<real_type> vaccination_prop(shared.dim.vaccination_prop.size);
     std::vector<real_type> t_seeded(shared.dim.t_seeded.size);
+    std::vector<real_type> E_after_aging(shared.dim.E_after_aging.size);
+    std::vector<real_type> I_after_aging(shared.dim.I_after_aging.size);
+    std::vector<real_type> R_after_aging(shared.dim.R_after_aging.size);
+    std::vector<real_type> Is_after_aging(shared.dim.Is_after_aging.size);
+    std::vector<real_type> Rc_after_aging(shared.dim.Rc_after_aging.size);
+    std::vector<real_type> background_death(shared.dim.background_death.size);
+    std::vector<real_type> reproductive_population(shared.dim.reproductive_population.size);
+    std::vector<real_type> seeded_actual(shared.dim.seeded_actual.size);
     std::vector<real_type> waning_R(shared.dim.waning_R.size);
     std::vector<real_type> waning_Rc(shared.dim.waning_Rc.size);
     std::vector<real_type> vaccinating_out_of_E(shared.dim.vaccinating_out_of_E.size);
@@ -728,26 +724,32 @@ public:
     std::vector<real_type> vaccinating_out_of_R(shared.dim.vaccinating_out_of_R.size);
     std::vector<real_type> vaccinating_out_of_Is(shared.dim.vaccinating_out_of_Is.size);
     std::vector<real_type> vaccinating_out_of_Rc(shared.dim.vaccinating_out_of_Rc.size);
-    std::vector<real_type> background_death(shared.dim.background_death.size);
-    std::vector<real_type> reproductive_population(shared.dim.reproductive_population.size);
-    std::vector<real_type> seeded_actual(shared.dim.seeded_actual.size);
-    std::vector<real_type> vaccinating_into_E(shared.dim.vaccinating_into_E.size);
-    std::vector<real_type> vaccinating_into_I(shared.dim.vaccinating_into_I.size);
-    std::vector<real_type> vaccinating_into_R(shared.dim.vaccinating_into_R.size);
-    std::vector<real_type> vaccinating_into_Is(shared.dim.vaccinating_into_Is.size);
-    std::vector<real_type> vaccinating_into_Rc(shared.dim.vaccinating_into_Rc.size);
     std::vector<real_type> migration_adjusted(shared.dim.migration_adjusted.size);
     std::vector<real_type> Npop_background_death(shared.dim.Npop_background_death.size);
     std::vector<real_type> prop_maternal_vaccinated(shared.dim.prop_maternal_vaccinated.size);
     std::vector<real_type> prop_maternal_natural(shared.dim.prop_maternal_natural.size);
     std::vector<real_type> infectious_period(shared.dim.infectious_period.size);
+    std::vector<real_type> vaccinating_into_E(shared.dim.vaccinating_into_E.size);
+    std::vector<real_type> vaccinating_into_I(shared.dim.vaccinating_into_I.size);
+    std::vector<real_type> vaccinating_into_R(shared.dim.vaccinating_into_R.size);
+    std::vector<real_type> vaccinating_into_Is(shared.dim.vaccinating_into_Is.size);
+    std::vector<real_type> vaccinating_into_Rc(shared.dim.vaccinating_into_Rc.size);
+    std::vector<real_type> birth_rate(shared.dim.birth_rate.size);
+    std::vector<real_type> beta(shared.dim.beta.size);
     std::vector<real_type> E_after_vaccination(shared.dim.E_after_vaccination.size);
     std::vector<real_type> I_after_vaccination(shared.dim.I_after_vaccination.size);
     std::vector<real_type> R_after_vaccination(shared.dim.R_after_vaccination.size);
     std::vector<real_type> Is_after_vaccination(shared.dim.Is_after_vaccination.size);
     std::vector<real_type> Rc_after_vaccination(shared.dim.Rc_after_vaccination.size);
-    std::vector<real_type> birth_rate(shared.dim.birth_rate.size);
-    std::vector<real_type> beta(shared.dim.beta.size);
+    std::vector<real_type> migration_S(shared.dim.migration_S.size);
+    std::vector<real_type> migration_E(shared.dim.migration_E.size);
+    std::vector<real_type> migration_I(shared.dim.migration_I.size);
+    std::vector<real_type> migration_R(shared.dim.migration_R.size);
+    std::vector<real_type> migration_Is(shared.dim.migration_Is.size);
+    std::vector<real_type> migration_Rc(shared.dim.migration_Rc.size);
+    std::vector<real_type> Births(shared.dim.Births.size);
+    std::vector<real_type> beta_updated(shared.dim.beta_updated.size);
+    std::vector<real_type> aging_into_S(shared.dim.aging_into_S.size);
     std::vector<real_type> waning_from_E_short(shared.dim.waning_from_E_short.size);
     std::vector<real_type> waning_from_E_long(shared.dim.waning_from_E_long.size);
     std::vector<real_type> waning_from_I_short(shared.dim.waning_from_I_short.size);
@@ -758,15 +760,7 @@ public:
     std::vector<real_type> waning_from_Is_long(shared.dim.waning_from_Is_long.size);
     std::vector<real_type> waning_from_Rc_short(shared.dim.waning_from_Rc_short.size);
     std::vector<real_type> waning_from_Rc_long(shared.dim.waning_from_Rc_long.size);
-    std::vector<real_type> migration_S(shared.dim.migration_S.size);
-    std::vector<real_type> migration_E(shared.dim.migration_E.size);
-    std::vector<real_type> migration_I(shared.dim.migration_I.size);
-    std::vector<real_type> migration_R(shared.dim.migration_R.size);
-    std::vector<real_type> migration_Is(shared.dim.migration_Is.size);
-    std::vector<real_type> migration_Rc(shared.dim.migration_Rc.size);
-    std::vector<real_type> Births(shared.dim.Births.size);
-    std::vector<real_type> beta_updated(shared.dim.beta_updated.size);
-    std::vector<real_type> aging_into_S(shared.dim.aging_into_S.size);
+    std::vector<real_type> aging_out_of_S(shared.dim.aging_out_of_S.size);
     std::vector<real_type> waning_to_E_long(shared.dim.waning_to_E_long.size);
     std::vector<real_type> waning_to_E_unvaccinated(shared.dim.waning_to_E_unvaccinated.size);
     std::vector<real_type> waning_to_I_long(shared.dim.waning_to_I_long.size);
@@ -777,7 +771,7 @@ public:
     std::vector<real_type> waning_to_Is_unvaccinated(shared.dim.waning_to_Is_unvaccinated.size);
     std::vector<real_type> waning_to_Rc_long(shared.dim.waning_to_Rc_long.size);
     std::vector<real_type> waning_to_Rc_unvaccinated(shared.dim.waning_to_Rc_unvaccinated.size);
-    std::vector<real_type> aging_out_of_S(shared.dim.aging_out_of_S.size);
+    std::vector<real_type> S_after_aging(shared.dim.S_after_aging.size);
     std::vector<real_type> E_after_waning(shared.dim.E_after_waning.size);
     std::vector<real_type> I_after_waning(shared.dim.I_after_waning.size);
     std::vector<real_type> R_after_waning(shared.dim.R_after_waning.size);
@@ -788,7 +782,7 @@ public:
     std::vector<real_type> R_available(shared.dim.R_available.size);
     std::vector<real_type> Rc_available(shared.dim.Rc_available.size);
     std::vector<real_type> Is_available(shared.dim.Is_available.size);
-    std::vector<real_type> S_after_aging(shared.dim.S_after_aging.size);
+    std::vector<real_type> vaccinating_out_of_S(shared.dim.vaccinating_out_of_S.size);
     std::vector<real_type> incubated(shared.dim.incubated.size);
     std::vector<real_type> recovered_I_to_R(shared.dim.recovered_I_to_R.size);
     std::vector<real_type> recovered_from_Is(shared.dim.recovered_from_Is.size);
@@ -797,18 +791,17 @@ public:
     std::vector<real_type> R_death(shared.dim.R_death.size);
     std::vector<real_type> Is_death(shared.dim.Is_death.size);
     std::vector<real_type> Rc_death(shared.dim.Rc_death.size);
-    std::vector<real_type> vaccinating_out_of_S(shared.dim.vaccinating_out_of_S.size);
+    std::vector<real_type> vaccinating_into_S(shared.dim.vaccinating_into_S.size);
     std::vector<real_type> inf_weighted(shared.dim.inf_weighted.size);
     std::vector<real_type> into_I(shared.dim.into_I.size);
     std::vector<real_type> recovered_Is_to_R(shared.dim.recovered_Is_to_R.size);
-    std::vector<real_type> vaccinating_into_S(shared.dim.vaccinating_into_S.size);
+    std::vector<real_type> S_after_vaccination(shared.dim.S_after_vaccination.size);
     std::vector<real_type> infectious_source(shared.dim.infectious_source.size);
     std::vector<real_type> into_Is(shared.dim.into_Is.size);
     std::vector<real_type> recovered_Is_to_Rc(shared.dim.recovered_Is_to_Rc.size);
-    std::vector<real_type> S_after_vaccination(shared.dim.S_after_vaccination.size);
-    std::vector<real_type> lambda_contact(shared.dim.lambda_contact.size);
     std::vector<real_type> waning_from_S_short(shared.dim.waning_from_S_short.size);
     std::vector<real_type> waning_from_S_long(shared.dim.waning_from_S_long.size);
+    std::vector<real_type> lambda_contact(shared.dim.lambda_contact.size);
     std::vector<real_type> waning_to_S_long(shared.dim.waning_to_S_long.size);
     std::vector<real_type> waning_to_S_unvaccinated(shared.dim.waning_to_S_unvaccinated.size);
     std::vector<real_type> waning_to_S_short(shared.dim.waning_to_S_short.size);
@@ -821,7 +814,7 @@ public:
     std::vector<real_type> ngm(shared.dim.ngm.size);
     std::vector<real_type> lambda(shared.dim.lambda.size);
     std::vector<real_type> lambda_S(shared.dim.lambda_S.size);
-    return internal_state{Npop_age_risk, vaccinated_mums, antibody_mums, aging_into_E, aging_out_of_E, aging_into_I, aging_out_of_I, aging_into_R, aging_out_of_R, aging_into_Is, aging_out_of_Is, aging_into_Rc, aging_out_of_Rc, E_after_aging, I_after_aging, R_after_aging, Is_after_aging, Rc_after_aging, migration, migration_distribution, death_int, repro_weight_now, birth_int, vaccination_prop, t_seeded, waning_R, waning_Rc, vaccinating_out_of_E, vaccinating_out_of_I, vaccinating_out_of_R, vaccinating_out_of_Is, vaccinating_out_of_Rc, background_death, reproductive_population, seeded_actual, vaccinating_into_E, vaccinating_into_I, vaccinating_into_R, vaccinating_into_Is, vaccinating_into_Rc, migration_adjusted, Npop_background_death, prop_maternal_vaccinated, prop_maternal_natural, infectious_period, E_after_vaccination, I_after_vaccination, R_after_vaccination, Is_after_vaccination, Rc_after_vaccination, birth_rate, beta, waning_from_E_short, waning_from_E_long, waning_from_I_short, waning_from_I_long, waning_from_R_short, waning_from_R_long, waning_from_Is_short, waning_from_Is_long, waning_from_Rc_short, waning_from_Rc_long, migration_S, migration_E, migration_I, migration_R, migration_Is, migration_Rc, Births, beta_updated, aging_into_S, waning_to_E_long, waning_to_E_unvaccinated, waning_to_I_long, waning_to_I_unvaccinated, waning_to_R_long, waning_to_R_unvaccinated, waning_to_Is_long, waning_to_Is_unvaccinated, waning_to_Rc_long, waning_to_Rc_unvaccinated, aging_out_of_S, E_after_waning, I_after_waning, R_after_waning, Is_after_waning, Rc_after_waning, E_available, I_available, R_available, Rc_available, Is_available, S_after_aging, incubated, recovered_I_to_R, recovered_from_Is, E_death, I_death, R_death, Is_death, Rc_death, vaccinating_out_of_S, inf_weighted, into_I, recovered_Is_to_R, vaccinating_into_S, infectious_source, into_Is, recovered_Is_to_Rc, S_after_vaccination, lambda_contact, waning_from_S_short, waning_from_S_long, waning_to_S_long, waning_to_S_unvaccinated, waning_to_S_short, S_after_waning, S_available, S_death, Npop_age, ngm_unfolded, lambda_raw, ngm, lambda, lambda_S};
+    return internal_state{Npop_age_risk, vaccinated_mums, antibody_mums, aging_into_E, aging_into_I, aging_into_R, aging_into_Is, aging_into_Rc, aging_out_of_E, aging_out_of_I, aging_out_of_R, aging_out_of_Is, aging_out_of_Rc, migration, migration_distribution, death_int, repro_weight_now, birth_int, vaccination_prop, t_seeded, E_after_aging, I_after_aging, R_after_aging, Is_after_aging, Rc_after_aging, background_death, reproductive_population, seeded_actual, waning_R, waning_Rc, vaccinating_out_of_E, vaccinating_out_of_I, vaccinating_out_of_R, vaccinating_out_of_Is, vaccinating_out_of_Rc, migration_adjusted, Npop_background_death, prop_maternal_vaccinated, prop_maternal_natural, infectious_period, vaccinating_into_E, vaccinating_into_I, vaccinating_into_R, vaccinating_into_Is, vaccinating_into_Rc, birth_rate, beta, E_after_vaccination, I_after_vaccination, R_after_vaccination, Is_after_vaccination, Rc_after_vaccination, migration_S, migration_E, migration_I, migration_R, migration_Is, migration_Rc, Births, beta_updated, aging_into_S, waning_from_E_short, waning_from_E_long, waning_from_I_short, waning_from_I_long, waning_from_R_short, waning_from_R_long, waning_from_Is_short, waning_from_Is_long, waning_from_Rc_short, waning_from_Rc_long, aging_out_of_S, waning_to_E_long, waning_to_E_unvaccinated, waning_to_I_long, waning_to_I_unvaccinated, waning_to_R_long, waning_to_R_unvaccinated, waning_to_Is_long, waning_to_Is_unvaccinated, waning_to_Rc_long, waning_to_Rc_unvaccinated, S_after_aging, E_after_waning, I_after_waning, R_after_waning, Is_after_waning, Rc_after_waning, E_available, I_available, R_available, Rc_available, Is_available, vaccinating_out_of_S, incubated, recovered_I_to_R, recovered_from_Is, E_death, I_death, R_death, Is_death, Rc_death, vaccinating_into_S, inf_weighted, into_I, recovered_Is_to_R, S_after_vaccination, infectious_source, into_Is, recovered_Is_to_Rc, waning_from_S_short, waning_from_S_long, lambda_contact, waning_to_S_long, waning_to_S_unvaccinated, waning_to_S_short, S_after_waning, S_available, S_death, Npop_age, ngm_unfolded, lambda_raw, ngm, lambda, lambda_S};
   }
   static data_type build_data(cpp11::list data, const shared_state& shared) {
     auto serosurvey = std::vector<real_type>(shared.dim.serosurvey.size);
@@ -843,9 +836,9 @@ public:
     shared.protection_weight_rec = dust2::r::read_real(parameters, "protection_weight_rec", shared.protection_weight_rec);
     shared.reporting_rate = dust2::r::read_real(parameters, "reporting_rate", shared.reporting_rate);
     shared.R0_modifier = dust2::r::read_real(parameters, "R0_modifier", shared.R0_modifier);
-    dust2::r::read_real_array(parameters, shared.dim.S0, shared.S0.data(), "S0", false);
-    dust2::r::read_real_array(parameters, shared.dim.I0, shared.I0.data(), "I0", false);
-    dust2::r::read_real_array(parameters, shared.dim.Rpop0, shared.Rpop0.data(), "Rpop0", false);
+    dust2::r::read_int_array(parameters, shared.dim.S0, shared.S0.data(), "S0", false);
+    dust2::r::read_int_array(parameters, shared.dim.I0, shared.I0.data(), "I0", false);
+    dust2::r::read_int_array(parameters, shared.dim.Rpop0, shared.Rpop0.data(), "Rpop0", false);
     dust2::r::read_real_array(parameters, shared.dim.prop_severe, shared.prop_severe.data(), "prop_severe", false);
     dust2::r::read_real_array(parameters, shared.dim.cfr_normal, shared.cfr_normal.data(), "cfr_normal", false);
     dust2::r::read_real_array(parameters, shared.dim.cfr_severe, shared.cfr_severe.data(), "cfr_severe", false);
@@ -884,87 +877,80 @@ public:
     for (size_t i = 1; i <= shared.dim.S.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.S.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.S.dim[2]; ++k) {
-          state[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2] + 15] = shared.S0[i - 1 + (j - 1) * shared.dim.S0.mult[1] + (k - 1) * shared.dim.S0.mult[2]];
+          state[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2] + 8] = shared.S0[i - 1 + (j - 1) * shared.dim.S0.mult[1] + (k - 1) * shared.dim.S0.mult[2]];
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.E.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.E.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.E.dim[2]; ++k) {
-          state[i - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2] + shared.odin.offset.state[16]] = 0;
+          state[i - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2] + shared.odin.offset.state[9]] = 0;
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.I.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.I.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.I.dim[2]; ++k) {
-          state[i - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2] + shared.odin.offset.state[17]] = shared.I0[i - 1 + (j - 1) * shared.dim.I0.mult[1] + (k - 1) * shared.dim.I0.mult[2]];
+          state[i - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2] + shared.odin.offset.state[10]] = shared.I0[i - 1 + (j - 1) * shared.dim.I0.mult[1] + (k - 1) * shared.dim.I0.mult[2]];
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.R.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.R.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.R.dim[2]; ++k) {
-          state[i - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2] + shared.odin.offset.state[18]] = shared.Rpop0[i - 1 + (j - 1) * shared.dim.Rpop0.mult[1] + (k - 1) * shared.dim.Rpop0.mult[2]];
+          state[i - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2] + shared.odin.offset.state[11]] = shared.Rpop0[i - 1 + (j - 1) * shared.dim.Rpop0.mult[1] + (k - 1) * shared.dim.Rpop0.mult[2]];
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.Is.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.Is.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.Is.dim[2]; ++k) {
-          state[i - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2] + shared.odin.offset.state[19]] = 0;
+          state[i - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2] + shared.odin.offset.state[12]] = 0;
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.Rc.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.Rc.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.Rc.dim[2]; ++k) {
-          state[i - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2] + shared.odin.offset.state[20]] = 0;
+          state[i - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2] + shared.odin.offset.state[13]] = 0;
         }
       }
     }
     state[0] = 0;
-    state[1] = 0;
+    state[1] = shared.R0[0];
     state[2] = 0;
-    state[3] = shared.R0[0];
-    state[4] = 0;
-    state[5] = dust2::array::sum<real_type>(shared.S0.data(), shared.dim.S0) + dust2::array::sum<real_type>(shared.I0.data(), shared.dim.I0) + dust2::array::sum<real_type>(shared.Rpop0.data(), shared.dim.Rpop0);
+    state[3] = dust2::array::sum<real_type>(shared.S0.data(), shared.dim.S0) + dust2::array::sum<real_type>(shared.I0.data(), shared.dim.I0) + dust2::array::sum<real_type>(shared.Rpop0.data(), shared.dim.Rpop0);
     for (size_t i = 1; i <= shared.dim.seropositive.size; ++i) {
-      state[i - 1 + shared.odin.offset.state[21]] = 0;
+      state[i - 1 + shared.odin.offset.state[14]] = 0;
     }
+    state[4] = 0;
+    state[5] = 0;
     state[6] = 0;
     state[7] = 0;
-    state[8] = 0;
-    state[9] = 0;
-    state[10] = 0;
-    state[11] = 0;
-    state[12] = 0;
-    state[13] = 0;
-    state[14] = 0;
     for (size_t i = 1; i <= shared.dim.new_case.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.new_case.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.new_case.dim[2]; ++k) {
-          state[i - 1 + (j - 1) * shared.dim.new_case.mult[1] + (k - 1) * shared.dim.new_case.mult[2] + shared.odin.offset.state[22]] = shared.I0[i - 1 + (j - 1) * shared.dim.I0.mult[1] + (k - 1) * shared.dim.I0.mult[2]];
+          state[i - 1 + (j - 1) * shared.dim.new_case.mult[1] + (k - 1) * shared.dim.new_case.mult[2] + shared.odin.offset.state[15]] = shared.I0[i - 1 + (j - 1) * shared.dim.I0.mult[1] + (k - 1) * shared.dim.I0.mult[2]];
         }
       }
     }
   }
   static void update(real_type time, real_type dt, const real_type* state, const shared_state& shared, internal_state& internal, rng_state_type& rng_state, real_type* state_next) {
-    const auto * S = state + 15;
-    const auto * E = state + shared.odin.offset.state[16];
-    const auto * I = state + shared.odin.offset.state[17];
-    const auto * R = state + shared.odin.offset.state[18];
-    const auto * Is = state + shared.odin.offset.state[19];
-    const auto * Rc = state + shared.odin.offset.state[20];
-    const auto total_births = state[6];
-    const auto total_deaths = state[7];
+    const auto * S = state + 8;
+    const auto * E = state + shared.odin.offset.state[9];
+    const auto * I = state + shared.odin.offset.state[10];
+    const auto * R = state + shared.odin.offset.state[11];
+    const auto * Is = state + shared.odin.offset.state[12];
+    const auto * Rc = state + shared.odin.offset.state[13];
+    const auto total_births = state[4];
+    const auto total_deaths = state[5];
     const real_type N = dust2::array::sum<real_type>(S, shared.dim.S) + dust2::array::sum<real_type>(E, shared.dim.E) + dust2::array::sum<real_type>(I, shared.dim.I) + dust2::array::sum<real_type>(R, shared.dim.R) + dust2::array::sum<real_type>(Is, shared.dim.Is) + dust2::array::sum<real_type>(Rc, shared.dim.Rc);
-    const real_type migration_prop_S = dust2::array::sum<real_type>(S, shared.dim.S) / N;
-    const real_type migration_prop_E = dust2::array::sum<real_type>(E, shared.dim.E) / N;
-    const real_type migration_prop_I = dust2::array::sum<real_type>(I, shared.dim.I) / N;
-    const real_type migration_prop_R = dust2::array::sum<real_type>(R, shared.dim.R) / N;
-    const real_type migration_prop_Is = dust2::array::sum<real_type>(Is, shared.dim.Is) / N;
-    const real_type migration_prop_Rc = dust2::array::sum<real_type>(Rc, shared.dim.Rc) / N;
+    const real_type migration_prop_S = (N <= 0 ? 0 : dust2::array::sum<real_type>(S, shared.dim.S) / N);
+    const real_type migration_prop_E = (N <= 0 ? 0 : dust2::array::sum<real_type>(E, shared.dim.E) / N);
+    const real_type migration_prop_I = (N <= 0 ? 0 : dust2::array::sum<real_type>(I, shared.dim.I) / N);
+    const real_type migration_prop_R = (N <= 0 ? 0 : dust2::array::sum<real_type>(R, shared.dim.R) / N);
+    const real_type migration_prop_Is = (N <= 0 ? 0 : dust2::array::sum<real_type>(Is, shared.dim.Is) / N);
+    const real_type migration_prop_Rc = (N <= 0 ? 0 : dust2::array::sum<real_type>(Rc, shared.dim.Rc) / N);
     for (size_t i = 1; i <= shared.dim.Npop_age_risk.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.Npop_age_risk.dim[1]; ++j) {
         internal.Npop_age_risk[i - 1 + (j - 1) * shared.dim.Npop_age_risk.mult[1]] = dust2::array::sum<real_type>(S, shared.dim.S, {i - 1, i - 1}, {0, shared.dim.S.dim[1] - 1}, {j - 1, j - 1}) + dust2::array::sum<real_type>(E, shared.dim.E, {i - 1, i - 1}, {0, shared.dim.E.dim[1] - 1}, {j - 1, j - 1}) + dust2::array::sum<real_type>(I, shared.dim.I, {i - 1, i - 1}, {0, shared.dim.I.dim[1] - 1}, {j - 1, j - 1}) + dust2::array::sum<real_type>(R, shared.dim.R, {i - 1, i - 1}, {0, shared.dim.R.dim[1] - 1}, {j - 1, j - 1}) + dust2::array::sum<real_type>(Is, shared.dim.Is, {i - 1, i - 1}, {0, shared.dim.Is.dim[1] - 1}, {j - 1, j - 1}) + dust2::array::sum<real_type>(Rc, shared.dim.Rc, {i - 1, i - 1}, {0, shared.dim.Rc.dim[1] - 1}, {j - 1, j - 1});
@@ -979,105 +965,95 @@ public:
     for (size_t i = 2; i <= static_cast<size_t>(shared.n_age); ++i) {
       for (size_t j = 1; j <= shared.dim.aging_into_E.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.aging_into_E.dim[2]; ++k) {
-          internal.aging_into_E[i - 1 + (j - 1) * shared.dim.aging_into_E.mult[1] + (k - 1) * shared.dim.aging_into_E.mult[2]] = E[i - 1 - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(shared.aging_rate[i - 1 - 1], 1), 0);
-        }
-      }
-    }
-    for (size_t i = 1; i <= static_cast<size_t>(shared.n_age); ++i) {
-      for (size_t j = 1; j <= shared.dim.aging_out_of_E.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.aging_out_of_E.dim[2]; ++k) {
-          internal.aging_out_of_E[i - 1 + (j - 1) * shared.dim.aging_out_of_E.mult[1] + (k - 1) * shared.dim.aging_out_of_E.mult[2]] = E[i - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(shared.aging_rate[i - 1], 1), 0);
+          internal.aging_into_E[i - 1 + (j - 1) * shared.dim.aging_into_E.mult[1] + (k - 1) * shared.dim.aging_into_E.mult[2]] = (E[i - 1 - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2]] <= 0 || shared.aging_rate[i - 1 - 1] <= 0 ? 0 : monty::math::floor(E[i - 1 - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(shared.aging_rate[i - 1 - 1], 1), 0)));
         }
       }
     }
     for (size_t i = 2; i <= static_cast<size_t>(shared.n_age); ++i) {
       for (size_t j = 1; j <= shared.dim.aging_into_I.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.aging_into_I.dim[2]; ++k) {
-          internal.aging_into_I[i - 1 + (j - 1) * shared.dim.aging_into_I.mult[1] + (k - 1) * shared.dim.aging_into_I.mult[2]] = I[i - 1 - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(shared.aging_rate[i - 1 - 1], 1), 0);
-        }
-      }
-    }
-    for (size_t i = 1; i <= static_cast<size_t>(shared.n_age); ++i) {
-      for (size_t j = 1; j <= shared.dim.aging_out_of_I.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.aging_out_of_I.dim[2]; ++k) {
-          internal.aging_out_of_I[i - 1 + (j - 1) * shared.dim.aging_out_of_I.mult[1] + (k - 1) * shared.dim.aging_out_of_I.mult[2]] = I[i - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(shared.aging_rate[i - 1], 1), 0);
+          internal.aging_into_I[i - 1 + (j - 1) * shared.dim.aging_into_I.mult[1] + (k - 1) * shared.dim.aging_into_I.mult[2]] = (I[i - 1 - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2]] <= 0 || shared.aging_rate[i - 1 - 1] <= 0 ? 0 : monty::math::floor(I[i - 1 - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(shared.aging_rate[i - 1 - 1], 1), 0)));
         }
       }
     }
     for (size_t i = 2; i <= static_cast<size_t>(shared.n_age); ++i) {
       for (size_t j = 1; j <= shared.dim.aging_into_R.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.aging_into_R.dim[2]; ++k) {
-          internal.aging_into_R[i - 1 + (j - 1) * shared.dim.aging_into_R.mult[1] + (k - 1) * shared.dim.aging_into_R.mult[2]] = R[i - 1 - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(shared.aging_rate[i - 1 - 1], 1), 0);
-        }
-      }
-    }
-    for (size_t i = 1; i <= static_cast<size_t>(shared.n_age); ++i) {
-      for (size_t j = 1; j <= shared.dim.aging_out_of_R.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.aging_out_of_R.dim[2]; ++k) {
-          internal.aging_out_of_R[i - 1 + (j - 1) * shared.dim.aging_out_of_R.mult[1] + (k - 1) * shared.dim.aging_out_of_R.mult[2]] = R[i - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(shared.aging_rate[i - 1], 1), 0);
+          internal.aging_into_R[i - 1 + (j - 1) * shared.dim.aging_into_R.mult[1] + (k - 1) * shared.dim.aging_into_R.mult[2]] = (R[i - 1 - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2]] <= 0 || shared.aging_rate[i - 1 - 1] <= 0 ? 0 : monty::math::floor(R[i - 1 - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(shared.aging_rate[i - 1 - 1], 1), 0)));
         }
       }
     }
     for (size_t i = 2; i <= static_cast<size_t>(shared.n_age); ++i) {
       for (size_t j = 1; j <= shared.dim.aging_into_Is.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.aging_into_Is.dim[2]; ++k) {
-          internal.aging_into_Is[i - 1 + (j - 1) * shared.dim.aging_into_Is.mult[1] + (k - 1) * shared.dim.aging_into_Is.mult[2]] = Is[i - 1 - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(shared.aging_rate[i - 1 - 1], 1), 0);
-        }
-      }
-    }
-    for (size_t i = 1; i <= static_cast<size_t>(shared.n_age); ++i) {
-      for (size_t j = 1; j <= shared.dim.aging_out_of_Is.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.aging_out_of_Is.dim[2]; ++k) {
-          internal.aging_out_of_Is[i - 1 + (j - 1) * shared.dim.aging_out_of_Is.mult[1] + (k - 1) * shared.dim.aging_out_of_Is.mult[2]] = Is[i - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(shared.aging_rate[i - 1], 1), 0);
+          internal.aging_into_Is[i - 1 + (j - 1) * shared.dim.aging_into_Is.mult[1] + (k - 1) * shared.dim.aging_into_Is.mult[2]] = (Is[i - 1 - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2]] <= 0 || shared.aging_rate[i - 1 - 1] <= 0 ? 0 : monty::math::floor(Is[i - 1 - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(shared.aging_rate[i - 1 - 1], 1), 0)));
         }
       }
     }
     for (size_t i = 2; i <= static_cast<size_t>(shared.n_age); ++i) {
       for (size_t j = 1; j <= shared.dim.aging_into_Rc.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.aging_into_Rc.dim[2]; ++k) {
-          internal.aging_into_Rc[i - 1 + (j - 1) * shared.dim.aging_into_Rc.mult[1] + (k - 1) * shared.dim.aging_into_Rc.mult[2]] = Rc[i - 1 - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(shared.aging_rate[i - 1 - 1], 1), 0);
+          internal.aging_into_Rc[i - 1 + (j - 1) * shared.dim.aging_into_Rc.mult[1] + (k - 1) * shared.dim.aging_into_Rc.mult[2]] = (Rc[i - 1 - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2]] <= 0 || shared.aging_rate[i - 1 - 1] <= 0 ? 0 : monty::math::floor(Rc[i - 1 - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(shared.aging_rate[i - 1 - 1], 1), 0)));
         }
       }
     }
-    for (size_t i = 1; i <= static_cast<size_t>(shared.n_age); ++i) {
+    for (size_t j = 1; j <= shared.dim.aging_out_of_E.dim[1]; ++j) {
+      for (size_t k = 1; k <= shared.dim.aging_out_of_E.dim[2]; ++k) {
+        internal.aging_out_of_E[(j - 1) * shared.dim.aging_out_of_E.mult[1] + (k - 1) * shared.dim.aging_out_of_E.mult[2]] = (E[(j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2]] - internal.aging_into_E[(k - 1) * shared.dim.aging_into_E.mult[2]] <= 0 || shared.aging_rate[0] <= 0 ? 0 : monty::math::floor(monty::math::max<real_type>(E[(j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2]] - internal.aging_into_E[(k - 1) * shared.dim.aging_into_E.mult[2]], 0) * shared.aging_rate[0]));
+      }
+    }
+    for (size_t i = 2; i <= static_cast<size_t>(shared.n_age); ++i) {
+      for (size_t j = 1; j <= shared.dim.aging_out_of_E.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.aging_out_of_E.dim[2]; ++k) {
+          internal.aging_out_of_E[i - 1 + (j - 1) * shared.dim.aging_out_of_E.mult[1] + (k - 1) * shared.dim.aging_out_of_E.mult[2]] = (E[i - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2]] <= 0 || shared.aging_rate[i - 1] <= 0 ? 0 : monty::math::floor(E[i - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(shared.aging_rate[i - 1], 1), 0)));
+        }
+      }
+    }
+    for (size_t j = 1; j <= shared.dim.aging_out_of_I.dim[1]; ++j) {
+      for (size_t k = 1; k <= shared.dim.aging_out_of_I.dim[2]; ++k) {
+        internal.aging_out_of_I[(j - 1) * shared.dim.aging_out_of_I.mult[1] + (k - 1) * shared.dim.aging_out_of_I.mult[2]] = (I[(j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2]] - internal.aging_into_I[(k - 1) * shared.dim.aging_into_I.mult[2]] <= 0 || shared.aging_rate[0] <= 0 ? 0 : monty::math::floor(monty::math::max<real_type>(I[(j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2]] - internal.aging_into_I[(k - 1) * shared.dim.aging_into_I.mult[2]], 0) * shared.aging_rate[0]));
+      }
+    }
+    for (size_t i = 2; i <= static_cast<size_t>(shared.n_age); ++i) {
+      for (size_t j = 1; j <= shared.dim.aging_out_of_I.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.aging_out_of_I.dim[2]; ++k) {
+          internal.aging_out_of_I[i - 1 + (j - 1) * shared.dim.aging_out_of_I.mult[1] + (k - 1) * shared.dim.aging_out_of_I.mult[2]] = (I[i - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2]] <= 0 || shared.aging_rate[i - 1] <= 0 ? 0 : monty::math::floor(I[i - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(shared.aging_rate[i - 1], 1), 0)));
+        }
+      }
+    }
+    for (size_t j = 1; j <= shared.dim.aging_out_of_R.dim[1]; ++j) {
+      for (size_t k = 1; k <= shared.dim.aging_out_of_R.dim[2]; ++k) {
+        internal.aging_out_of_R[(j - 1) * shared.dim.aging_out_of_R.mult[1] + (k - 1) * shared.dim.aging_out_of_R.mult[2]] = (R[(j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2]] - internal.aging_into_R[(k - 1) * shared.dim.aging_into_R.mult[2]] <= 0 || shared.aging_rate[0] <= 0 ? 0 : monty::math::floor(monty::math::max<real_type>(R[(j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2]] - internal.aging_into_R[(k - 1) * shared.dim.aging_into_R.mult[2]], 0) * shared.aging_rate[0]));
+      }
+    }
+    for (size_t i = 2; i <= static_cast<size_t>(shared.n_age); ++i) {
+      for (size_t j = 1; j <= shared.dim.aging_out_of_R.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.aging_out_of_R.dim[2]; ++k) {
+          internal.aging_out_of_R[i - 1 + (j - 1) * shared.dim.aging_out_of_R.mult[1] + (k - 1) * shared.dim.aging_out_of_R.mult[2]] = (R[i - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2]] <= 0 || shared.aging_rate[i - 1] <= 0 ? 0 : monty::math::floor(R[i - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(shared.aging_rate[i - 1], 1), 0)));
+        }
+      }
+    }
+    for (size_t j = 1; j <= shared.dim.aging_out_of_Is.dim[1]; ++j) {
+      for (size_t k = 1; k <= shared.dim.aging_out_of_Is.dim[2]; ++k) {
+        internal.aging_out_of_Is[(j - 1) * shared.dim.aging_out_of_Is.mult[1] + (k - 1) * shared.dim.aging_out_of_Is.mult[2]] = (Is[(j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2]] - internal.aging_into_Is[(k - 1) * shared.dim.aging_into_Is.mult[2]] <= 0 || shared.aging_rate[0] <= 0 ? 0 : monty::math::floor(monty::math::max<real_type>(Is[(j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2]] - internal.aging_into_Is[(k - 1) * shared.dim.aging_into_Is.mult[2]], 0) * shared.aging_rate[0]));
+      }
+    }
+    for (size_t i = 2; i <= static_cast<size_t>(shared.n_age); ++i) {
+      for (size_t j = 1; j <= shared.dim.aging_out_of_Is.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.aging_out_of_Is.dim[2]; ++k) {
+          internal.aging_out_of_Is[i - 1 + (j - 1) * shared.dim.aging_out_of_Is.mult[1] + (k - 1) * shared.dim.aging_out_of_Is.mult[2]] = (Is[i - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2]] <= 0 || shared.aging_rate[i - 1] <= 0 ? 0 : monty::math::floor(Is[i - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(shared.aging_rate[i - 1], 1), 0)));
+        }
+      }
+    }
+    for (size_t j = 1; j <= shared.dim.aging_out_of_Rc.dim[1]; ++j) {
+      for (size_t k = 1; k <= shared.dim.aging_out_of_Rc.dim[2]; ++k) {
+        internal.aging_out_of_Rc[(j - 1) * shared.dim.aging_out_of_Rc.mult[1] + (k - 1) * shared.dim.aging_out_of_Rc.mult[2]] = (Rc[(j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2]] - internal.aging_into_Rc[(k - 1) * shared.dim.aging_into_Rc.mult[2]] <= 0 || shared.aging_rate[0] <= 0 ? 0 : monty::math::floor(monty::math::max<real_type>(Rc[(j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2]] - internal.aging_into_Rc[(k - 1) * shared.dim.aging_into_Rc.mult[2]], 0) * shared.aging_rate[0]));
+      }
+    }
+    for (size_t i = 2; i <= static_cast<size_t>(shared.n_age); ++i) {
       for (size_t j = 1; j <= shared.dim.aging_out_of_Rc.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.aging_out_of_Rc.dim[2]; ++k) {
-          internal.aging_out_of_Rc[i - 1 + (j - 1) * shared.dim.aging_out_of_Rc.mult[1] + (k - 1) * shared.dim.aging_out_of_Rc.mult[2]] = Rc[i - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(shared.aging_rate[i - 1], 1), 0);
-        }
-      }
-    }
-    for (size_t i = 1; i <= shared.dim.E_after_aging.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.E_after_aging.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.E_after_aging.dim[2]; ++k) {
-          internal.E_after_aging[i - 1 + (j - 1) * shared.dim.E_after_aging.mult[1] + (k - 1) * shared.dim.E_after_aging.mult[2]] = E[i - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2]] + internal.aging_into_E[i - 1 + (j - 1) * shared.dim.aging_into_E.mult[1] + (k - 1) * shared.dim.aging_into_E.mult[2]] - internal.aging_out_of_E[i - 1 + (j - 1) * shared.dim.aging_out_of_E.mult[1] + (k - 1) * shared.dim.aging_out_of_E.mult[2]];
-        }
-      }
-    }
-    for (size_t i = 1; i <= shared.dim.I_after_aging.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.I_after_aging.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.I_after_aging.dim[2]; ++k) {
-          internal.I_after_aging[i - 1 + (j - 1) * shared.dim.I_after_aging.mult[1] + (k - 1) * shared.dim.I_after_aging.mult[2]] = I[i - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2]] + internal.aging_into_I[i - 1 + (j - 1) * shared.dim.aging_into_I.mult[1] + (k - 1) * shared.dim.aging_into_I.mult[2]] - internal.aging_out_of_I[i - 1 + (j - 1) * shared.dim.aging_out_of_I.mult[1] + (k - 1) * shared.dim.aging_out_of_I.mult[2]];
-        }
-      }
-    }
-    for (size_t i = 1; i <= shared.dim.R_after_aging.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.R_after_aging.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.R_after_aging.dim[2]; ++k) {
-          internal.R_after_aging[i - 1 + (j - 1) * shared.dim.R_after_aging.mult[1] + (k - 1) * shared.dim.R_after_aging.mult[2]] = R[i - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2]] + internal.aging_into_R[i - 1 + (j - 1) * shared.dim.aging_into_R.mult[1] + (k - 1) * shared.dim.aging_into_R.mult[2]] - internal.aging_out_of_R[i - 1 + (j - 1) * shared.dim.aging_out_of_R.mult[1] + (k - 1) * shared.dim.aging_out_of_R.mult[2]];
-        }
-      }
-    }
-    for (size_t i = 1; i <= shared.dim.Is_after_aging.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.Is_after_aging.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.Is_after_aging.dim[2]; ++k) {
-          internal.Is_after_aging[i - 1 + (j - 1) * shared.dim.Is_after_aging.mult[1] + (k - 1) * shared.dim.Is_after_aging.mult[2]] = Is[i - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2]] + internal.aging_into_Is[i - 1 + (j - 1) * shared.dim.aging_into_Is.mult[1] + (k - 1) * shared.dim.aging_into_Is.mult[2]] - internal.aging_out_of_Is[i - 1 + (j - 1) * shared.dim.aging_out_of_Is.mult[1] + (k - 1) * shared.dim.aging_out_of_Is.mult[2]];
-        }
-      }
-    }
-    for (size_t i = 1; i <= shared.dim.Rc_after_aging.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.Rc_after_aging.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.Rc_after_aging.dim[2]; ++k) {
-          internal.Rc_after_aging[i - 1 + (j - 1) * shared.dim.Rc_after_aging.mult[1] + (k - 1) * shared.dim.Rc_after_aging.mult[2]] = Rc[i - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2]] + internal.aging_into_Rc[i - 1 + (j - 1) * shared.dim.aging_into_Rc.mult[1] + (k - 1) * shared.dim.aging_into_Rc.mult[2]] - internal.aging_out_of_Rc[i - 1 + (j - 1) * shared.dim.aging_out_of_Rc.mult[1] + (k - 1) * shared.dim.aging_out_of_Rc.mult[2]];
+          internal.aging_out_of_Rc[i - 1 + (j - 1) * shared.dim.aging_out_of_Rc.mult[1] + (k - 1) * shared.dim.aging_out_of_Rc.mult[2]] = (Rc[i - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2]] <= 0 || shared.aging_rate[i - 1] <= 0 ? 0 : monty::math::floor(Rc[i - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(shared.aging_rate[i - 1], 1), 0)));
         }
       }
     }
@@ -1089,6 +1065,57 @@ public:
     shared.interpolate_vaccination_prop.eval(time, internal.vaccination_prop);
     const real_type t_R0 = shared.interpolate_t_R0.eval(time);
     shared.interpolate_t_seeded.eval(time, internal.t_seeded);
+    for (size_t i = 1; i <= shared.dim.E_after_aging.dim[0]; ++i) {
+      for (size_t j = 1; j <= shared.dim.E_after_aging.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.E_after_aging.dim[2]; ++k) {
+          internal.E_after_aging[i - 1 + (j - 1) * shared.dim.E_after_aging.mult[1] + (k - 1) * shared.dim.E_after_aging.mult[2]] = monty::math::max<real_type>(E[i - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2]] + internal.aging_into_E[i - 1 + (j - 1) * shared.dim.aging_into_E.mult[1] + (k - 1) * shared.dim.aging_into_E.mult[2]] - internal.aging_out_of_E[i - 1 + (j - 1) * shared.dim.aging_out_of_E.mult[1] + (k - 1) * shared.dim.aging_out_of_E.mult[2]], 0);
+        }
+      }
+    }
+    for (size_t i = 1; i <= shared.dim.I_after_aging.dim[0]; ++i) {
+      for (size_t j = 1; j <= shared.dim.I_after_aging.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.I_after_aging.dim[2]; ++k) {
+          internal.I_after_aging[i - 1 + (j - 1) * shared.dim.I_after_aging.mult[1] + (k - 1) * shared.dim.I_after_aging.mult[2]] = monty::math::max<real_type>(I[i - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2]] + internal.aging_into_I[i - 1 + (j - 1) * shared.dim.aging_into_I.mult[1] + (k - 1) * shared.dim.aging_into_I.mult[2]] - internal.aging_out_of_I[i - 1 + (j - 1) * shared.dim.aging_out_of_I.mult[1] + (k - 1) * shared.dim.aging_out_of_I.mult[2]], 0);
+        }
+      }
+    }
+    for (size_t i = 1; i <= shared.dim.R_after_aging.dim[0]; ++i) {
+      for (size_t j = 1; j <= shared.dim.R_after_aging.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.R_after_aging.dim[2]; ++k) {
+          internal.R_after_aging[i - 1 + (j - 1) * shared.dim.R_after_aging.mult[1] + (k - 1) * shared.dim.R_after_aging.mult[2]] = monty::math::max<real_type>(R[i - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2]] + internal.aging_into_R[i - 1 + (j - 1) * shared.dim.aging_into_R.mult[1] + (k - 1) * shared.dim.aging_into_R.mult[2]] - internal.aging_out_of_R[i - 1 + (j - 1) * shared.dim.aging_out_of_R.mult[1] + (k - 1) * shared.dim.aging_out_of_R.mult[2]], 0);
+        }
+      }
+    }
+    for (size_t i = 1; i <= shared.dim.Is_after_aging.dim[0]; ++i) {
+      for (size_t j = 1; j <= shared.dim.Is_after_aging.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.Is_after_aging.dim[2]; ++k) {
+          internal.Is_after_aging[i - 1 + (j - 1) * shared.dim.Is_after_aging.mult[1] + (k - 1) * shared.dim.Is_after_aging.mult[2]] = monty::math::max<real_type>(Is[i - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2]] + internal.aging_into_Is[i - 1 + (j - 1) * shared.dim.aging_into_Is.mult[1] + (k - 1) * shared.dim.aging_into_Is.mult[2]] - internal.aging_out_of_Is[i - 1 + (j - 1) * shared.dim.aging_out_of_Is.mult[1] + (k - 1) * shared.dim.aging_out_of_Is.mult[2]], 0);
+        }
+      }
+    }
+    for (size_t i = 1; i <= shared.dim.Rc_after_aging.dim[0]; ++i) {
+      for (size_t j = 1; j <= shared.dim.Rc_after_aging.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.Rc_after_aging.dim[2]; ++k) {
+          internal.Rc_after_aging[i - 1 + (j - 1) * shared.dim.Rc_after_aging.mult[1] + (k - 1) * shared.dim.Rc_after_aging.mult[2]] = monty::math::max<real_type>(Rc[i - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2]] + internal.aging_into_Rc[i - 1 + (j - 1) * shared.dim.aging_into_Rc.mult[1] + (k - 1) * shared.dim.aging_into_Rc.mult[2]] - internal.aging_out_of_Rc[i - 1 + (j - 1) * shared.dim.aging_out_of_Rc.mult[1] + (k - 1) * shared.dim.aging_out_of_Rc.mult[2]], 0);
+        }
+      }
+    }
+    const real_type pos_neg_migration = (dust2::array::sum<real_type>(internal.migration.data(), shared.dim.migration) < 0 ? -1 : 1);
+    for (size_t i = 1; i <= shared.dim.background_death.dim[0]; ++i) {
+      for (size_t j = 1; j <= shared.dim.background_death.dim[1]; ++j) {
+        internal.background_death[i - 1 + (j - 1) * shared.dim.background_death.mult[1]] = (shared.simp_birth_death == 1 ? monty::math::max<real_type>(monty::math::min<real_type>(shared.crude_death[i - 1 + (j - 1) * shared.dim.crude_death.mult[1]], 1), 0) : monty::math::max<real_type>(monty::math::min<real_type>(internal.death_int[i - 1 + (j - 1) * shared.dim.death_int.mult[1]], 1), 0));
+      }
+    }
+    for (size_t i = 1; i <= shared.dim.reproductive_population.size; ++i) {
+      internal.reproductive_population[i - 1] = (i >= shared.repro_low && i <= shared.repro_high ? monty::math::floor((dust2::array::sum<real_type>(S, shared.dim.S, {i - 1, i - 1}, {0, shared.dim.S.dim[1] - 1}, {0, shared.dim.S.dim[2] - 1}) + dust2::array::sum<real_type>(E, shared.dim.E, {i - 1, i - 1}, {0, shared.dim.E.dim[1] - 1}, {0, shared.dim.E.dim[2] - 1}) + dust2::array::sum<real_type>(I, shared.dim.I, {i - 1, i - 1}, {0, shared.dim.I.dim[1] - 1}, {0, shared.dim.I.dim[2] - 1}) + dust2::array::sum<real_type>(R, shared.dim.R, {i - 1, i - 1}, {0, shared.dim.R.dim[1] - 1}, {0, shared.dim.R.dim[2] - 1}) + dust2::array::sum<real_type>(Is, shared.dim.Is, {i - 1, i - 1}, {0, shared.dim.Is.dim[1] - 1}, {0, shared.dim.Is.dim[2] - 1}) + dust2::array::sum<real_type>(Rc, shared.dim.Rc, {i - 1, i - 1}, {0, shared.dim.Rc.dim[1] - 1}, {0, shared.dim.Rc.dim[2] - 1})) * internal.repro_weight_now[i - 1]) : 0);
+    }
+    for (size_t i = 1; i <= shared.dim.seeded_actual.dim[0]; ++i) {
+      for (size_t j = 1; j <= shared.dim.seeded_actual.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.seeded_actual.dim[2]; ++k) {
+          internal.seeded_actual[i - 1 + (j - 1) * shared.dim.seeded_actual.mult[1] + (k - 1) * shared.dim.seeded_actual.mult[2]] = (S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] < internal.t_seeded[i - 1 + (j - 1) * shared.dim.t_seeded.mult[1] + (k - 1) * shared.dim.t_seeded.mult[2]] ? monty::math::floor(S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] * shared.reporting_rate) : monty::math::floor(internal.t_seeded[i - 1 + (j - 1) * shared.dim.t_seeded.mult[1] + (k - 1) * shared.dim.t_seeded.mult[2]] * shared.reporting_rate));
+        }
+      }
+    }
     for (size_t i = 1; i <= shared.dim.waning_R.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.waning_R.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.waning_R.dim[2]; ++k) {
@@ -1106,51 +1133,60 @@ public:
     for (size_t i = 1; i <= shared.dim.vaccinating_out_of_E.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.vaccinating_out_of_E.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.vaccinating_out_of_E.dim[2]; ++k) {
-          internal.vaccinating_out_of_E[i - 1 + (j - 1) * shared.dim.vaccinating_out_of_E.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_E.mult[2]] = (shared.n_vacc == 1 || j >= shared.n_vacc - 1 || internal.E_after_aging[i - 1 + (j - 1) * shared.dim.E_after_aging.mult[1] + (k - 1) * shared.dim.E_after_aging.mult[2]] <= 0 || internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]] <= 0 ? 0 : (shared.stochastic_vaccination == 1 ? monty::random::binomial<real_type>(rng_state, internal.E_after_aging[i - 1 + (j - 1) * shared.dim.E_after_aging.mult[1] + (k - 1) * shared.dim.E_after_aging.mult[2]], monty::math::max<real_type>(monty::math::min<real_type>(internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]], 1), 0)) : internal.E_after_aging[i - 1 + (j - 1) * shared.dim.E_after_aging.mult[1] + (k - 1) * shared.dim.E_after_aging.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]], 1), 0)));
+          internal.vaccinating_out_of_E[i - 1 + (j - 1) * shared.dim.vaccinating_out_of_E.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_E.mult[2]] = (shared.n_vacc == 1 || j >= shared.n_vacc - 1 || internal.E_after_aging[i - 1 + (j - 1) * shared.dim.E_after_aging.mult[1] + (k - 1) * shared.dim.E_after_aging.mult[2]] <= 0 || internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]] <= 0 ? 0 : (shared.stochastic_vaccination == 1 ? monty::random::binomial<real_type>(rng_state, internal.E_after_aging[i - 1 + (j - 1) * shared.dim.E_after_aging.mult[1] + (k - 1) * shared.dim.E_after_aging.mult[2]], monty::math::max<real_type>(monty::math::min<real_type>(internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]], 1), 0)) : monty::math::floor(internal.E_after_aging[i - 1 + (j - 1) * shared.dim.E_after_aging.mult[1] + (k - 1) * shared.dim.E_after_aging.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]], 1), 0))));
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.vaccinating_out_of_I.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.vaccinating_out_of_I.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.vaccinating_out_of_I.dim[2]; ++k) {
-          internal.vaccinating_out_of_I[i - 1 + (j - 1) * shared.dim.vaccinating_out_of_I.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_I.mult[2]] = (shared.n_vacc == 1 || j >= shared.n_vacc - 1 || internal.I_after_aging[i - 1 + (j - 1) * shared.dim.I_after_aging.mult[1] + (k - 1) * shared.dim.I_after_aging.mult[2]] <= 0 || internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]] <= 0 ? 0 : (shared.stochastic_vaccination == 1 ? monty::random::binomial<real_type>(rng_state, internal.I_after_aging[i - 1 + (j - 1) * shared.dim.I_after_aging.mult[1] + (k - 1) * shared.dim.I_after_aging.mult[2]], monty::math::max<real_type>(monty::math::min<real_type>(internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]], 1), 0)) : internal.I_after_aging[i - 1 + (j - 1) * shared.dim.I_after_aging.mult[1] + (k - 1) * shared.dim.I_after_aging.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]], 1), 0)));
+          internal.vaccinating_out_of_I[i - 1 + (j - 1) * shared.dim.vaccinating_out_of_I.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_I.mult[2]] = (shared.n_vacc == 1 || j >= shared.n_vacc - 1 || internal.I_after_aging[i - 1 + (j - 1) * shared.dim.I_after_aging.mult[1] + (k - 1) * shared.dim.I_after_aging.mult[2]] <= 0 || internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]] <= 0 ? 0 : (shared.stochastic_vaccination == 1 ? monty::random::binomial<real_type>(rng_state, internal.I_after_aging[i - 1 + (j - 1) * shared.dim.I_after_aging.mult[1] + (k - 1) * shared.dim.I_after_aging.mult[2]], monty::math::max<real_type>(monty::math::min<real_type>(internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]], 1), 0)) : monty::math::floor(internal.I_after_aging[i - 1 + (j - 1) * shared.dim.I_after_aging.mult[1] + (k - 1) * shared.dim.I_after_aging.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]], 1), 0))));
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.vaccinating_out_of_R.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.vaccinating_out_of_R.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.vaccinating_out_of_R.dim[2]; ++k) {
-          internal.vaccinating_out_of_R[i - 1 + (j - 1) * shared.dim.vaccinating_out_of_R.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_R.mult[2]] = (shared.n_vacc == 1 || j >= shared.n_vacc - 1 || internal.R_after_aging[i - 1 + (j - 1) * shared.dim.R_after_aging.mult[1] + (k - 1) * shared.dim.R_after_aging.mult[2]] <= 0 || internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]] <= 0 ? 0 : (shared.stochastic_vaccination == 1 ? monty::random::binomial<real_type>(rng_state, internal.R_after_aging[i - 1 + (j - 1) * shared.dim.R_after_aging.mult[1] + (k - 1) * shared.dim.R_after_aging.mult[2]], monty::math::max<real_type>(monty::math::min<real_type>(internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]], 1), 0)) : internal.R_after_aging[i - 1 + (j - 1) * shared.dim.R_after_aging.mult[1] + (k - 1) * shared.dim.R_after_aging.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]], 1), 0)));
+          internal.vaccinating_out_of_R[i - 1 + (j - 1) * shared.dim.vaccinating_out_of_R.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_R.mult[2]] = (shared.n_vacc == 1 || j >= shared.n_vacc - 1 || internal.R_after_aging[i - 1 + (j - 1) * shared.dim.R_after_aging.mult[1] + (k - 1) * shared.dim.R_after_aging.mult[2]] <= 0 || internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]] <= 0 ? 0 : (shared.stochastic_vaccination == 1 ? monty::random::binomial<real_type>(rng_state, internal.R_after_aging[i - 1 + (j - 1) * shared.dim.R_after_aging.mult[1] + (k - 1) * shared.dim.R_after_aging.mult[2]], monty::math::max<real_type>(monty::math::min<real_type>(internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]], 1), 0)) : monty::math::floor(internal.R_after_aging[i - 1 + (j - 1) * shared.dim.R_after_aging.mult[1] + (k - 1) * shared.dim.R_after_aging.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]], 1), 0))));
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.vaccinating_out_of_Is.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.vaccinating_out_of_Is.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.vaccinating_out_of_Is.dim[2]; ++k) {
-          internal.vaccinating_out_of_Is[i - 1 + (j - 1) * shared.dim.vaccinating_out_of_Is.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_Is.mult[2]] = (shared.n_vacc == 1 || j >= shared.n_vacc - 1 || internal.Is_after_aging[i - 1 + (j - 1) * shared.dim.Is_after_aging.mult[1] + (k - 1) * shared.dim.Is_after_aging.mult[2]] <= 0 || internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]] <= 0 ? 0 : (shared.stochastic_vaccination == 1 ? monty::random::binomial<real_type>(rng_state, internal.Is_after_aging[i - 1 + (j - 1) * shared.dim.Is_after_aging.mult[1] + (k - 1) * shared.dim.Is_after_aging.mult[2]], monty::math::max<real_type>(monty::math::min<real_type>(internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]], 1), 0)) : internal.Is_after_aging[i - 1 + (j - 1) * shared.dim.Is_after_aging.mult[1] + (k - 1) * shared.dim.Is_after_aging.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]], 1), 0)));
+          internal.vaccinating_out_of_Is[i - 1 + (j - 1) * shared.dim.vaccinating_out_of_Is.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_Is.mult[2]] = (shared.n_vacc == 1 || j >= shared.n_vacc - 1 || internal.Is_after_aging[i - 1 + (j - 1) * shared.dim.Is_after_aging.mult[1] + (k - 1) * shared.dim.Is_after_aging.mult[2]] <= 0 || internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]] <= 0 ? 0 : (shared.stochastic_vaccination == 1 ? monty::random::binomial<real_type>(rng_state, internal.Is_after_aging[i - 1 + (j - 1) * shared.dim.Is_after_aging.mult[1] + (k - 1) * shared.dim.Is_after_aging.mult[2]], monty::math::max<real_type>(monty::math::min<real_type>(internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]], 1), 0)) : monty::math::floor(internal.Is_after_aging[i - 1 + (j - 1) * shared.dim.Is_after_aging.mult[1] + (k - 1) * shared.dim.Is_after_aging.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]], 1), 0))));
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.vaccinating_out_of_Rc.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.vaccinating_out_of_Rc.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.vaccinating_out_of_Rc.dim[2]; ++k) {
-          internal.vaccinating_out_of_Rc[i - 1 + (j - 1) * shared.dim.vaccinating_out_of_Rc.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_Rc.mult[2]] = (shared.n_vacc == 1 || j >= shared.n_vacc - 1 || internal.Rc_after_aging[i - 1 + (j - 1) * shared.dim.Rc_after_aging.mult[1] + (k - 1) * shared.dim.Rc_after_aging.mult[2]] <= 0 || internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]] <= 0 ? 0 : (shared.stochastic_vaccination == 1 ? monty::random::binomial<real_type>(rng_state, internal.Rc_after_aging[i - 1 + (j - 1) * shared.dim.Rc_after_aging.mult[1] + (k - 1) * shared.dim.Rc_after_aging.mult[2]], monty::math::max<real_type>(monty::math::min<real_type>(internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]], 1), 0)) : internal.Rc_after_aging[i - 1 + (j - 1) * shared.dim.Rc_after_aging.mult[1] + (k - 1) * shared.dim.Rc_after_aging.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]], 1), 0)));
+          internal.vaccinating_out_of_Rc[i - 1 + (j - 1) * shared.dim.vaccinating_out_of_Rc.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_Rc.mult[2]] = (shared.n_vacc == 1 || j >= shared.n_vacc - 1 || internal.Rc_after_aging[i - 1 + (j - 1) * shared.dim.Rc_after_aging.mult[1] + (k - 1) * shared.dim.Rc_after_aging.mult[2]] <= 0 || internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]] <= 0 ? 0 : (shared.stochastic_vaccination == 1 ? monty::random::binomial<real_type>(rng_state, internal.Rc_after_aging[i - 1 + (j - 1) * shared.dim.Rc_after_aging.mult[1] + (k - 1) * shared.dim.Rc_after_aging.mult[2]], monty::math::max<real_type>(monty::math::min<real_type>(internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]], 1), 0)) : monty::math::floor(internal.Rc_after_aging[i - 1 + (j - 1) * shared.dim.Rc_after_aging.mult[1] + (k - 1) * shared.dim.Rc_after_aging.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]], 1), 0))));
         }
       }
     }
-    const real_type pos_neg_migration = (dust2::array::sum<real_type>(internal.migration.data(), shared.dim.migration) < 0 ? -1 : 1);
-    for (size_t i = 1; i <= shared.dim.background_death.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.background_death.dim[1]; ++j) {
-        internal.background_death[i - 1 + (j - 1) * shared.dim.background_death.mult[1]] = (shared.simp_birth_death == 1 ? monty::math::max<real_type>(monty::math::min<real_type>(shared.crude_death[i - 1 + (j - 1) * shared.dim.crude_death.mult[1]], 1), 0) : monty::math::max<real_type>(monty::math::min<real_type>(internal.death_int[i - 1 + (j - 1) * shared.dim.death_int.mult[1]], 1), 0));
+    for (size_t i = 1; i <= shared.dim.migration_adjusted.dim[0]; ++i) {
+      for (size_t j = 1; j <= shared.dim.migration_adjusted.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.migration_adjusted.dim[2]; ++k) {
+          internal.migration_adjusted[i - 1 + (j - 1) * shared.dim.migration_adjusted.mult[1] + (k - 1) * shared.dim.migration_adjusted.mult[2]] = internal.migration[i - 1 + (j - 1) * shared.dim.migration.mult[1] + (k - 1) * shared.dim.migration.mult[2]] * pos_neg_migration;
+        }
       }
     }
-    for (size_t i = 1; i <= shared.dim.reproductive_population.size; ++i) {
-      internal.reproductive_population[i - 1] = (i >= shared.repro_low && i <= shared.repro_high ? (dust2::array::sum<real_type>(S, shared.dim.S, {i - 1, i - 1}, {0, shared.dim.S.dim[1] - 1}, {0, shared.dim.S.dim[2] - 1}) + dust2::array::sum<real_type>(E, shared.dim.E, {i - 1, i - 1}, {0, shared.dim.E.dim[1] - 1}, {0, shared.dim.E.dim[2] - 1}) + dust2::array::sum<real_type>(I, shared.dim.I, {i - 1, i - 1}, {0, shared.dim.I.dim[1] - 1}, {0, shared.dim.I.dim[2] - 1}) + dust2::array::sum<real_type>(R, shared.dim.R, {i - 1, i - 1}, {0, shared.dim.R.dim[1] - 1}, {0, shared.dim.R.dim[2] - 1}) + dust2::array::sum<real_type>(Is, shared.dim.Is, {i - 1, i - 1}, {0, shared.dim.Is.dim[1] - 1}, {0, shared.dim.Is.dim[2] - 1}) + dust2::array::sum<real_type>(Rc, shared.dim.Rc, {i - 1, i - 1}, {0, shared.dim.Rc.dim[1] - 1}, {0, shared.dim.Rc.dim[2] - 1})) * internal.repro_weight_now[i - 1] : 0);
+    for (size_t i = 1; i <= shared.dim.Npop_background_death.dim[0]; ++i) {
+      for (size_t j = 1; j <= shared.dim.Npop_background_death.dim[1]; ++j) {
+        internal.Npop_background_death[i - 1 + (j - 1) * shared.dim.Npop_background_death.mult[1]] = (internal.Npop_age_risk[i - 1 + (j - 1) * shared.dim.Npop_age_risk.mult[1]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, internal.Npop_age_risk[i - 1 + (j - 1) * shared.dim.Npop_age_risk.mult[1]], monty::math::max<real_type>(monty::math::min<real_type>(internal.background_death[i - 1 + (j - 1) * shared.dim.background_death.mult[1]], 1), 0)));
+      }
     }
-    for (size_t i = 1; i <= shared.dim.seeded_actual.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.seeded_actual.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.seeded_actual.dim[2]; ++k) {
-          internal.seeded_actual[i - 1 + (j - 1) * shared.dim.seeded_actual.mult[1] + (k - 1) * shared.dim.seeded_actual.mult[2]] = (S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] < internal.t_seeded[i - 1 + (j - 1) * shared.dim.t_seeded.mult[1] + (k - 1) * shared.dim.t_seeded.mult[2]] ? S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] * shared.reporting_rate : internal.t_seeded[i - 1 + (j - 1) * shared.dim.t_seeded.mult[1] + (k - 1) * shared.dim.t_seeded.mult[2]] * shared.reporting_rate);
+    for (size_t i = 1; i <= shared.dim.prop_maternal_vaccinated.size; ++i) {
+      internal.prop_maternal_vaccinated[i - 1] = (internal.reproductive_population[i - 1] <= 0 ? 0 : internal.vaccinated_mums[i - 1] / internal.reproductive_population[i - 1]);
+    }
+    for (size_t i = 1; i <= shared.dim.prop_maternal_natural.size; ++i) {
+      internal.prop_maternal_natural[i - 1] = (internal.reproductive_population[i - 1] <= 0 ? 0 : internal.antibody_mums[i - 1] / internal.reproductive_population[i - 1]);
+    }
+    for (size_t i = 1; i <= shared.dim.infectious_period.dim[0]; ++i) {
+      for (size_t j = 1; j <= shared.dim.infectious_period.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.infectious_period.dim[2]; ++k) {
+          internal.infectious_period[i - 1 + (j - 1) * shared.dim.infectious_period.mult[1] + (k - 1) * shared.dim.infectious_period.mult[2]] = ((shared.severe_recovery_rate + shared.cfr_severe[i - 1 + (j - 1) * shared.dim.cfr_severe.mult[1] + (k - 1) * shared.dim.cfr_severe.mult[2]] + internal.background_death[i - 1 + (k - 1) * shared.dim.background_death.mult[1]]) <= 0 || (shared.recovery_rate + shared.cfr_normal[i - 1 + (j - 1) * shared.dim.cfr_normal.mult[1] + (k - 1) * shared.dim.cfr_normal.mult[2]] + internal.background_death[i - 1 + (k - 1) * shared.dim.background_death.mult[1]]) <= 0 ? 0 : (1 - shared.prop_severe[i - 1 + (j - 1) * shared.dim.prop_severe.mult[1] + (k - 1) * shared.dim.prop_severe.mult[2]]) / (shared.recovery_rate + shared.cfr_normal[i - 1 + (j - 1) * shared.dim.cfr_normal.mult[1] + (k - 1) * shared.dim.cfr_normal.mult[2]] + internal.background_death[i - 1 + (k - 1) * shared.dim.background_death.mult[1]]) + shared.prop_severe[i - 1 + (j - 1) * shared.dim.prop_severe.mult[1] + (k - 1) * shared.dim.prop_severe.mult[2]] / (shared.severe_recovery_rate + shared.cfr_severe[i - 1 + (j - 1) * shared.dim.cfr_severe.mult[1] + (k - 1) * shared.dim.cfr_severe.mult[2]] + internal.background_death[i - 1 + (k - 1) * shared.dim.background_death.mult[1]]));
         }
       }
     }
@@ -1249,28 +1285,19 @@ public:
         }
       }
     }
-    for (size_t i = 1; i <= shared.dim.migration_adjusted.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.migration_adjusted.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.migration_adjusted.dim[2]; ++k) {
-          internal.migration_adjusted[i - 1 + (j - 1) * shared.dim.migration_adjusted.mult[1] + (k - 1) * shared.dim.migration_adjusted.mult[2]] = internal.migration[i - 1 + (j - 1) * shared.dim.migration.mult[1] + (k - 1) * shared.dim.migration.mult[2]] * pos_neg_migration;
-        }
-      }
+    const real_type migration_occuring_S = (internal.migration_distribution[0] <= 0 || dust2::array::sum<real_type>(S, shared.dim.S) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), migration_prop_S));
+    const real_type migration_occuring_E = (internal.migration_distribution[0] <= 0 || dust2::array::sum<real_type>(E, shared.dim.E) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), migration_prop_E));
+    const real_type migration_occuring_I = (internal.migration_distribution[0] <= 0 || dust2::array::sum<real_type>(I, shared.dim.I) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), migration_prop_I));
+    const real_type migration_occuring_R = (internal.migration_distribution[0] <= 0 || dust2::array::sum<real_type>(R, shared.dim.R) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), migration_prop_R));
+    const real_type migration_occuring_Is = (internal.migration_distribution[0] <= 0 || dust2::array::sum<real_type>(Is, shared.dim.Is) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), migration_prop_Is));
+    const real_type migration_occuring_Rc = (internal.migration_distribution[0] <= 0 || dust2::array::sum<real_type>(Rc, shared.dim.Rc) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), migration_prop_Rc));
+    for (size_t i = 1; i <= shared.dim.birth_rate.size; ++i) {
+      internal.birth_rate[i - 1] = (internal.reproductive_population[i - 1] <= 0 ? 0 : dust2::array::sum<real_type>(internal.Npop_background_death.data(), shared.dim.Npop_background_death, {i - 1, i - 1}, {0, shared.dim.Npop_background_death.dim[1] - 1}) / internal.reproductive_population[i - 1]);
     }
-    for (size_t i = 1; i <= shared.dim.Npop_background_death.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.Npop_background_death.dim[1]; ++j) {
-        internal.Npop_background_death[i - 1 + (j - 1) * shared.dim.Npop_background_death.mult[1]] = (internal.Npop_age_risk[i - 1 + (j - 1) * shared.dim.Npop_age_risk.mult[1]] <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, internal.Npop_age_risk[i - 1 + (j - 1) * shared.dim.Npop_age_risk.mult[1]], monty::math::max<real_type>(monty::math::min<real_type>(internal.background_death[i - 1 + (j - 1) * shared.dim.background_death.mult[1]], 1), 0)));
-      }
-    }
-    for (size_t i = 1; i <= shared.dim.prop_maternal_vaccinated.size; ++i) {
-      internal.prop_maternal_vaccinated[i - 1] = (internal.reproductive_population[i - 1] <= 0 ? 0 : internal.vaccinated_mums[i - 1] / internal.reproductive_population[i - 1]);
-    }
-    for (size_t i = 1; i <= shared.dim.prop_maternal_natural.size; ++i) {
-      internal.prop_maternal_natural[i - 1] = (internal.reproductive_population[i - 1] <= 0 ? 0 : internal.antibody_mums[i - 1] / internal.reproductive_population[i - 1]);
-    }
-    for (size_t i = 1; i <= shared.dim.infectious_period.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.infectious_period.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.infectious_period.dim[2]; ++k) {
-          internal.infectious_period[i - 1 + (j - 1) * shared.dim.infectious_period.mult[1] + (k - 1) * shared.dim.infectious_period.mult[2]] = ((shared.severe_recovery_rate + shared.cfr_severe[i - 1 + (j - 1) * shared.dim.cfr_severe.mult[1] + (k - 1) * shared.dim.cfr_severe.mult[2]] + internal.background_death[i - 1 + (k - 1) * shared.dim.background_death.mult[1]]) <= 0 || (shared.recovery_rate + shared.cfr_normal[i - 1 + (j - 1) * shared.dim.cfr_normal.mult[1] + (k - 1) * shared.dim.cfr_normal.mult[2]] + internal.background_death[i - 1 + (k - 1) * shared.dim.background_death.mult[1]]) <= 0 ? 0 : (1 - shared.prop_severe[i - 1 + (j - 1) * shared.dim.prop_severe.mult[1] + (k - 1) * shared.dim.prop_severe.mult[2]]) / (shared.recovery_rate + shared.cfr_normal[i - 1 + (j - 1) * shared.dim.cfr_normal.mult[1] + (k - 1) * shared.dim.cfr_normal.mult[2]] + internal.background_death[i - 1 + (k - 1) * shared.dim.background_death.mult[1]]) + shared.prop_severe[i - 1 + (j - 1) * shared.dim.prop_severe.mult[1] + (k - 1) * shared.dim.prop_severe.mult[2]] / (shared.severe_recovery_rate + shared.cfr_severe[i - 1 + (j - 1) * shared.dim.cfr_severe.mult[1] + (k - 1) * shared.dim.cfr_severe.mult[2]] + internal.background_death[i - 1 + (k - 1) * shared.dim.background_death.mult[1]]));
+    for (size_t i = 1; i <= shared.dim.beta.dim[0]; ++i) {
+      for (size_t j = 1; j <= shared.dim.beta.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.beta.dim[2]; ++k) {
+          internal.beta[i - 1 + (j - 1) * shared.dim.beta.mult[1] + (k - 1) * shared.dim.beta.mult[2]] = (internal.infectious_period[i - 1 + (j - 1) * shared.dim.infectious_period.mult[1] + (k - 1) * shared.dim.infectious_period.mult[2]] <= 0 ? 0 : (shared.R0_modifier * t_R0) / internal.infectious_period[i - 1 + (j - 1) * shared.dim.infectious_period.mult[1] + (k - 1) * shared.dim.infectious_period.mult[2]]);
         }
       }
     }
@@ -1309,19 +1336,65 @@ public:
         }
       }
     }
-    const real_type migration_occuring_S = (internal.migration_distribution[0] <= 0 || dust2::array::sum<real_type>(S, shared.dim.S) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), migration_prop_S));
-    const real_type migration_occuring_E = (internal.migration_distribution[0] <= 0 || dust2::array::sum<real_type>(E, shared.dim.E) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), migration_prop_E));
-    const real_type migration_occuring_I = (internal.migration_distribution[0] <= 0 || dust2::array::sum<real_type>(I, shared.dim.I) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), migration_prop_I));
-    const real_type migration_occuring_R = (internal.migration_distribution[0] <= 0 || dust2::array::sum<real_type>(R, shared.dim.R) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), migration_prop_R));
-    const real_type migration_occuring_Is = (internal.migration_distribution[0] <= 0 || dust2::array::sum<real_type>(Is, shared.dim.Is) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), migration_prop_Is));
-    const real_type migration_occuring_Rc = (internal.migration_distribution[0] <= 0 || dust2::array::sum<real_type>(Rc, shared.dim.Rc) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, dust2::array::sum<real_type>(internal.migration_adjusted.data(), shared.dim.migration_adjusted), migration_prop_Rc));
-    for (size_t i = 1; i <= shared.dim.birth_rate.size; ++i) {
-      internal.birth_rate[i - 1] = (internal.reproductive_population[i - 1] <= 0 ? 0 : dust2::array::sum<real_type>(internal.Npop_background_death.data(), shared.dim.Npop_background_death, {i - 1, i - 1}, {0, shared.dim.Npop_background_death.dim[1] - 1}) / internal.reproductive_population[i - 1]);
+    for (size_t i = 1; i <= shared.dim.migration_S.dim[0]; ++i) {
+      for (size_t j = 1; j <= shared.dim.migration_S.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.migration_S.dim[2]; ++k) {
+          internal.migration_S[i - 1 + (j - 1) * shared.dim.migration_S.mult[1] + (k - 1) * shared.dim.migration_S.mult[2]] = (migration_occuring_S <= 0 || dust2::array::sum<real_type>(S, shared.dim.S) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, migration_occuring_S, S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] / dust2::array::sum<real_type>(S, shared.dim.S)));
+        }
+      }
     }
-    for (size_t i = 1; i <= shared.dim.beta.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.beta.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.beta.dim[2]; ++k) {
-          internal.beta[i - 1 + (j - 1) * shared.dim.beta.mult[1] + (k - 1) * shared.dim.beta.mult[2]] = (internal.infectious_period[i - 1 + (j - 1) * shared.dim.infectious_period.mult[1] + (k - 1) * shared.dim.infectious_period.mult[2]] <= 0 ? 0 : (shared.R0_modifier * t_R0) / internal.infectious_period[i - 1 + (j - 1) * shared.dim.infectious_period.mult[1] + (k - 1) * shared.dim.infectious_period.mult[2]]);
+    for (size_t i = 1; i <= shared.dim.migration_E.dim[0]; ++i) {
+      for (size_t j = 1; j <= shared.dim.migration_E.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.migration_E.dim[2]; ++k) {
+          internal.migration_E[i - 1 + (j - 1) * shared.dim.migration_E.mult[1] + (k - 1) * shared.dim.migration_E.mult[2]] = (migration_occuring_E <= 0 || dust2::array::sum<real_type>(E, shared.dim.E) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, migration_occuring_E, E[i - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2]] / dust2::array::sum<real_type>(E, shared.dim.E)));
+        }
+      }
+    }
+    for (size_t i = 1; i <= shared.dim.migration_I.dim[0]; ++i) {
+      for (size_t j = 1; j <= shared.dim.migration_I.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.migration_I.dim[2]; ++k) {
+          internal.migration_I[i - 1 + (j - 1) * shared.dim.migration_I.mult[1] + (k - 1) * shared.dim.migration_I.mult[2]] = (migration_occuring_I <= 0 || dust2::array::sum<real_type>(I, shared.dim.I) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, migration_occuring_I, I[i - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2]] / dust2::array::sum<real_type>(I, shared.dim.I)));
+        }
+      }
+    }
+    for (size_t i = 1; i <= shared.dim.migration_R.dim[0]; ++i) {
+      for (size_t j = 1; j <= shared.dim.migration_R.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.migration_R.dim[2]; ++k) {
+          internal.migration_R[i - 1 + (j - 1) * shared.dim.migration_R.mult[1] + (k - 1) * shared.dim.migration_R.mult[2]] = (migration_occuring_R <= 0 || dust2::array::sum<real_type>(R, shared.dim.R) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, migration_occuring_R, R[i - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2]] / dust2::array::sum<real_type>(R, shared.dim.R)));
+        }
+      }
+    }
+    for (size_t i = 1; i <= shared.dim.migration_Is.dim[0]; ++i) {
+      for (size_t j = 1; j <= shared.dim.migration_Is.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.migration_Is.dim[2]; ++k) {
+          internal.migration_Is[i - 1 + (j - 1) * shared.dim.migration_Is.mult[1] + (k - 1) * shared.dim.migration_Is.mult[2]] = (migration_occuring_Is <= 0 || dust2::array::sum<real_type>(Is, shared.dim.Is) <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, migration_occuring_Is, Is[i - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2]] / dust2::array::sum<real_type>(Is, shared.dim.Is)));
+        }
+      }
+    }
+    for (size_t i = 1; i <= shared.dim.migration_Rc.dim[0]; ++i) {
+      for (size_t j = 1; j <= shared.dim.migration_Rc.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.migration_Rc.dim[2]; ++k) {
+          internal.migration_Rc[i - 1 + (j - 1) * shared.dim.migration_Rc.mult[1] + (k - 1) * shared.dim.migration_Rc.mult[2]] = (migration_occuring_Rc <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, migration_occuring_Rc, Rc[i - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2]] / dust2::array::sum<real_type>(Rc, shared.dim.Rc)));
+        }
+      }
+    }
+    for (size_t i = 1; i <= shared.dim.Births.size; ++i) {
+      internal.Births[i - 1] = (internal.reproductive_population[i - 1] <= 0 ? 0 : (shared.simp_birth_death == 1 ? monty::random::binomial<real_type>(rng_state, internal.reproductive_population[i - 1], monty::math::max<real_type>(monty::math::min<real_type>(internal.birth_rate[i - 1] / 2, 1), 0)) : (shared.stochastic_birth == 1 ? monty::random::binomial<real_type>(rng_state, internal.reproductive_population[i - 1], monty::math::max<real_type>(monty::math::min<real_type>(internal.birth_int[i - 1] / 2, 1), 0)) : monty::math::floor(internal.reproductive_population[i - 1] * monty::math::max<real_type>(monty::math::min<real_type>(internal.birth_int[i - 1] / 2, 1), 0)))));
+    }
+    for (size_t i = 1; i <= shared.dim.beta_updated.dim[0]; ++i) {
+      for (size_t j = 1; j <= shared.dim.beta_updated.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.beta_updated.dim[2]; ++k) {
+          internal.beta_updated[i - 1 + (j - 1) * shared.dim.beta_updated.mult[1] + (k - 1) * shared.dim.beta_updated.mult[2]] = (i <= shared.age_maternal_protection_ends ? internal.beta[i - 1 + (j - 1) * shared.dim.beta.mult[1] + (k - 1) * shared.dim.beta.mult[2]] * (1 - shared.age_vaccination_beta_modifier[i - 1 + (j - 1) * shared.dim.age_vaccination_beta_modifier.mult[1] + (k - 1) * shared.dim.age_vaccination_beta_modifier.mult[2]]) * (1 - (shared.protection_weight_vacc * internal.prop_maternal_vaccinated[k - 1] + shared.protection_weight_rec * internal.prop_maternal_natural[k - 1])) : internal.beta[i - 1 + (j - 1) * shared.dim.beta.mult[1] + (k - 1) * shared.dim.beta.mult[2]] * (1 - shared.age_vaccination_beta_modifier[i - 1 + (j - 1) * shared.dim.age_vaccination_beta_modifier.mult[1] + (k - 1) * shared.dim.age_vaccination_beta_modifier.mult[2]]));
+        }
+      }
+    }
+    for (size_t k = 1; k <= shared.dim.aging_into_S.dim[2]; ++k) {
+      internal.aging_into_S[(k - 1) * shared.dim.aging_into_S.mult[2]] = dust2::array::sum<real_type>(internal.Births.data(), shared.dim.Births);
+    }
+    for (size_t i = 2; i <= static_cast<size_t>(shared.n_age); ++i) {
+      for (size_t j = 1; j <= shared.dim.aging_into_S.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.aging_into_S.dim[2]; ++k) {
+          internal.aging_into_S[i - 1 + (j - 1) * shared.dim.aging_into_S.mult[1] + (k - 1) * shared.dim.aging_into_S.mult[2]] = (S[i - 1 - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] <= 0 || shared.aging_rate[i - 1 - 1] <= 0 ? 0 : monty::math::floor(S[i - 1 - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(shared.aging_rate[i - 1 - 1], 1), 0)));
         }
       }
     }
@@ -1395,65 +1468,15 @@ public:
         }
       }
     }
-    for (size_t i = 1; i <= shared.dim.migration_S.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.migration_S.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.migration_S.dim[2]; ++k) {
-          internal.migration_S[i - 1 + (j - 1) * shared.dim.migration_S.mult[1] + (k - 1) * shared.dim.migration_S.mult[2]] = (migration_occuring_S <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, migration_occuring_S, S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] / dust2::array::sum<real_type>(S, shared.dim.S)));
-        }
+    for (size_t j = 1; j <= shared.dim.aging_out_of_S.dim[1]; ++j) {
+      for (size_t k = 1; k <= shared.dim.aging_out_of_S.dim[2]; ++k) {
+        internal.aging_out_of_S[(j - 1) * shared.dim.aging_out_of_S.mult[1] + (k - 1) * shared.dim.aging_out_of_S.mult[2]] = (S[(j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] - internal.aging_into_S[(k - 1) * shared.dim.aging_into_S.mult[2]] <= 0 || shared.aging_rate[0] <= 0 ? 0 : monty::math::floor(monty::math::max<real_type>(S[(j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] - internal.aging_into_S[(k - 1) * shared.dim.aging_into_S.mult[2]], 0) * shared.aging_rate[0]));
       }
-    }
-    for (size_t i = 1; i <= shared.dim.migration_E.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.migration_E.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.migration_E.dim[2]; ++k) {
-          internal.migration_E[i - 1 + (j - 1) * shared.dim.migration_E.mult[1] + (k - 1) * shared.dim.migration_E.mult[2]] = (migration_occuring_E <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, migration_occuring_E, E[i - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2]] / dust2::array::sum<real_type>(E, shared.dim.E)));
-        }
-      }
-    }
-    for (size_t i = 1; i <= shared.dim.migration_I.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.migration_I.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.migration_I.dim[2]; ++k) {
-          internal.migration_I[i - 1 + (j - 1) * shared.dim.migration_I.mult[1] + (k - 1) * shared.dim.migration_I.mult[2]] = (migration_occuring_I <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, migration_occuring_I, I[i - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2]] / dust2::array::sum<real_type>(I, shared.dim.I)));
-        }
-      }
-    }
-    for (size_t i = 1; i <= shared.dim.migration_R.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.migration_R.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.migration_R.dim[2]; ++k) {
-          internal.migration_R[i - 1 + (j - 1) * shared.dim.migration_R.mult[1] + (k - 1) * shared.dim.migration_R.mult[2]] = (migration_occuring_R <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, migration_occuring_R, R[i - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2]] / dust2::array::sum<real_type>(R, shared.dim.R)));
-        }
-      }
-    }
-    for (size_t i = 1; i <= shared.dim.migration_Is.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.migration_Is.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.migration_Is.dim[2]; ++k) {
-          internal.migration_Is[i - 1 + (j - 1) * shared.dim.migration_Is.mult[1] + (k - 1) * shared.dim.migration_Is.mult[2]] = (migration_occuring_Is <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, migration_occuring_Is, Is[i - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2]] / dust2::array::sum<real_type>(Is, shared.dim.Is)));
-        }
-      }
-    }
-    for (size_t i = 1; i <= shared.dim.migration_Rc.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.migration_Rc.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.migration_Rc.dim[2]; ++k) {
-          internal.migration_Rc[i - 1 + (j - 1) * shared.dim.migration_Rc.mult[1] + (k - 1) * shared.dim.migration_Rc.mult[2]] = (migration_occuring_Rc <= 0 ? 0 : monty::random::binomial<real_type>(rng_state, migration_occuring_Rc, Rc[i - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2]] / dust2::array::sum<real_type>(Rc, shared.dim.Rc)));
-        }
-      }
-    }
-    for (size_t i = 1; i <= shared.dim.Births.size; ++i) {
-      internal.Births[i - 1] = (internal.reproductive_population[i - 1] <= 0 ? 0 : (shared.simp_birth_death == 1 ? monty::random::binomial<real_type>(rng_state, internal.reproductive_population[i - 1], monty::math::max<real_type>(monty::math::min<real_type>(internal.birth_rate[i - 1] / 2, 1), 0)) : (shared.stochastic_birth == 1 ? monty::random::binomial<real_type>(rng_state, internal.reproductive_population[i - 1], monty::math::max<real_type>(monty::math::min<real_type>(internal.birth_int[i - 1] / 2, 1), 0)) : internal.reproductive_population[i - 1] * monty::math::max<real_type>(monty::math::min<real_type>(internal.birth_int[i - 1] / 2, 1), 0))));
-    }
-    for (size_t i = 1; i <= shared.dim.beta_updated.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.beta_updated.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.beta_updated.dim[2]; ++k) {
-          internal.beta_updated[i - 1 + (j - 1) * shared.dim.beta_updated.mult[1] + (k - 1) * shared.dim.beta_updated.mult[2]] = (i <= shared.age_maternal_protection_ends ? internal.beta[i - 1 + (j - 1) * shared.dim.beta.mult[1] + (k - 1) * shared.dim.beta.mult[2]] * (1 - shared.age_vaccination_beta_modifier[i - 1 + (j - 1) * shared.dim.age_vaccination_beta_modifier.mult[1] + (k - 1) * shared.dim.age_vaccination_beta_modifier.mult[2]]) * (1 - (shared.protection_weight_vacc * internal.prop_maternal_vaccinated[k - 1] + shared.protection_weight_rec * internal.prop_maternal_natural[k - 1])) : internal.beta[i - 1 + (j - 1) * shared.dim.beta.mult[1] + (k - 1) * shared.dim.beta.mult[2]] * (1 - shared.age_vaccination_beta_modifier[i - 1 + (j - 1) * shared.dim.age_vaccination_beta_modifier.mult[1] + (k - 1) * shared.dim.age_vaccination_beta_modifier.mult[2]]));
-        }
-      }
-    }
-    for (size_t k = 1; k <= shared.dim.aging_into_S.dim[2]; ++k) {
-      internal.aging_into_S[(k - 1) * shared.dim.aging_into_S.mult[2]] = dust2::array::sum<real_type>(internal.Births.data(), shared.dim.Births);
     }
     for (size_t i = 2; i <= static_cast<size_t>(shared.n_age); ++i) {
-      for (size_t j = 1; j <= shared.dim.aging_into_S.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.aging_into_S.dim[2]; ++k) {
-          internal.aging_into_S[i - 1 + (j - 1) * shared.dim.aging_into_S.mult[1] + (k - 1) * shared.dim.aging_into_S.mult[2]] = S[i - 1 - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(shared.aging_rate[i - 1 - 1], 1), 0);
+      for (size_t j = 1; j <= shared.dim.aging_out_of_S.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.aging_out_of_S.dim[2]; ++k) {
+          internal.aging_out_of_S[i - 1 + (j - 1) * shared.dim.aging_out_of_S.mult[1] + (k - 1) * shared.dim.aging_out_of_S.mult[2]] = (S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] <= 0 || shared.aging_rate[i - 1] <= 0 ? 0 : monty::math::floor(S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(shared.aging_rate[i - 1], 1), 0)));
         }
       }
     }
@@ -1527,15 +1550,10 @@ public:
         }
       }
     }
-    for (size_t j = 1; j <= shared.dim.aging_out_of_S.dim[1]; ++j) {
-      for (size_t k = 1; k <= shared.dim.aging_out_of_S.dim[2]; ++k) {
-        internal.aging_out_of_S[(j - 1) * shared.dim.aging_out_of_S.mult[1] + (k - 1) * shared.dim.aging_out_of_S.mult[2]] = monty::math::max<real_type>(S[(j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] - internal.aging_into_S[(k - 1) * shared.dim.aging_into_S.mult[2]], 0) * shared.aging_rate[0];
-      }
-    }
-    for (size_t i = 2; i <= static_cast<size_t>(shared.n_age); ++i) {
-      for (size_t j = 1; j <= shared.dim.aging_out_of_S.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.aging_out_of_S.dim[2]; ++k) {
-          internal.aging_out_of_S[i - 1 + (j - 1) * shared.dim.aging_out_of_S.mult[1] + (k - 1) * shared.dim.aging_out_of_S.mult[2]] = S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(shared.aging_rate[i - 1], 1), 0);
+    for (size_t i = 1; i <= shared.dim.S_after_aging.dim[0]; ++i) {
+      for (size_t j = 1; j <= shared.dim.S_after_aging.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.S_after_aging.dim[2]; ++k) {
+          internal.S_after_aging[i - 1 + (j - 1) * shared.dim.S_after_aging.mult[1] + (k - 1) * shared.dim.S_after_aging.mult[2]] = monty::math::max<real_type>(S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] + internal.aging_into_S[i - 1 + (j - 1) * shared.dim.aging_into_S.mult[1] + (k - 1) * shared.dim.aging_into_S.mult[2]] - internal.aging_out_of_S[i - 1 + (j - 1) * shared.dim.aging_out_of_S.mult[1] + (k - 1) * shared.dim.aging_out_of_S.mult[2]], 0);
         }
       }
     }
@@ -1609,10 +1627,10 @@ public:
         }
       }
     }
-    for (size_t i = 1; i <= shared.dim.S_after_aging.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.S_after_aging.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.S_after_aging.dim[2]; ++k) {
-          internal.S_after_aging[i - 1 + (j - 1) * shared.dim.S_after_aging.mult[1] + (k - 1) * shared.dim.S_after_aging.mult[2]] = S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] + internal.aging_into_S[i - 1 + (j - 1) * shared.dim.aging_into_S.mult[1] + (k - 1) * shared.dim.aging_into_S.mult[2]] - internal.aging_out_of_S[i - 1 + (j - 1) * shared.dim.aging_out_of_S.mult[1] + (k - 1) * shared.dim.aging_out_of_S.mult[2]];
+    for (size_t i = 1; i <= shared.dim.vaccinating_out_of_S.dim[0]; ++i) {
+      for (size_t j = 1; j <= shared.dim.vaccinating_out_of_S.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.vaccinating_out_of_S.dim[2]; ++k) {
+          internal.vaccinating_out_of_S[i - 1 + (j - 1) * shared.dim.vaccinating_out_of_S.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_S.mult[2]] = (shared.n_vacc == 1 || j >= shared.n_vacc - 1 || internal.S_after_aging[i - 1 + (j - 1) * shared.dim.S_after_aging.mult[1] + (k - 1) * shared.dim.S_after_aging.mult[2]] <= 0 || internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]] <= 0 ? 0 : (shared.stochastic_vaccination == 1 ? monty::random::binomial<real_type>(rng_state, internal.S_after_aging[i - 1 + (j - 1) * shared.dim.S_after_aging.mult[1] + (k - 1) * shared.dim.S_after_aging.mult[2]], monty::math::max<real_type>(monty::math::min<real_type>(internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]], 1), 0)) : monty::math::floor(internal.S_after_aging[i - 1 + (j - 1) * shared.dim.S_after_aging.mult[1] + (k - 1) * shared.dim.S_after_aging.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]], 1), 0))));
         }
       }
     }
@@ -1672,10 +1690,22 @@ public:
         }
       }
     }
-    for (size_t i = 1; i <= shared.dim.vaccinating_out_of_S.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.vaccinating_out_of_S.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.vaccinating_out_of_S.dim[2]; ++k) {
-          internal.vaccinating_out_of_S[i - 1 + (j - 1) * shared.dim.vaccinating_out_of_S.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_S.mult[2]] = (shared.n_vacc == 1 || j >= shared.n_vacc - 1 || internal.S_after_aging[i - 1 + (j - 1) * shared.dim.S_after_aging.mult[1] + (k - 1) * shared.dim.S_after_aging.mult[2]] <= 0 || internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]] <= 0 ? 0 : (shared.stochastic_vaccination == 1 ? monty::random::binomial<real_type>(rng_state, internal.S_after_aging[i - 1 + (j - 1) * shared.dim.S_after_aging.mult[1] + (k - 1) * shared.dim.S_after_aging.mult[2]], monty::math::max<real_type>(monty::math::min<real_type>(internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]], 1), 0)) : internal.S_after_aging[i - 1 + (j - 1) * shared.dim.S_after_aging.mult[1] + (k - 1) * shared.dim.S_after_aging.mult[2]] * monty::math::max<real_type>(monty::math::min<real_type>(internal.vaccination_prop[i - 1 + (j - 1) * shared.dim.vaccination_prop.mult[1] + (k - 1) * shared.dim.vaccination_prop.mult[2]], 1), 0)));
+    for (size_t i = 1; i <= shared.dim.vaccinating_into_S.dim[0]; ++i) {
+      for (size_t j = 1; j <= 2; ++j) {
+        for (size_t k = 1; k <= shared.dim.vaccinating_into_S.dim[2]; ++k) {
+          internal.vaccinating_into_S[i - 1 + (j - 1) * shared.dim.vaccinating_into_S.mult[1] + (k - 1) * shared.dim.vaccinating_into_S.mult[2]] = 0;
+        }
+      }
+    }
+    for (size_t i = 1; i <= shared.dim.vaccinating_into_S.dim[0]; ++i) {
+      for (size_t k = 1; k <= shared.dim.vaccinating_into_S.dim[2]; ++k) {
+        internal.vaccinating_into_S[i - 1 + 2 * shared.dim.vaccinating_into_S.mult[1] + (k - 1) * shared.dim.vaccinating_into_S.mult[2]] = internal.vaccinating_out_of_S[i - 1 + (k - 1) * shared.dim.vaccinating_out_of_S.mult[2]];
+      }
+    }
+    for (size_t i = 1; i <= shared.dim.vaccinating_into_S.dim[0]; ++i) {
+      for (size_t j = 4; j <= static_cast<size_t>(shared.n_vacc); ++j) {
+        for (size_t k = 1; k <= shared.dim.vaccinating_into_S.dim[2]; ++k) {
+          internal.vaccinating_into_S[i - 1 + (j - 1) * shared.dim.vaccinating_into_S.mult[1] + (k - 1) * shared.dim.vaccinating_into_S.mult[2]] = (std::fmod(j, 2) == 1 ? internal.vaccinating_out_of_S[i - 1 + (j - 2 - 1) * shared.dim.vaccinating_out_of_S.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_S.mult[2]] + internal.vaccinating_out_of_S[i - 1 + (j - 3 - 1) * shared.dim.vaccinating_out_of_S.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_S.mult[2]] : 0);
         }
       }
     }
@@ -1700,22 +1730,10 @@ public:
         }
       }
     }
-    for (size_t i = 1; i <= shared.dim.vaccinating_into_S.dim[0]; ++i) {
-      for (size_t j = 1; j <= 2; ++j) {
-        for (size_t k = 1; k <= shared.dim.vaccinating_into_S.dim[2]; ++k) {
-          internal.vaccinating_into_S[i - 1 + (j - 1) * shared.dim.vaccinating_into_S.mult[1] + (k - 1) * shared.dim.vaccinating_into_S.mult[2]] = 0;
-        }
-      }
-    }
-    for (size_t i = 1; i <= shared.dim.vaccinating_into_S.dim[0]; ++i) {
-      for (size_t k = 1; k <= shared.dim.vaccinating_into_S.dim[2]; ++k) {
-        internal.vaccinating_into_S[i - 1 + 2 * shared.dim.vaccinating_into_S.mult[1] + (k - 1) * shared.dim.vaccinating_into_S.mult[2]] = internal.vaccinating_out_of_S[i - 1 + (k - 1) * shared.dim.vaccinating_out_of_S.mult[2]];
-      }
-    }
-    for (size_t i = 1; i <= shared.dim.vaccinating_into_S.dim[0]; ++i) {
-      for (size_t j = 4; j <= static_cast<size_t>(shared.n_vacc); ++j) {
-        for (size_t k = 1; k <= shared.dim.vaccinating_into_S.dim[2]; ++k) {
-          internal.vaccinating_into_S[i - 1 + (j - 1) * shared.dim.vaccinating_into_S.mult[1] + (k - 1) * shared.dim.vaccinating_into_S.mult[2]] = (std::fmod(j, 2) == 1 ? internal.vaccinating_out_of_S[i - 1 + (j - 2 - 1) * shared.dim.vaccinating_out_of_S.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_S.mult[2]] + internal.vaccinating_out_of_S[i - 1 + (j - 3 - 1) * shared.dim.vaccinating_out_of_S.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_S.mult[2]] : 0);
+    for (size_t i = 1; i <= shared.dim.S_after_vaccination.dim[0]; ++i) {
+      for (size_t j = 1; j <= shared.dim.S_after_vaccination.dim[1]; ++j) {
+        for (size_t k = 1; k <= shared.dim.S_after_vaccination.dim[2]; ++k) {
+          internal.S_after_vaccination[i - 1 + (j - 1) * shared.dim.S_after_vaccination.mult[1] + (k - 1) * shared.dim.S_after_vaccination.mult[2]] = internal.S_after_aging[i - 1 + (j - 1) * shared.dim.S_after_aging.mult[1] + (k - 1) * shared.dim.S_after_aging.mult[2]] + internal.vaccinating_into_S[i - 1 + (j - 1) * shared.dim.vaccinating_into_S.mult[1] + (k - 1) * shared.dim.vaccinating_into_S.mult[2]] - internal.vaccinating_out_of_S[i - 1 + (j - 1) * shared.dim.vaccinating_out_of_S.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_S.mult[2]];
         }
       }
     }
@@ -1732,20 +1750,8 @@ public:
     for (size_t i = 1; i <= shared.dim.recovered_Is_to_Rc.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.recovered_Is_to_Rc.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.recovered_Is_to_Rc.dim[2]; ++k) {
-          internal.recovered_Is_to_Rc[i - 1 + (j - 1) * shared.dim.recovered_Is_to_Rc.mult[1] + (k - 1) * shared.dim.recovered_Is_to_Rc.mult[2]] = internal.recovered_from_Is[i - 1 + (j - 1) * shared.dim.recovered_from_Is.mult[1] + (k - 1) * shared.dim.recovered_from_Is.mult[2]] - internal.recovered_Is_to_R[i - 1 + (j - 1) * shared.dim.recovered_Is_to_R.mult[1] + (k - 1) * shared.dim.recovered_Is_to_R.mult[2]];
+          internal.recovered_Is_to_Rc[i - 1 + (j - 1) * shared.dim.recovered_Is_to_Rc.mult[1] + (k - 1) * shared.dim.recovered_Is_to_Rc.mult[2]] = (internal.recovered_Is_to_R[i - 1 + (j - 1) * shared.dim.recovered_Is_to_R.mult[1] + (k - 1) * shared.dim.recovered_Is_to_R.mult[2]] >= internal.recovered_from_Is[i - 1 + (j - 1) * shared.dim.recovered_from_Is.mult[1] + (k - 1) * shared.dim.recovered_from_Is.mult[2]] ? 0 : internal.recovered_from_Is[i - 1 + (j - 1) * shared.dim.recovered_from_Is.mult[1] + (k - 1) * shared.dim.recovered_from_Is.mult[2]] - internal.recovered_Is_to_R[i - 1 + (j - 1) * shared.dim.recovered_Is_to_R.mult[1] + (k - 1) * shared.dim.recovered_Is_to_R.mult[2]]);
         }
-      }
-    }
-    for (size_t i = 1; i <= shared.dim.S_after_vaccination.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.S_after_vaccination.dim[1]; ++j) {
-        for (size_t k = 1; k <= shared.dim.S_after_vaccination.dim[2]; ++k) {
-          internal.S_after_vaccination[i - 1 + (j - 1) * shared.dim.S_after_vaccination.mult[1] + (k - 1) * shared.dim.S_after_vaccination.mult[2]] = internal.S_after_aging[i - 1 + (j - 1) * shared.dim.S_after_aging.mult[1] + (k - 1) * shared.dim.S_after_aging.mult[2]] + internal.vaccinating_into_S[i - 1 + (j - 1) * shared.dim.vaccinating_into_S.mult[1] + (k - 1) * shared.dim.vaccinating_into_S.mult[2]] - internal.vaccinating_out_of_S[i - 1 + (j - 1) * shared.dim.vaccinating_out_of_S.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_S.mult[2]];
-        }
-      }
-    }
-    for (size_t i = 1; i <= shared.dim.lambda_contact.dim[0]; ++i) {
-      for (size_t j = 1; j <= shared.dim.lambda_contact.dim[1]; ++j) {
-        internal.lambda_contact[i - 1 + (j - 1) * shared.dim.lambda_contact.mult[1]] = shared.contact_matrix[i - 1 + (j - 1) * shared.dim.contact_matrix.mult[1]] * internal.infectious_source[j - 1];
       }
     }
     for (size_t i = 1; i <= shared.dim.waning_from_S_short.dim[0]; ++i) {
@@ -1760,6 +1766,11 @@ public:
         for (size_t k = 1; k <= shared.dim.waning_from_S_long.dim[2]; ++k) {
           internal.waning_from_S_long[i - 1 + (j - 1) * shared.dim.waning_from_S_long.mult[1] + (k - 1) * shared.dim.waning_from_S_long.mult[2]] = (std::fmod(j, 2) == 0 && j > 1 && static_cast<int>(j) <= shared.n_vacc && internal.S_after_vaccination[i - 1 + (j - 1) * shared.dim.S_after_vaccination.mult[1] + (k - 1) * shared.dim.S_after_vaccination.mult[2]] > 0 ? monty::random::binomial<real_type>(rng_state, internal.S_after_vaccination[i - 1 + (j - 1) * shared.dim.S_after_vaccination.mult[1] + (k - 1) * shared.dim.S_after_vaccination.mult[2]], shared.long_term_waning[j - 1]) : 0);
         }
+      }
+    }
+    for (size_t i = 1; i <= shared.dim.lambda_contact.dim[0]; ++i) {
+      for (size_t j = 1; j <= shared.dim.lambda_contact.dim[1]; ++j) {
+        internal.lambda_contact[i - 1 + (j - 1) * shared.dim.lambda_contact.mult[1]] = shared.contact_matrix[i - 1 + (j - 1) * shared.dim.contact_matrix.mult[1]] * internal.infectious_source[j - 1];
       }
     }
     for (size_t i = 1; i <= shared.dim.waning_to_S_long.dim[0]; ++i) {
@@ -1839,74 +1850,67 @@ public:
     for (size_t i = 1; i <= shared.dim.S.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.S.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.S.dim[2]; ++k) {
-          state_next[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2] + 15] = monty::math::max<real_type>(S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] + internal.waning_R[i - 1 + (j - 1) * shared.dim.waning_R.mult[1] + (k - 1) * shared.dim.waning_R.mult[2]] + internal.waning_Rc[i - 1 + (j - 1) * shared.dim.waning_Rc.mult[1] + (k - 1) * shared.dim.waning_Rc.mult[2]] + internal.aging_into_S[i - 1 + (j - 1) * shared.dim.aging_into_S.mult[1] + (k - 1) * shared.dim.aging_into_S.mult[2]] - internal.aging_out_of_S[i - 1 + (j - 1) * shared.dim.aging_out_of_S.mult[1] + (k - 1) * shared.dim.aging_out_of_S.mult[2]] - internal.lambda_S[i - 1 + (j - 1) * shared.dim.lambda_S.mult[1] + (k - 1) * shared.dim.lambda_S.mult[2]] - internal.S_death[i - 1 + (j - 1) * shared.dim.S_death.mult[1] + (k - 1) * shared.dim.S_death.mult[2]] + internal.migration_S[i - 1 + (j - 1) * shared.dim.migration_S.mult[1] + (k - 1) * shared.dim.migration_S.mult[2]] * pos_neg_migration + internal.vaccinating_into_S[i - 1 + (j - 1) * shared.dim.vaccinating_into_S.mult[1] + (k - 1) * shared.dim.vaccinating_into_S.mult[2]] - internal.vaccinating_out_of_S[i - 1 + (j - 1) * shared.dim.vaccinating_out_of_S.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_S.mult[2]] + internal.waning_to_S_long[i - 1 + (j - 1) * shared.dim.waning_to_S_long.mult[1] + (k - 1) * shared.dim.waning_to_S_long.mult[2]] + internal.waning_to_S_unvaccinated[i - 1 + (j - 1) * shared.dim.waning_to_S_unvaccinated.mult[1] + (k - 1) * shared.dim.waning_to_S_unvaccinated.mult[2]] - internal.waning_from_S_short[i - 1 + (j - 1) * shared.dim.waning_from_S_short.mult[1] + (k - 1) * shared.dim.waning_from_S_short.mult[2]] - internal.waning_from_S_long[i - 1 + (j - 1) * shared.dim.waning_from_S_long.mult[1] + (k - 1) * shared.dim.waning_from_S_long.mult[2]] - internal.seeded_actual[i - 1 + (j - 1) * shared.dim.seeded_actual.mult[1] + (k - 1) * shared.dim.seeded_actual.mult[2]] + internal.waning_to_S_short[i - 1 + (j - 1) * shared.dim.waning_to_S_short.mult[1] + (k - 1) * shared.dim.waning_to_S_short.mult[2]], 0);
+          state_next[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2] + 8] = monty::math::max<real_type>(S[i - 1 + (j - 1) * shared.dim.S.mult[1] + (k - 1) * shared.dim.S.mult[2]] + internal.waning_R[i - 1 + (j - 1) * shared.dim.waning_R.mult[1] + (k - 1) * shared.dim.waning_R.mult[2]] + internal.waning_Rc[i - 1 + (j - 1) * shared.dim.waning_Rc.mult[1] + (k - 1) * shared.dim.waning_Rc.mult[2]] + internal.aging_into_S[i - 1 + (j - 1) * shared.dim.aging_into_S.mult[1] + (k - 1) * shared.dim.aging_into_S.mult[2]] - internal.aging_out_of_S[i - 1 + (j - 1) * shared.dim.aging_out_of_S.mult[1] + (k - 1) * shared.dim.aging_out_of_S.mult[2]] - internal.lambda_S[i - 1 + (j - 1) * shared.dim.lambda_S.mult[1] + (k - 1) * shared.dim.lambda_S.mult[2]] - internal.S_death[i - 1 + (j - 1) * shared.dim.S_death.mult[1] + (k - 1) * shared.dim.S_death.mult[2]] + internal.migration_S[i - 1 + (j - 1) * shared.dim.migration_S.mult[1] + (k - 1) * shared.dim.migration_S.mult[2]] * pos_neg_migration + internal.vaccinating_into_S[i - 1 + (j - 1) * shared.dim.vaccinating_into_S.mult[1] + (k - 1) * shared.dim.vaccinating_into_S.mult[2]] - internal.vaccinating_out_of_S[i - 1 + (j - 1) * shared.dim.vaccinating_out_of_S.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_S.mult[2]] + internal.waning_to_S_long[i - 1 + (j - 1) * shared.dim.waning_to_S_long.mult[1] + (k - 1) * shared.dim.waning_to_S_long.mult[2]] + internal.waning_to_S_unvaccinated[i - 1 + (j - 1) * shared.dim.waning_to_S_unvaccinated.mult[1] + (k - 1) * shared.dim.waning_to_S_unvaccinated.mult[2]] - internal.waning_from_S_short[i - 1 + (j - 1) * shared.dim.waning_from_S_short.mult[1] + (k - 1) * shared.dim.waning_from_S_short.mult[2]] - internal.waning_from_S_long[i - 1 + (j - 1) * shared.dim.waning_from_S_long.mult[1] + (k - 1) * shared.dim.waning_from_S_long.mult[2]] - internal.seeded_actual[i - 1 + (j - 1) * shared.dim.seeded_actual.mult[1] + (k - 1) * shared.dim.seeded_actual.mult[2]] + internal.waning_to_S_short[i - 1 + (j - 1) * shared.dim.waning_to_S_short.mult[1] + (k - 1) * shared.dim.waning_to_S_short.mult[2]], 0);
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.E.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.E.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.E.dim[2]; ++k) {
-          state_next[i - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2] + shared.odin.offset.state[16]] = monty::math::max<real_type>(E[i - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2]] + internal.lambda_S[i - 1 + (j - 1) * shared.dim.lambda_S.mult[1] + (k - 1) * shared.dim.lambda_S.mult[2]] - internal.incubated[i - 1 + (j - 1) * shared.dim.incubated.mult[1] + (k - 1) * shared.dim.incubated.mult[2]] + internal.aging_into_E[i - 1 + (j - 1) * shared.dim.aging_into_E.mult[1] + (k - 1) * shared.dim.aging_into_E.mult[2]] - internal.aging_out_of_E[i - 1 + (j - 1) * shared.dim.aging_out_of_E.mult[1] + (k - 1) * shared.dim.aging_out_of_E.mult[2]] - internal.E_death[i - 1 + (j - 1) * shared.dim.E_death.mult[1] + (k - 1) * shared.dim.E_death.mult[2]] + internal.migration_E[i - 1 + (j - 1) * shared.dim.migration_E.mult[1] + (k - 1) * shared.dim.migration_E.mult[2]] * pos_neg_migration + internal.vaccinating_into_E[i - 1 + (j - 1) * shared.dim.vaccinating_into_E.mult[1] + (k - 1) * shared.dim.vaccinating_into_E.mult[2]] - internal.vaccinating_out_of_E[i - 1 + (j - 1) * shared.dim.vaccinating_out_of_E.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_E.mult[2]] + internal.waning_to_E_long[i - 1 + (j - 1) * shared.dim.waning_to_E_long.mult[1] + (k - 1) * shared.dim.waning_to_E_long.mult[2]] + internal.waning_to_E_unvaccinated[i - 1 + (j - 1) * shared.dim.waning_to_E_unvaccinated.mult[1] + (k - 1) * shared.dim.waning_to_E_unvaccinated.mult[2]] - internal.waning_from_E_short[i - 1 + (j - 1) * shared.dim.waning_from_E_short.mult[1] + (k - 1) * shared.dim.waning_from_E_short.mult[2]] - internal.waning_from_E_long[i - 1 + (j - 1) * shared.dim.waning_from_E_long.mult[1] + (k - 1) * shared.dim.waning_from_E_long.mult[2]], 0);
+          state_next[i - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2] + shared.odin.offset.state[9]] = monty::math::max<real_type>(E[i - 1 + (j - 1) * shared.dim.E.mult[1] + (k - 1) * shared.dim.E.mult[2]] + internal.lambda_S[i - 1 + (j - 1) * shared.dim.lambda_S.mult[1] + (k - 1) * shared.dim.lambda_S.mult[2]] - internal.incubated[i - 1 + (j - 1) * shared.dim.incubated.mult[1] + (k - 1) * shared.dim.incubated.mult[2]] + internal.aging_into_E[i - 1 + (j - 1) * shared.dim.aging_into_E.mult[1] + (k - 1) * shared.dim.aging_into_E.mult[2]] - internal.aging_out_of_E[i - 1 + (j - 1) * shared.dim.aging_out_of_E.mult[1] + (k - 1) * shared.dim.aging_out_of_E.mult[2]] - internal.E_death[i - 1 + (j - 1) * shared.dim.E_death.mult[1] + (k - 1) * shared.dim.E_death.mult[2]] + internal.migration_E[i - 1 + (j - 1) * shared.dim.migration_E.mult[1] + (k - 1) * shared.dim.migration_E.mult[2]] * pos_neg_migration + internal.vaccinating_into_E[i - 1 + (j - 1) * shared.dim.vaccinating_into_E.mult[1] + (k - 1) * shared.dim.vaccinating_into_E.mult[2]] - internal.vaccinating_out_of_E[i - 1 + (j - 1) * shared.dim.vaccinating_out_of_E.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_E.mult[2]] + internal.waning_to_E_long[i - 1 + (j - 1) * shared.dim.waning_to_E_long.mult[1] + (k - 1) * shared.dim.waning_to_E_long.mult[2]] + internal.waning_to_E_unvaccinated[i - 1 + (j - 1) * shared.dim.waning_to_E_unvaccinated.mult[1] + (k - 1) * shared.dim.waning_to_E_unvaccinated.mult[2]] - internal.waning_from_E_short[i - 1 + (j - 1) * shared.dim.waning_from_E_short.mult[1] + (k - 1) * shared.dim.waning_from_E_short.mult[2]] - internal.waning_from_E_long[i - 1 + (j - 1) * shared.dim.waning_from_E_long.mult[1] + (k - 1) * shared.dim.waning_from_E_long.mult[2]], 0);
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.I.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.I.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.I.dim[2]; ++k) {
-          state_next[i - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2] + shared.odin.offset.state[17]] = monty::math::max<real_type>(I[i - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2]] + internal.into_I[i - 1 + (j - 1) * shared.dim.into_I.mult[1] + (k - 1) * shared.dim.into_I.mult[2]] + internal.aging_into_I[i - 1 + (j - 1) * shared.dim.aging_into_I.mult[1] + (k - 1) * shared.dim.aging_into_I.mult[2]] - internal.aging_out_of_I[i - 1 + (j - 1) * shared.dim.aging_out_of_I.mult[1] + (k - 1) * shared.dim.aging_out_of_I.mult[2]] - internal.recovered_I_to_R[i - 1 + (j - 1) * shared.dim.recovered_I_to_R.mult[1] + (k - 1) * shared.dim.recovered_I_to_R.mult[2]] - internal.I_death[i - 1 + (j - 1) * shared.dim.I_death.mult[1] + (k - 1) * shared.dim.I_death.mult[2]] + internal.seeded_actual[i - 1 + (j - 1) * shared.dim.seeded_actual.mult[1] + (k - 1) * shared.dim.seeded_actual.mult[2]] + internal.migration_I[i - 1 + (j - 1) * shared.dim.migration_I.mult[1] + (k - 1) * shared.dim.migration_I.mult[2]] * pos_neg_migration + internal.vaccinating_into_I[i - 1 + (j - 1) * shared.dim.vaccinating_into_I.mult[1] + (k - 1) * shared.dim.vaccinating_into_I.mult[2]] - internal.vaccinating_out_of_I[i - 1 + (j - 1) * shared.dim.vaccinating_out_of_I.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_I.mult[2]] + internal.waning_to_I_long[i - 1 + (j - 1) * shared.dim.waning_to_I_long.mult[1] + (k - 1) * shared.dim.waning_to_I_long.mult[2]] + internal.waning_to_I_unvaccinated[i - 1 + (j - 1) * shared.dim.waning_to_I_unvaccinated.mult[1] + (k - 1) * shared.dim.waning_to_I_unvaccinated.mult[2]] - internal.waning_from_I_short[i - 1 + (j - 1) * shared.dim.waning_from_I_short.mult[1] + (k - 1) * shared.dim.waning_from_I_short.mult[2]] - internal.waning_from_I_long[i - 1 + (j - 1) * shared.dim.waning_from_I_long.mult[1] + (k - 1) * shared.dim.waning_from_I_long.mult[2]], 0);
+          state_next[i - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2] + shared.odin.offset.state[10]] = monty::math::max<real_type>(I[i - 1 + (j - 1) * shared.dim.I.mult[1] + (k - 1) * shared.dim.I.mult[2]] + internal.into_I[i - 1 + (j - 1) * shared.dim.into_I.mult[1] + (k - 1) * shared.dim.into_I.mult[2]] + internal.aging_into_I[i - 1 + (j - 1) * shared.dim.aging_into_I.mult[1] + (k - 1) * shared.dim.aging_into_I.mult[2]] - internal.aging_out_of_I[i - 1 + (j - 1) * shared.dim.aging_out_of_I.mult[1] + (k - 1) * shared.dim.aging_out_of_I.mult[2]] - internal.recovered_I_to_R[i - 1 + (j - 1) * shared.dim.recovered_I_to_R.mult[1] + (k - 1) * shared.dim.recovered_I_to_R.mult[2]] - internal.I_death[i - 1 + (j - 1) * shared.dim.I_death.mult[1] + (k - 1) * shared.dim.I_death.mult[2]] + internal.seeded_actual[i - 1 + (j - 1) * shared.dim.seeded_actual.mult[1] + (k - 1) * shared.dim.seeded_actual.mult[2]] + internal.migration_I[i - 1 + (j - 1) * shared.dim.migration_I.mult[1] + (k - 1) * shared.dim.migration_I.mult[2]] * pos_neg_migration + internal.vaccinating_into_I[i - 1 + (j - 1) * shared.dim.vaccinating_into_I.mult[1] + (k - 1) * shared.dim.vaccinating_into_I.mult[2]] - internal.vaccinating_out_of_I[i - 1 + (j - 1) * shared.dim.vaccinating_out_of_I.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_I.mult[2]] + internal.waning_to_I_long[i - 1 + (j - 1) * shared.dim.waning_to_I_long.mult[1] + (k - 1) * shared.dim.waning_to_I_long.mult[2]] + internal.waning_to_I_unvaccinated[i - 1 + (j - 1) * shared.dim.waning_to_I_unvaccinated.mult[1] + (k - 1) * shared.dim.waning_to_I_unvaccinated.mult[2]] - internal.waning_from_I_short[i - 1 + (j - 1) * shared.dim.waning_from_I_short.mult[1] + (k - 1) * shared.dim.waning_from_I_short.mult[2]] - internal.waning_from_I_long[i - 1 + (j - 1) * shared.dim.waning_from_I_long.mult[1] + (k - 1) * shared.dim.waning_from_I_long.mult[2]], 0);
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.R.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.R.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.R.dim[2]; ++k) {
-          state_next[i - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2] + shared.odin.offset.state[18]] = monty::math::max<real_type>(R[i - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2]] + internal.recovered_I_to_R[i - 1 + (j - 1) * shared.dim.recovered_I_to_R.mult[1] + (k - 1) * shared.dim.recovered_I_to_R.mult[2]] + internal.recovered_Is_to_R[i - 1 + (j - 1) * shared.dim.recovered_Is_to_R.mult[1] + (k - 1) * shared.dim.recovered_Is_to_R.mult[2]] - internal.waning_R[i - 1 + (j - 1) * shared.dim.waning_R.mult[1] + (k - 1) * shared.dim.waning_R.mult[2]] + internal.aging_into_R[i - 1 + (j - 1) * shared.dim.aging_into_R.mult[1] + (k - 1) * shared.dim.aging_into_R.mult[2]] - internal.aging_out_of_R[i - 1 + (j - 1) * shared.dim.aging_out_of_R.mult[1] + (k - 1) * shared.dim.aging_out_of_R.mult[2]] - internal.R_death[i - 1 + (j - 1) * shared.dim.R_death.mult[1] + (k - 1) * shared.dim.R_death.mult[2]] + internal.migration_R[i - 1 + (j - 1) * shared.dim.migration_R.mult[1] + (k - 1) * shared.dim.migration_R.mult[2]] * pos_neg_migration + internal.vaccinating_into_R[i - 1 + (j - 1) * shared.dim.vaccinating_into_R.mult[1] + (k - 1) * shared.dim.vaccinating_into_R.mult[2]] - internal.vaccinating_out_of_R[i - 1 + (j - 1) * shared.dim.vaccinating_out_of_R.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_R.mult[2]] + internal.waning_to_R_long[i - 1 + (j - 1) * shared.dim.waning_to_R_long.mult[1] + (k - 1) * shared.dim.waning_to_R_long.mult[2]] + internal.waning_to_R_unvaccinated[i - 1 + (j - 1) * shared.dim.waning_to_R_unvaccinated.mult[1] + (k - 1) * shared.dim.waning_to_R_unvaccinated.mult[2]] - internal.waning_from_R_short[i - 1 + (j - 1) * shared.dim.waning_from_R_short.mult[1] + (k - 1) * shared.dim.waning_from_R_short.mult[2]] - internal.waning_from_R_long[i - 1 + (j - 1) * shared.dim.waning_from_R_long.mult[1] + (k - 1) * shared.dim.waning_from_R_long.mult[2]], 0);
+          state_next[i - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2] + shared.odin.offset.state[11]] = monty::math::max<real_type>(R[i - 1 + (j - 1) * shared.dim.R.mult[1] + (k - 1) * shared.dim.R.mult[2]] + internal.recovered_I_to_R[i - 1 + (j - 1) * shared.dim.recovered_I_to_R.mult[1] + (k - 1) * shared.dim.recovered_I_to_R.mult[2]] + internal.recovered_Is_to_R[i - 1 + (j - 1) * shared.dim.recovered_Is_to_R.mult[1] + (k - 1) * shared.dim.recovered_Is_to_R.mult[2]] - internal.waning_R[i - 1 + (j - 1) * shared.dim.waning_R.mult[1] + (k - 1) * shared.dim.waning_R.mult[2]] + internal.aging_into_R[i - 1 + (j - 1) * shared.dim.aging_into_R.mult[1] + (k - 1) * shared.dim.aging_into_R.mult[2]] - internal.aging_out_of_R[i - 1 + (j - 1) * shared.dim.aging_out_of_R.mult[1] + (k - 1) * shared.dim.aging_out_of_R.mult[2]] - internal.R_death[i - 1 + (j - 1) * shared.dim.R_death.mult[1] + (k - 1) * shared.dim.R_death.mult[2]] + internal.migration_R[i - 1 + (j - 1) * shared.dim.migration_R.mult[1] + (k - 1) * shared.dim.migration_R.mult[2]] * pos_neg_migration + internal.vaccinating_into_R[i - 1 + (j - 1) * shared.dim.vaccinating_into_R.mult[1] + (k - 1) * shared.dim.vaccinating_into_R.mult[2]] - internal.vaccinating_out_of_R[i - 1 + (j - 1) * shared.dim.vaccinating_out_of_R.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_R.mult[2]] + internal.waning_to_R_long[i - 1 + (j - 1) * shared.dim.waning_to_R_long.mult[1] + (k - 1) * shared.dim.waning_to_R_long.mult[2]] + internal.waning_to_R_unvaccinated[i - 1 + (j - 1) * shared.dim.waning_to_R_unvaccinated.mult[1] + (k - 1) * shared.dim.waning_to_R_unvaccinated.mult[2]] - internal.waning_from_R_short[i - 1 + (j - 1) * shared.dim.waning_from_R_short.mult[1] + (k - 1) * shared.dim.waning_from_R_short.mult[2]] - internal.waning_from_R_long[i - 1 + (j - 1) * shared.dim.waning_from_R_long.mult[1] + (k - 1) * shared.dim.waning_from_R_long.mult[2]], 0);
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.Is.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.Is.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.Is.dim[2]; ++k) {
-          state_next[i - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2] + shared.odin.offset.state[19]] = monty::math::max<real_type>(Is[i - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2]] + internal.into_Is[i - 1 + (j - 1) * shared.dim.into_Is.mult[1] + (k - 1) * shared.dim.into_Is.mult[2]] - internal.recovered_from_Is[i - 1 + (j - 1) * shared.dim.recovered_from_Is.mult[1] + (k - 1) * shared.dim.recovered_from_Is.mult[2]] + internal.aging_into_Is[i - 1 + (j - 1) * shared.dim.aging_into_Is.mult[1] + (k - 1) * shared.dim.aging_into_Is.mult[2]] - internal.aging_out_of_Is[i - 1 + (j - 1) * shared.dim.aging_out_of_Is.mult[1] + (k - 1) * shared.dim.aging_out_of_Is.mult[2]] - internal.Is_death[i - 1 + (j - 1) * shared.dim.Is_death.mult[1] + (k - 1) * shared.dim.Is_death.mult[2]] + internal.migration_Is[i - 1 + (j - 1) * shared.dim.migration_Is.mult[1] + (k - 1) * shared.dim.migration_Is.mult[2]] * pos_neg_migration + internal.vaccinating_into_Is[i - 1 + (j - 1) * shared.dim.vaccinating_into_Is.mult[1] + (k - 1) * shared.dim.vaccinating_into_Is.mult[2]] - internal.vaccinating_out_of_Is[i - 1 + (j - 1) * shared.dim.vaccinating_out_of_Is.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_Is.mult[2]] + internal.waning_to_Is_long[i - 1 + (j - 1) * shared.dim.waning_to_Is_long.mult[1] + (k - 1) * shared.dim.waning_to_Is_long.mult[2]] + internal.waning_to_Is_unvaccinated[i - 1 + (j - 1) * shared.dim.waning_to_Is_unvaccinated.mult[1] + (k - 1) * shared.dim.waning_to_Is_unvaccinated.mult[2]] - internal.waning_from_Is_short[i - 1 + (j - 1) * shared.dim.waning_from_Is_short.mult[1] + (k - 1) * shared.dim.waning_from_Is_short.mult[2]] - internal.waning_from_Is_long[i - 1 + (j - 1) * shared.dim.waning_from_Is_long.mult[1] + (k - 1) * shared.dim.waning_from_Is_long.mult[2]], 0);
+          state_next[i - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2] + shared.odin.offset.state[12]] = monty::math::max<real_type>(Is[i - 1 + (j - 1) * shared.dim.Is.mult[1] + (k - 1) * shared.dim.Is.mult[2]] + internal.into_Is[i - 1 + (j - 1) * shared.dim.into_Is.mult[1] + (k - 1) * shared.dim.into_Is.mult[2]] - internal.recovered_from_Is[i - 1 + (j - 1) * shared.dim.recovered_from_Is.mult[1] + (k - 1) * shared.dim.recovered_from_Is.mult[2]] + internal.aging_into_Is[i - 1 + (j - 1) * shared.dim.aging_into_Is.mult[1] + (k - 1) * shared.dim.aging_into_Is.mult[2]] - internal.aging_out_of_Is[i - 1 + (j - 1) * shared.dim.aging_out_of_Is.mult[1] + (k - 1) * shared.dim.aging_out_of_Is.mult[2]] - internal.Is_death[i - 1 + (j - 1) * shared.dim.Is_death.mult[1] + (k - 1) * shared.dim.Is_death.mult[2]] + internal.migration_Is[i - 1 + (j - 1) * shared.dim.migration_Is.mult[1] + (k - 1) * shared.dim.migration_Is.mult[2]] * pos_neg_migration + internal.vaccinating_into_Is[i - 1 + (j - 1) * shared.dim.vaccinating_into_Is.mult[1] + (k - 1) * shared.dim.vaccinating_into_Is.mult[2]] - internal.vaccinating_out_of_Is[i - 1 + (j - 1) * shared.dim.vaccinating_out_of_Is.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_Is.mult[2]] + internal.waning_to_Is_long[i - 1 + (j - 1) * shared.dim.waning_to_Is_long.mult[1] + (k - 1) * shared.dim.waning_to_Is_long.mult[2]] + internal.waning_to_Is_unvaccinated[i - 1 + (j - 1) * shared.dim.waning_to_Is_unvaccinated.mult[1] + (k - 1) * shared.dim.waning_to_Is_unvaccinated.mult[2]] - internal.waning_from_Is_short[i - 1 + (j - 1) * shared.dim.waning_from_Is_short.mult[1] + (k - 1) * shared.dim.waning_from_Is_short.mult[2]] - internal.waning_from_Is_long[i - 1 + (j - 1) * shared.dim.waning_from_Is_long.mult[1] + (k - 1) * shared.dim.waning_from_Is_long.mult[2]], 0);
         }
       }
     }
     for (size_t i = 1; i <= shared.dim.Rc.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.Rc.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.Rc.dim[2]; ++k) {
-          state_next[i - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2] + shared.odin.offset.state[20]] = monty::math::max<real_type>(Rc[i - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2]] + internal.recovered_Is_to_Rc[i - 1 + (j - 1) * shared.dim.recovered_Is_to_Rc.mult[1] + (k - 1) * shared.dim.recovered_Is_to_Rc.mult[2]] - internal.waning_Rc[i - 1 + (j - 1) * shared.dim.waning_Rc.mult[1] + (k - 1) * shared.dim.waning_Rc.mult[2]] + internal.aging_into_Rc[i - 1 + (j - 1) * shared.dim.aging_into_Rc.mult[1] + (k - 1) * shared.dim.aging_into_Rc.mult[2]] - internal.aging_out_of_Rc[i - 1 + (j - 1) * shared.dim.aging_out_of_Rc.mult[1] + (k - 1) * shared.dim.aging_out_of_Rc.mult[2]] - internal.Rc_death[i - 1 + (j - 1) * shared.dim.Rc_death.mult[1] + (k - 1) * shared.dim.Rc_death.mult[2]] + internal.migration_Rc[i - 1 + (j - 1) * shared.dim.migration_Rc.mult[1] + (k - 1) * shared.dim.migration_Rc.mult[2]] * pos_neg_migration + internal.vaccinating_into_Rc[i - 1 + (j - 1) * shared.dim.vaccinating_into_Rc.mult[1] + (k - 1) * shared.dim.vaccinating_into_Rc.mult[2]] - internal.vaccinating_out_of_Rc[i - 1 + (j - 1) * shared.dim.vaccinating_out_of_Rc.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_Rc.mult[2]] + internal.waning_to_Rc_long[i - 1 + (j - 1) * shared.dim.waning_to_Rc_long.mult[1] + (k - 1) * shared.dim.waning_to_Rc_long.mult[2]] + internal.waning_to_Rc_unvaccinated[i - 1 + (j - 1) * shared.dim.waning_to_Rc_unvaccinated.mult[1] + (k - 1) * shared.dim.waning_to_Rc_unvaccinated.mult[2]] - internal.waning_from_Rc_short[i - 1 + (j - 1) * shared.dim.waning_from_Rc_short.mult[1] + (k - 1) * shared.dim.waning_from_Rc_short.mult[2]] - internal.waning_from_Rc_long[i - 1 + (j - 1) * shared.dim.waning_from_Rc_long.mult[1] + (k - 1) * shared.dim.waning_from_Rc_long.mult[2]], 0);
+          state_next[i - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2] + shared.odin.offset.state[13]] = monty::math::max<real_type>(Rc[i - 1 + (j - 1) * shared.dim.Rc.mult[1] + (k - 1) * shared.dim.Rc.mult[2]] + internal.recovered_Is_to_Rc[i - 1 + (j - 1) * shared.dim.recovered_Is_to_Rc.mult[1] + (k - 1) * shared.dim.recovered_Is_to_Rc.mult[2]] - internal.waning_Rc[i - 1 + (j - 1) * shared.dim.waning_Rc.mult[1] + (k - 1) * shared.dim.waning_Rc.mult[2]] + internal.aging_into_Rc[i - 1 + (j - 1) * shared.dim.aging_into_Rc.mult[1] + (k - 1) * shared.dim.aging_into_Rc.mult[2]] - internal.aging_out_of_Rc[i - 1 + (j - 1) * shared.dim.aging_out_of_Rc.mult[1] + (k - 1) * shared.dim.aging_out_of_Rc.mult[2]] - internal.Rc_death[i - 1 + (j - 1) * shared.dim.Rc_death.mult[1] + (k - 1) * shared.dim.Rc_death.mult[2]] + internal.migration_Rc[i - 1 + (j - 1) * shared.dim.migration_Rc.mult[1] + (k - 1) * shared.dim.migration_Rc.mult[2]] * pos_neg_migration + internal.vaccinating_into_Rc[i - 1 + (j - 1) * shared.dim.vaccinating_into_Rc.mult[1] + (k - 1) * shared.dim.vaccinating_into_Rc.mult[2]] - internal.vaccinating_out_of_Rc[i - 1 + (j - 1) * shared.dim.vaccinating_out_of_Rc.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_Rc.mult[2]] + internal.waning_to_Rc_long[i - 1 + (j - 1) * shared.dim.waning_to_Rc_long.mult[1] + (k - 1) * shared.dim.waning_to_Rc_long.mult[2]] + internal.waning_to_Rc_unvaccinated[i - 1 + (j - 1) * shared.dim.waning_to_Rc_unvaccinated.mult[1] + (k - 1) * shared.dim.waning_to_Rc_unvaccinated.mult[2]] - internal.waning_from_Rc_short[i - 1 + (j - 1) * shared.dim.waning_from_Rc_short.mult[1] + (k - 1) * shared.dim.waning_from_Rc_short.mult[2]] - internal.waning_from_Rc_long[i - 1 + (j - 1) * shared.dim.waning_from_Rc_long.mult[1] + (k - 1) * shared.dim.waning_from_Rc_long.mult[2]], 0);
         }
       }
     }
-    state_next[0] = (dust2::array::sum<real_type>(internal.S_death.data(), shared.dim.S_death) + dust2::array::sum<real_type>(internal.E_death.data(), shared.dim.E_death) + dust2::array::sum<real_type>(internal.I_death.data(), shared.dim.I_death) + dust2::array::sum<real_type>(internal.R_death.data(), shared.dim.R_death) + dust2::array::sum<real_type>(internal.Is_death.data(), shared.dim.Is_death) + dust2::array::sum<real_type>(internal.Rc_death.data(), shared.dim.Rc_death)) / N;
-    state_next[1] = dust2::array::sum<real_type>(internal.Births.data(), shared.dim.Births) / N;
-    state_next[2] = dust2::array::sum<real_type>(internal.vaccination_prop.data(), shared.dim.vaccination_prop);
-    state_next[3] = (shared.n_age <= 0 ? 0 : dust2::array::sum<real_type>(internal.ngm.data(), shared.dim.ngm) / shared.n_age);
-    state_next[4] = dust2::array::sum<real_type>(internal.seeded_actual.data(), shared.dim.seeded_actual);
-    state_next[5] = N;
+    state_next[0] = dust2::array::sum<real_type>(internal.vaccination_prop.data(), shared.dim.vaccination_prop);
+    state_next[1] = (shared.n_age <= 0 ? 0 : dust2::array::sum<real_type>(internal.ngm.data(), shared.dim.ngm) / shared.n_age);
+    state_next[2] = dust2::array::sum<real_type>(internal.seeded_actual.data(), shared.dim.seeded_actual);
+    state_next[3] = N;
     for (size_t i = 1; i <= shared.dim.seropositive.size; ++i) {
-      state_next[i - 1 + shared.odin.offset.state[21]] = (dust2::array::sum<real_type>(S, shared.dim.S, {i - 1, i - 1}, {1, shared.n_vacc - 1}, {0, shared.dim.S.dim[2] - 1}) + dust2::array::sum<real_type>(I, shared.dim.I, {i - 1, i - 1}, {0, shared.dim.I.dim[1] - 1}, {0, shared.dim.I.dim[2] - 1}) + dust2::array::sum<real_type>(Is, shared.dim.Is, {i - 1, i - 1}, {0, shared.dim.Is.dim[1] - 1}, {0, shared.dim.Is.dim[2] - 1}) + dust2::array::sum<real_type>(R, shared.dim.R, {i - 1, i - 1}, {0, shared.dim.R.dim[1] - 1}, {0, shared.dim.R.dim[2] - 1}) + dust2::array::sum<real_type>(Rc, shared.dim.Rc, {i - 1, i - 1}, {0, shared.dim.Rc.dim[1] - 1}, {0, shared.dim.Rc.dim[2] - 1})) / internal.Npop_age[i - 1];
+      state_next[i - 1 + shared.odin.offset.state[14]] = (internal.Npop_age[i - 1] <= 0 ? 0 : (dust2::array::sum<real_type>(S, shared.dim.S, {i - 1, i - 1}, {1, shared.n_vacc - 1}, {0, shared.dim.S.dim[2] - 1}) + dust2::array::sum<real_type>(I, shared.dim.I, {i - 1, i - 1}, {0, shared.dim.I.dim[1] - 1}, {0, shared.dim.I.dim[2] - 1}) + dust2::array::sum<real_type>(Is, shared.dim.Is, {i - 1, i - 1}, {0, shared.dim.Is.dim[1] - 1}, {0, shared.dim.Is.dim[2] - 1}) + dust2::array::sum<real_type>(R, shared.dim.R, {i - 1, i - 1}, {0, shared.dim.R.dim[1] - 1}, {0, shared.dim.R.dim[2] - 1}) + dust2::array::sum<real_type>(Rc, shared.dim.Rc, {i - 1, i - 1}, {0, shared.dim.Rc.dim[1] - 1}, {0, shared.dim.Rc.dim[2] - 1})) / internal.Npop_age[i - 1]);
     }
-    state_next[6] = dust2::array::sum<real_type>(internal.Births.data(), shared.dim.Births);
-    state_next[7] = dust2::array::sum<real_type>(internal.S_death.data(), shared.dim.S_death) + dust2::array::sum<real_type>(internal.E_death.data(), shared.dim.E_death) + dust2::array::sum<real_type>(internal.I_death.data(), shared.dim.I_death) + dust2::array::sum<real_type>(internal.R_death.data(), shared.dim.R_death) + dust2::array::sum<real_type>(internal.Is_death.data(), shared.dim.Is_death) + dust2::array::sum<real_type>(internal.Rc_death.data(), shared.dim.Rc_death);
-    state_next[8] = dust2::array::sum<real_type>(internal.vaccinating_out_of_S.data(), shared.dim.vaccinating_out_of_S);
-    state_next[9] = total_births - total_deaths;
-    state_next[10] = dust2::array::sum<real_type>(internal.Births.data(), shared.dim.Births) - dust2::array::sum<real_type>(internal.aging_out_of_S.data(), shared.dim.aging_out_of_S, {0, 0}, {0, shared.dim.aging_out_of_S.dim[1] - 1}, {0, shared.dim.aging_out_of_S.dim[2] - 1});
-    state_next[11] = dust2::array::sum<real_type>(internal.migration_S.data(), shared.dim.migration_S, {0, 0}, {0, shared.dim.migration_S.dim[1] - 1}, {0, shared.dim.migration_S.dim[2] - 1}) * pos_neg_migration;
-    state_next[12] = dust2::array::sum<real_type>(S, shared.dim.S, {0, 0}, {0, shared.dim.S.dim[1] - 1}, {0, shared.dim.S.dim[2] - 1}) + dust2::array::sum<real_type>(internal.aging_into_S.data(), shared.dim.aging_into_S, {0, 0}, {0, shared.dim.aging_into_S.dim[1] - 1}, {0, shared.dim.aging_into_S.dim[2] - 1}) - dust2::array::sum<real_type>(internal.aging_out_of_S.data(), shared.dim.aging_out_of_S, {0, 0}, {0, shared.dim.aging_out_of_S.dim[1] - 1}, {0, shared.dim.aging_out_of_S.dim[2] - 1}) - dust2::array::sum<real_type>(internal.S_death.data(), shared.dim.S_death, {0, 0}, {0, shared.dim.S_death.dim[1] - 1}, {0, shared.dim.S_death.dim[2] - 1});
-    state_next[13] = dust2::array::sum<real_type>(internal.reproductive_population.data(), shared.dim.reproductive_population);
-    state_next[14] = (dust2::array::sum<real_type>(internal.Births.data(), shared.dim.Births) - dust2::array::sum<real_type>(internal.S_death.data(), shared.dim.S_death)) / dust2::array::sum<real_type>(internal.reproductive_population.data(), shared.dim.reproductive_population);
+    state_next[4] = dust2::array::sum<real_type>(internal.Births.data(), shared.dim.Births);
+    state_next[5] = dust2::array::sum<real_type>(internal.S_death.data(), shared.dim.S_death) + dust2::array::sum<real_type>(internal.E_death.data(), shared.dim.E_death) + dust2::array::sum<real_type>(internal.I_death.data(), shared.dim.I_death) + dust2::array::sum<real_type>(internal.R_death.data(), shared.dim.R_death) + dust2::array::sum<real_type>(internal.Is_death.data(), shared.dim.Is_death) + dust2::array::sum<real_type>(internal.Rc_death.data(), shared.dim.Rc_death);
+    state_next[6] = dust2::array::sum<real_type>(internal.vaccinating_out_of_S.data(), shared.dim.vaccinating_out_of_S);
+    state_next[7] = total_births - total_deaths;
     for (size_t i = 1; i <= shared.dim.new_case.dim[0]; ++i) {
       for (size_t j = 1; j <= shared.dim.new_case.dim[1]; ++j) {
         for (size_t k = 1; k <= shared.dim.new_case.dim[2]; ++k) {
-          state_next[i - 1 + (j - 1) * shared.dim.new_case.mult[1] + (k - 1) * shared.dim.new_case.mult[2] + shared.odin.offset.state[22]] = internal.incubated[i - 1 + (j - 1) * shared.dim.incubated.mult[1] + (k - 1) * shared.dim.incubated.mult[2]] + internal.seeded_actual[i - 1 + (j - 1) * shared.dim.seeded_actual.mult[1] + (k - 1) * shared.dim.seeded_actual.mult[2]];
+          state_next[i - 1 + (j - 1) * shared.dim.new_case.mult[1] + (k - 1) * shared.dim.new_case.mult[2] + shared.odin.offset.state[15]] = internal.incubated[i - 1 + (j - 1) * shared.dim.incubated.mult[1] + (k - 1) * shared.dim.incubated.mult[2]] + internal.seeded_actual[i - 1 + (j - 1) * shared.dim.seeded_actual.mult[1] + (k - 1) * shared.dim.seeded_actual.mult[2]];
         }
       }
     }
   }
   static real_type compare_data(real_type time, const real_type* state, const data_type& data, const shared_state& shared, internal_state& internal, rng_state_type& rng_state) {
     auto unless_nan = [](real_type x) { return std::isnan(x) ? 0 : x; };
-    const auto * seropositive = state + shared.odin.offset.state[21];
+    const auto * seropositive = state + shared.odin.offset.state[14];
     real_type odin_ll = 0;
     for (size_t i = 1; i <= shared.dim.serosurvey.size; ++i) {
       odin_ll += unless_nan(monty::density::poisson(data.serosurvey[i - 1], seropositive[i - 1], true));

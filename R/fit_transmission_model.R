@@ -149,8 +149,8 @@ fit_transmission_model <- function(
   # MAP parameters
   best_idx <- which.max(samples$density[, 1])
   parameters_alt <- parameters
-  for (i in fitted_parameters) {
-    parameters_alt[[fitted_parameters[i]]] <- sum_draws %>% filter(variable == i) %>% pull(median)
+  for (i in 1:length(fitted_parameters)) {
+    parameters_alt[[fitted_parameters[i]]] <- sum_draws %>% filter(variable == fitted_parameters[i]) %>% pull(median)
   }
 
   # Simulate model
@@ -162,21 +162,35 @@ fit_transmission_model <- function(
   all_states <- dust2::dust_unpack_state(sys, y)
 
   # Format sero output
-  sero_obs_df <- data.frame(
-    time = seq_along(all_states$seropositive[4, 1, ]),
-    base = all_states$seropositive[4, 1, ],
-    fitted = all_states$seropositive[4, 2, ]
-  ) %>% tidyr::pivot_longer(-time, names_to = "source", values_to = "value")
+  sero_obs_df <- do.call(rbind, sapply(1:length(serodata$serosurvey), function(a){
+    not_NA <- which(!is.na(serodata$serosurvey[[a]]))
+    do.call(rbind, sapply(not_NA, function(b){
+      data.frame(
+        age = not_NA,
+        time = seq_along(all_states$seropositive[not_NA, 1, ]),
+        base = all_states$seropositive[not_NA, 1, ],
+        fitted = all_states$seropositive[not_NA, 2, ]
+      )
+    }, simplify = FALSE))
+  }, simplify = FALSE)) %>%
+    tidyr::pivot_longer(-c(time, age), names_to = "source", values_to = "value")
 
-  sero_true_df <- data.frame(
-    time = serodata$time[1],
-    value = unlist(serodata$serosurvey[[1]]),
-    source = "data"
-  )
+  sero_true_df <- do.call(rbind, sapply(1:nrow(serodata), function(x){
+    data.frame(
+      time = serodata$time[x],
+      value = serodata$serosurvey[[x]],
+      source = "data"
+    ) %>%
+      dplyr::mutate(
+        age = 1:n()
+      )
+  }, simplify = FALSE)) %>%
+    dplyr::filter(!is.na(value))
 
   sero_obs_df$type <- "model"
   sero_plot_df <- dplyr::bind_rows(sero_obs_df, sero_true_df) %>%
-    dplyr::mutate(source = factor(source, levels = c("base", "fitted", "data")))
+    dplyr::mutate(source = factor(source, levels = c("base", "fitted", "data"))) %>%
+    dplyr::filter(time >= 100)
 
   p_sero <- ggplot2::ggplot(sero_plot_df, ggplot2::aes(x = time, y = value, color = source)) +
     ggplot2::geom_line(data = dplyr::filter(sero_plot_df, source %in% c("base", "fitted"))) +
@@ -185,8 +199,9 @@ fit_transmission_model <- function(
     ggplot2::scale_x_continuous(breaks = scales::pretty_breaks()) +
     ggplot2::scale_y_continuous(breaks = scales::pretty_breaks()) +
     ggplot2::labs(title = "Seropositivity Over Time",
-                  y = "Seropositive", x = "Time", color = "Legend") +
-    ggplot2::theme_bw()
+                  y = "Seropositive", x = "Time", color = "Data type", linetype = "Age") +
+    ggplot2::theme_bw() +
+    ggplot2::facet_wrap(~paste("Age: ", age), scales = "free_y")
 
   list(
     samples = samples,

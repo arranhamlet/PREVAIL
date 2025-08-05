@@ -904,4 +904,8 @@ update(new_case[, , ]) <- incubated[i, j, k] + seeded_actual[i, j, k]
 initial(new_case[, , ]) <- I0[i, j, k]
 dim(new_case) <- c(n_age, n_vacc, n_risk)
 
+# ------------------------------------------------------------------------------
+# 6. DEBUGGING
+# ------------------------------------------------------------------------------
+# When enabled this allows debugging.
 # browser(phase = "update")

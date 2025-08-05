@@ -1,0 +1,82 @@
+iso3,country,location_scope,year,sample_size,disease_s,min_age,max_age,seroprev_prop
+MDG,Madagascar,National (nested survey via surveillance),2014,1005,Measles,0,100,0.9
+ZMB,Zambia,Nationally representative (residual sera),2016,9854,Measles,0,50,0.828
+ISR,Israel,National (serum bank samples),2015,3164,Measles,0,10,0.907
+NLD,Netherlands,National (population serosurvey),2007,6383,Diphtheria,0,100,0.82
+CHN,China,Single city - Guangzhou (urban population),2018,715,Diphtheria,3,89,0.618
+GRC,Greece,"National (adults, stratified sample)",2021,1169,Pertussis,30,100,0.02
+IND,India,"Sub-national (4 districts, community survey)",2019,"9,636 households",Measles,0.75,1.16666666666667,0.742
+LAO,Laos (Saravan),Provincial (rural multi-district survey),2017,2463,Measles,5,90,0.734
+LAO,Laos (Saravan),Provincial (rural multi-district survey),2017,2463,Diphtheria,5,90,0.405
+MEX,Mexico,National (health survey biobank sera),2010,3344,Pertussis,1,95,0.474
+SGP,Singapore,National (residual pediatric sera),2018,1200,Measles,1,17,0.982
+SGP,Singapore,National (residual pediatric sera),2018,1200,Diphtheria,1,17,0.971
+VNM,Vietnam (Quang Ngai),Provincial (rural community survey),2019,1216,Diphtheria,1,55,0.51
+ZMB,Zambia,Nationally representative (residual sera),2016,9854,Measles,0,50,0.828
+GBR,United Kingdom (England & Wales),National (residual sera surveillance),1990,4331,Measles,0,100,0.909
+USA,United States,National (NHANES III survey),1991,20100,Measles,6,100,0.93
+USA,United States,National (NHANES survey),2002,7873,Measles,6,49,0.959
+MEX,Mexico,National (health & nutrition survey),2012,7785,Measles,1,100,0.9937
+ZMB,Zambia (S. Province),Regional – Southern Province (pre/post campaign),2016,1196,Measles,0,15,0.778
+CHN,China (Jiangsu),Provincial (Jiangsu general population),2010,4605,Measles,2,100,0.917
+CZE,Czech Republic,National (population serosurvey),2001,1065,Diphtheria,0,100,0.81
+LUX,Luxembourg,National (population serosurvey),2001,2863,Diphtheria,0,100,0.8
+LUX,Luxembourg,National (population serosurvey),2001,2863,Diphtheria,0,100,0.6
+CZE,Czech Republic,National (population serosurvey),2002,~3300,Diphtheria,0,100,0.939
+HUN,Hungary,National (population serosurvey),2002,~3300,Diphtheria,0,100,0.79
+IRL,Ireland,National (population serosurvey),2002,~3300,Diphtheria,0,100,0.633
+LVA,Latvia,National (population serosurvey),2002,~3300,Diphtheria,0,100,0.73
+SVK,Slovakia,National (population serosurvey),2002,~3300,Diphtheria,0,100,0.747
+ISR,Israel,National (population serosurvey),2002,~3300,Diphtheria,0,100,0.785
+LUX,Luxembourg,National (population serosurvey),2002,~3300,Diphtheria,0,100,0.763
+USA,United States,National (NHANES III survey),1991,18045,Diphtheria,6,100,0.605
+POL,Poland,National (population serosurvey),2011,1387,Diphtheria,0.0833333333333333,7.08333333333333,0.606
+NLD,Netherlands,National (population serosurvey),1996,4718,Pertussis,9,100,0.04
+NLD,Netherlands,National (population serosurvey),2007,5830,Pertussis,9,100,0.02
+CHN,China (5 provinces),"Multi-provincial (Beijing, Shanghai, etc.)",2018,6060,Pertussis,0,100,0.09
+BEL,Belgium (National),Serum bank,2006,"2,795 (all ages)¹",Measles,1,65,0.039
+BEL,Belgium (National),Serum bank,2006,"2,795¹",Diphtheria,1,65,0.1
+BEL,Belgium (National),Residual sera,2012,1500,Pertussis,20,39,0.5
+ITA,Italy (National),Population survey,2020,1085,Measles,1,100,0.912
+ITA,Italy (National),Adults (multicenter),2013,639,Pertussis,20,100,0.5
+KHM,Cambodia (Urban provinces),Fully vaccinated,2014,745,Diphtheria,3,15,0.055
+MYS,Malaysia (National),Hospital-based survey,2017,3317,Diphtheria,2,60,0.1
+IRN,Iran (SE provinces),Post-campaign survey,2015,1056,Measles,1.25,1.66666666666667,0.16
+IRN,Iran (SE provinces),Post-campaign survey,2015,1056,Measles,1.25,1.66666666666667,0.18
+SGP,"Singapore (Migrant workers, 7 countries)",,2017,2234,Measles,20,49,0.905
+BGD,Bangladesh (Cox’s Bazar camps),Rohingya refugees,2018,365 (serology)²,Measles,0,15,0.85
+BGD,Bangladesh (Cox’s Bazar),Rohingya refugees,2018,365²,Diphtheria,0,15,0.65
+AUT,Austria,EU multi-country study,2015,~500,Pertussis,40,59,1
+AUT,Austria,EU multi-country study,2015,~500,Diphtheria,40,59,0.9
+BEL,Belgium,EU multi-country study,2015,500,Pertussis,40,59,0.05
+BEL,Belgium,EU multi-country study,2015,500,Diphtheria,40,59,0.9
+DNK,Denmark,EU multi-country study,2015,~500,Pertussis,40,59,0.04
+DNK,Denmark,EU multi-country study,2015,~500,Diphtheria,40,59,0.9
+FIN,Finland,EU multi-country study,2015,500,Pertussis,40,59,1
+FIN,Finland,EU multi-country study,2015,500,Diphtheria,40,59,0.9
+FRA,France,EU multi-country study,2015,~500,Pertussis,40,59,1
+FRA,France,EU multi-country study,2015,~500,Diphtheria,40,59,0.9
+GRC,Greece,EU multi-country study,2015,~500,Pertussis,40,59,1
+GRC,Greece,EU multi-country study,2015,500,Diphtheria,40,59,0.9
+HUN,Hungary,EU multi-country study,2015,~500,Pertussis,40,59,0.5
+HUN,Hungary,EU multi-country study,2015,~500,Diphtheria,40,59,0.9
+IRL,Ireland,EU multi-country study,2015,~500,Pertussis,40,59,1
+IRL,Ireland,EU multi-country study,2015,~500,Diphtheria,40,59,0.9
+LVA,Latvia,EU multi-country study,2015,~500,Pertussis,40,59,1
+LVA,Latvia,EU multi-country study,2015,~500,Diphtheria,40,59,0.9
+LTU,Lithuania,EU multi-country study,2015,~500,Pertussis,40,59,0.04
+LTU,Lithuania,EU multi-country study,2015,~500,Diphtheria,40,59,0.9
+NLD,Netherlands,EU multi-country study,2015,1644,Pertussis,40,59,1
+NLD,Netherlands,EU multi-country study,2015,1644,Diphtheria,40,59,0.9
+NOR,Norway,EU multi-country study,2015,~500,Pertussis,40,59,1
+NOR,Norway,EU multi-country study,2015,~500,Diphtheria,40,59,0.9
+PRT,Portugal,EU multi-country study,2015,~500,Pertussis,40,59,1
+PRT,Portugal,EU multi-country study,2015,~500,Diphtheria,40,59,0.9
+ROU,Romania,EU multi-country study,2015,~500,Pertussis,40,59,1
+ROU,Romania,EU multi-country study,2015,~500,Diphtheria,40,59,0.9
+SVK,Slovakia,EU multi-country study,2015,~500,Pertussis,40,59,1
+SVK,Slovakia,EU multi-country study,2015,~500,Diphtheria,40,59,0.9
+SVN,Slovenia,EU multi-country study,2015,~500,Pertussis,40,59,0.055
+SVN,Slovenia,EU multi-country study,2015,~500,Diphtheria,40,59,0.9
+SWE,Sweden,EU multi-country study,2015,~500,Pertussis,40,59,1
+SWE,Sweden,EU multi-country study,2015,~500,Diphtheria,40,59,0.9

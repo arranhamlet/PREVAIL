@@ -51,6 +51,8 @@ Depends:
     R (>= 3.5)
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat (>= 3.0.0)
 VignetteBuilder: knitr
 URL: https://arranhamlet.github.io/PREVAIL/
+Config/testthat/edition: 3

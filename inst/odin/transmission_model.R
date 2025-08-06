@@ -415,7 +415,6 @@ Rpop0  <- parameter(type = "integer")    # Initial recovered population [same di
 incubation_rate         <- parameter()  # Rate of progression from E to I
 recovery_rate           <- parameter()  # Recovery rate from I (non-severe)
 natural_immunity_waning <- parameter()  # Waning rate for natural immunity (R, Rc)
-
 prop_severe             <- parameter()  # Proportion of infections that are severe (I → Is)
 severe_recovery_rate    <- parameter()  # Recovery rate from severe infection (Is)
 cfr_normal              <- parameter()  # Case fatality rate for non-severe cases (I)
@@ -426,9 +425,7 @@ prop_complications      <- parameter()  # Proportion of severe recoveries leadin
 R0               <- parameter()  # Basic reproduction number
 tt_R0            <- parameter()  # Time points for changes in R0
 no_R0_changes    <- parameter()  # Number of R0 change points
-
 contact_matrix   <- parameter()  # Age-to-age contact matrix (n_age x n_age)
-
 seeded           <- parameter()  # Initial seeding pattern (n_age x n_vacc x n_risk x no_seeded_changes)
 tt_seeded        <- parameter()  # Time points for changes in seeding
 no_seeded_changes <- parameter() # Number of seeding change points
@@ -438,25 +435,20 @@ tt_vaccination_coverage       <- parameter()  # Time points for changing vaccina
 no_vacc_changes               <- parameter()  # Number of vaccination change events
 vaccination_coverage          <- parameter()  # Coverage values over time (dim4 = no_vacc_changes)
 age_vaccination_beta_modifier <- parameter()  # Age & vacc modifier to beta (reduces transmission)
-
 stochastic_vaccination <- parameter(0)  # Whether vaccination is stochastic (1) or deterministic (0)
 
 # -- 6. DEMOGRAPHY (BIRTHS AND DEATHS) --
 crude_death        <- parameter()       # Crude death rate (n_age x n_risk x no_death_changes)
 no_death_changes   <- parameter()       # Number of death rate change events
 tt_death_changes   <- parameter()       # Time points for death rate changes
-
 crude_birth        <- parameter()       # Crude birth rate (n_age x no_birth_changes)
 no_birth_changes   <- parameter()       # Number of birth rate change events
 tt_birth_changes   <- parameter()       # Time points for birth rate changes
-
 repro_low          <- parameter()       # Lower age index for reproductive population
 repro_high         <- parameter()       # Upper age index for reproductive population
-
+repro_weight   <- parameter()   # Weighting of age-specific contributions to reproductive population
 simp_birth_death   <- parameter(1)      # If 1, births match deaths to stabilize pop
-
 stochastic_birth   <- parameter(0)      # If 1, births are drawn from a binomial
-
 aging_rate <- parameter()               # Aging rate
 
 # -- 7. MATERNAL PROTECTION --
@@ -471,9 +463,9 @@ migration_in_number       <- parameter()  # Net migration per stratum (n_age x n
 migration_distribution_values <- parameter()  # Relative weight of compartments (S, E, I, R, Is, Rc)
 
 # -- 9. FITTING PARAMETERS --
-reporting_rate <- parameter(1)  # Reporting rate (used in seeding)
-R0_modifier    <- parameter(1)  # Scalar to modify R0 over time
-repro_weight   <- parameter()   # Weighting of age-specific contributions to reproductive population
+reporting_rate <- parameter(1)        # Scalar to modify case seeding
+R0_modifier    <- parameter(1)        # Scalar to modify R0
+vaccination_modifier <- parameter(1)  # Scalar to modify vaccination
 
 # -- 10. WANING PARAMETERS --
 short_term_waning <- parameter()  # Rate from short-term → long-term protection (per vacc group)
@@ -558,10 +550,7 @@ prop_maternal_natural[] <- if (reproductive_population[i] <= 0) 0 else max(min(a
 
 # Interpolated vaccination coverage (age-, vacc-, risk- specific)
 vaccination_prop <- interpolate(tt_vaccination_coverage, vaccination_coverage, "constant")
-
-# Optional output: track total coverage
-update(vac_prop) <- sum(vaccination_prop)
-initial(vac_prop) <- 0
+vaccination_prop[, , ] <- vaccination_prop[i, j, k] * vaccination_modifier
 
 # 6. TRANSMISSION PARAMETERS
 

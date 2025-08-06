@@ -195,10 +195,10 @@ filter_vaccine_schedule <- function(vaccination_schedule, vaccination_type, iso)
       vaccine_code != "TD_S"
     ) %>%
     dplyr::mutate(age_years = dplyr::case_when(
-      grepl("Y", age_administered) ~ as.numeric(gsub("[^0-9.-]", "", age_administered)),
-      grepl("M", age_administered) ~ as.numeric(gsub("[^0-9.-]", "", age_administered)) / 12,
-      grepl("W", age_administered) ~ as.numeric(gsub("[^0-9.-]", "", age_administered)) / 52,
-      grepl("D", age_administered) ~ as.numeric(gsub("[^0-9.-]", "", age_administered)) / 365,
+      grepl("Y", age_administered) ~ median(as.numeric(gsub("[^0-9.-]", "", unlist(strsplit(age_administered, "-"))))),
+      grepl("M", age_administered) ~ median(as.numeric(gsub("[^0-9.-]", "", unlist(strsplit(age_administered, "-"))))) / 12,
+      grepl("W", age_administered) ~ median(as.numeric(gsub("[^0-9.-]", "", unlist(strsplit(age_administered, "-"))))) / 52,
+      grepl("D", age_administered) ~ median(as.numeric(gsub("[^0-9.-]", "", unlist(strsplit(age_administered, "-"))))) / 365,
       TRUE ~ NA_real_
     )) %>%
     dplyr::arrange(age_years)

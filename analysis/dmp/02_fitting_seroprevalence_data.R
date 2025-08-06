@@ -60,6 +60,9 @@ generate_age_breaks <- function(df, global_min = 0, global_max = 100) {
 sing_mea <- sero_data %>%
   filter(iso3 == "SGP", disease_s == "Measles", !grepl("Migrant", country))
 
+#Generate serological data in the correct format
+these_age_breaks <- generate_age_breaks(sing_mea)
+
 sero_sing <- make_serodata(data = sing_mea,
                            age_breaks = these_age_breaks)
 
@@ -73,12 +76,12 @@ params <- PREVAIL::custom_data_process_wrapper(
 )
 
 #Defining domain and parameters
-parameters_to_fit <- c("reporting_rate", "R0_modifier")
-domain <- matrix(c(0, 3, 0, 3), nrow = 2, byrow = TRUE)
+parameters_to_fit <- c("vaccination_modifier", "R0_modifier")
+domain <- matrix(c(.75, 1.25, 0, 2), nrow = 2, byrow = TRUE)
 
 prior1 <- monty::monty_dsl({
-  reporting_rate ~ Normal(mean = 1, sd = 1)
-  R0_modifier ~ Normal(mean = 1, sd = 1)
+  vaccination_modifier ~ Normal(mean = 1, sd = .1)
+  R0_modifier ~ Normal(mean = 1, sd = .1)
 })
 
 fit1 <- fit_transmission_model(
@@ -87,8 +90,8 @@ fit1 <- fit_transmission_model(
   prior = prior1,
   fitted_parameters = parameters_to_fit,
   domain = domain,
-  vcv = diag(c(.25, .25)),
-  n_steps = 1000,
+  vcv = diag(c(.1, .1)),
+  n_steps = 500,
   n_particles = 1
 )
 

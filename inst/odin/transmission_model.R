@@ -119,39 +119,39 @@ recovered_Is_to_Rc[, , ] <- if(recovered_Is_to_R[i, j, k] >= recovered_from_Is[i
 
 # Susceptible (S)
 aging_into_S[1, 1, ]              <- sum(Births)  # Newborns enter first age & vacc group
-aging_into_S[2:n_age, , ]         <- if(S[i - 1, j, k] <= 0 || aging_rate[i - 1] <= 0) 0 else floor(S[i - 1, j, k] * max(min(aging_rate[i - 1], 1), 0))
-aging_out_of_S[1, , ] <- if(S[1, j, k] - aging_into_S[1, 1, k] <= 0 || aging_rate[1] <= 0) 0 else floor(max(S[1, j, k] - aging_into_S[1, 1, k], 0) * aging_rate[1])
-aging_out_of_S[2:n_age, , ] <- if(S[i, j, k] <= 0 || aging_rate[i] <= 0) 0 else floor(S[i, j, k] * max(min(aging_rate[i], 1), 0))
+aging_into_S[2:n_age, , ]         <- if(S[i - 1, j, k] <= 0 || aging_rate[i - 1] <= 0) 0 else (S[i - 1, j, k] * max(min(aging_rate[i - 1], 1), 0))
+aging_out_of_S[1, , ] <- if(S[1, j, k] - aging_into_S[1, 1, k] <= 0 || aging_rate[1] <= 0) 0 else (max(S[1, j, k] - aging_into_S[1, 1, k], 0) * aging_rate[1])
+aging_out_of_S[2:n_age, , ] <- if(S[i, j, k] <= 0 || aging_rate[i] <= 0) 0 else (S[i, j, k] * max(min(aging_rate[i], 1), 0))
 S_after_aging[, , ]               <- max(S[i, j, k] + aging_into_S[i, j, k] - aging_out_of_S[i, j, k], 0)
 
 # Exposed (E)
-aging_into_E[2:n_age, , ]         <- if(E[i - 1, j, k] <= 0 || aging_rate[i - 1] <= 0) 0 else floor(E[i - 1, j, k] * max(min(aging_rate[i - 1], 1), 0))
-aging_out_of_E[1, , ] <- if(E[1, j, k] - aging_into_E[1, 1, k] <= 0 || aging_rate[1] <= 0) 0 else floor(max(E[1, j, k] - aging_into_E[1, 1, k], 0) * aging_rate[1])
-aging_out_of_E[2:n_age, , ] <- if(E[i, j, k] <= 0 || aging_rate[i] <= 0) 0 else floor(E[i, j, k] * max(min(aging_rate[i], 1), 0))
+aging_into_E[2:n_age, , ]         <- if(E[i - 1, j, k] <= 0 || aging_rate[i - 1] <= 0) 0 else (E[i - 1, j, k] * max(min(aging_rate[i - 1], 1), 0))
+aging_out_of_E[1, , ] <- if(E[1, j, k] - aging_into_E[1, 1, k] <= 0 || aging_rate[1] <= 0) 0 else (max(E[1, j, k] - aging_into_E[1, 1, k], 0) * aging_rate[1])
+aging_out_of_E[2:n_age, , ] <- if(E[i, j, k] <= 0 || aging_rate[i] <= 0) 0 else (E[i, j, k] * max(min(aging_rate[i], 1), 0))
 E_after_aging[, , ]               <- max(E[i, j, k] + aging_into_E[i, j, k] - aging_out_of_E[i, j, k], 0)
 
 # Infectious (I)
-aging_into_I[2:n_age, , ]         <- if(I[i - 1, j, k] <= 0 || aging_rate[i - 1] <= 0) 0 else floor(I[i - 1, j, k] * max(min(aging_rate[i - 1], 1), 0))
-aging_out_of_I[1, , ] <- if(I[1, j, k] - aging_into_I[1, 1, k] <= 0 || aging_rate[1] <= 0) 0 else floor(max(I[1, j, k] - aging_into_I[1, 1, k], 0) * aging_rate[1])
-aging_out_of_I[2:n_age, , ] <- if(I[i, j, k] <= 0 || aging_rate[i] <= 0) 0 else floor(I[i, j, k] * max(min(aging_rate[i], 1), 0))
+aging_into_I[2:n_age, , ]         <- if(I[i - 1, j, k] <= 0 || aging_rate[i - 1] <= 0) 0 else (I[i - 1, j, k] * max(min(aging_rate[i - 1], 1), 0))
+aging_out_of_I[1, , ] <- if(I[1, j, k] - aging_into_I[1, 1, k] <= 0 || aging_rate[1] <= 0) 0 else (max(I[1, j, k] - aging_into_I[1, 1, k], 0) * aging_rate[1])
+aging_out_of_I[2:n_age, , ] <- if(I[i, j, k] <= 0 || aging_rate[i] <= 0) 0 else (I[i, j, k] * max(min(aging_rate[i], 1), 0))
 I_after_aging[, , ]               <- max(I[i, j, k] + aging_into_I[i, j, k] - aging_out_of_I[i, j, k], 0)
 
 # Recovered (R)
-aging_into_R[2:n_age, , ]         <- if(R[i - 1, j, k] <= 0 || aging_rate[i - 1] <= 0) 0 else floor(R[i - 1, j, k] * max(min(aging_rate[i - 1], 1), 0))
-aging_out_of_R[1, , ] <- if(R[1, j, k] - aging_into_R[1, 1, k] <= 0 || aging_rate[1] <= 0) 0 else floor(max(R[1, j, k] - aging_into_R[1, 1, k], 0) * aging_rate[1])
-aging_out_of_R[2:n_age, , ] <- if(R[i, j, k] <= 0 || aging_rate[i] <= 0) 0 else floor(R[i, j, k] * max(min(aging_rate[i], 1), 0))
+aging_into_R[2:n_age, , ]         <- if(R[i - 1, j, k] <= 0 || aging_rate[i - 1] <= 0) 0 else (R[i - 1, j, k] * max(min(aging_rate[i - 1], 1), 0))
+aging_out_of_R[1, , ] <- if(R[1, j, k] - aging_into_R[1, 1, k] <= 0 || aging_rate[1] <= 0) 0 else (max(R[1, j, k] - aging_into_R[1, 1, k], 0) * aging_rate[1])
+aging_out_of_R[2:n_age, , ] <- if(R[i, j, k] <= 0 || aging_rate[i] <= 0) 0 else (R[i, j, k] * max(min(aging_rate[i], 1), 0))
 R_after_aging[, , ]               <- max(R[i, j, k] + aging_into_R[i, j, k] - aging_out_of_R[i, j, k], 0)
 
 # Severe Infectious (Is)
-aging_into_Is[2:n_age, , ]         <- if(Is[i - 1, j, k] <= 0 || aging_rate[i - 1] <= 0) 0 else floor(Is[i - 1, j, k] * max(min(aging_rate[i - 1], 1), 0))
-aging_out_of_Is[1, , ] <- if(Is[1, j, k] - aging_into_Is[1, 1, k] <= 0 || aging_rate[1] <= 0) 0 else floor(max(Is[1, j, k] - aging_into_Is[1, 1, k], 0) * aging_rate[1])
-aging_out_of_Is[2:n_age, , ] <- if(Is[i, j, k] <= 0 || aging_rate[i] <= 0) 0 else floor(Is[i, j, k] * max(min(aging_rate[i], 1), 0))
+aging_into_Is[2:n_age, , ]         <- if(Is[i - 1, j, k] <= 0 || aging_rate[i - 1] <= 0) 0 else (Is[i - 1, j, k] * max(min(aging_rate[i - 1], 1), 0))
+aging_out_of_Is[1, , ] <- if(Is[1, j, k] - aging_into_Is[1, 1, k] <= 0 || aging_rate[1] <= 0) 0 else (max(Is[1, j, k] - aging_into_Is[1, 1, k], 0) * aging_rate[1])
+aging_out_of_Is[2:n_age, , ] <- if(Is[i, j, k] <= 0 || aging_rate[i] <= 0) 0 else (Is[i, j, k] * max(min(aging_rate[i], 1), 0))
 Is_after_aging[, , ]               <- max(Is[i, j, k] + aging_into_Is[i, j, k] - aging_out_of_Is[i, j, k], 0)
 
 # Recovered with Complications (Rc)
-aging_into_Rc[2:n_age, , ]         <- if(Rc[i - 1, j, k] <= 0 || aging_rate[i - 1] <= 0) 0 else floor(Rc[i - 1, j, k] * max(min(aging_rate[i - 1], 1), 0))
-aging_out_of_Rc[1, , ] <- if(Rc[1, j, k] - aging_into_Rc[1, 1, k] <= 0 || aging_rate[1] <= 0) 0 else floor(max(Rc[1, j, k] - aging_into_Rc[1, 1, k], 0) * aging_rate[1])
-aging_out_of_Rc[2:n_age, , ] <- if(Rc[i, j, k] <= 0 || aging_rate[i] <= 0) 0 else floor(Rc[i, j, k] * max(min(aging_rate[i], 1), 0))
+aging_into_Rc[2:n_age, , ]         <- if(Rc[i - 1, j, k] <= 0 || aging_rate[i - 1] <= 0) 0 else (Rc[i - 1, j, k] * max(min(aging_rate[i - 1], 1), 0))
+aging_out_of_Rc[1, , ] <- if(Rc[1, j, k] - aging_into_Rc[1, 1, k] <= 0 || aging_rate[1] <= 0) 0 else (max(Rc[1, j, k] - aging_into_Rc[1, 1, k], 0) * aging_rate[1])
+aging_out_of_Rc[2:n_age, , ] <- if(Rc[i, j, k] <= 0 || aging_rate[i] <= 0) 0 else (Rc[i, j, k] * max(min(aging_rate[i], 1), 0))
 Rc_after_aging[, , ]               <- max(Rc[i, j, k] + aging_into_Rc[i, j, k] - aging_out_of_Rc[i, j, k], 0)
 
 # ------------------------------------------------------------------------------
@@ -163,7 +163,7 @@ Rc_after_aging[, , ]               <- max(Rc[i, j, k] + aging_into_Rc[i, j, k] -
 vaccinating_out_of_S[, , ] <- if (
   n_vacc == 1 || j >= n_vacc - 1 || S_after_aging[i, j, k] <= 0 || vaccination_prop[i, j, k] <= 0
 ) 0 else if (stochastic_vaccination == 1) Binomial(S_after_aging[i, j, k], max(min(vaccination_prop[i, j, k], 1), 0)) else
-  floor(S_after_aging[i, j, k] * max(min(vaccination_prop[i, j, k], 1), 0))
+  (S_after_aging[i, j, k] * max(min(vaccination_prop[i, j, k], 1), 0))
 
 S_after_vaccination[, , ] <- S_after_aging[i, j, k] + vaccinating_into_S[i, j, k] - vaccinating_out_of_S[i, j, k]
 
@@ -171,7 +171,7 @@ S_after_vaccination[, , ] <- S_after_aging[i, j, k] + vaccinating_into_S[i, j, k
 vaccinating_out_of_E[, , ] <- if (
   n_vacc == 1 || j >= n_vacc - 1 || E_after_aging[i, j, k] <= 0 || vaccination_prop[i, j, k] <= 0
 ) 0 else if (stochastic_vaccination == 1) Binomial(E_after_aging[i, j, k], max(min(vaccination_prop[i, j, k], 1), 0)) else
-  floor(E_after_aging[i, j, k] * max(min(vaccination_prop[i, j, k], 1), 0))
+  (E_after_aging[i, j, k] * max(min(vaccination_prop[i, j, k], 1), 0))
 
 E_after_vaccination[, , ] <- E_after_aging[i, j, k] + vaccinating_into_E[i, j, k] - vaccinating_out_of_E[i, j, k]
 
@@ -179,7 +179,7 @@ E_after_vaccination[, , ] <- E_after_aging[i, j, k] + vaccinating_into_E[i, j, k
 vaccinating_out_of_I[, , ] <- if (
   n_vacc == 1 || j >= n_vacc - 1 || I_after_aging[i, j, k] <= 0 || vaccination_prop[i, j, k] <= 0
 ) 0 else if (stochastic_vaccination == 1) Binomial(I_after_aging[i, j, k], max(min(vaccination_prop[i, j, k], 1), 0)) else
-  floor(I_after_aging[i, j, k] * max(min(vaccination_prop[i, j, k], 1), 0))
+  (I_after_aging[i, j, k] * max(min(vaccination_prop[i, j, k], 1), 0))
 
 I_after_vaccination[, , ] <- I_after_aging[i, j, k] + vaccinating_into_I[i, j, k] - vaccinating_out_of_I[i, j, k]
 
@@ -187,7 +187,7 @@ I_after_vaccination[, , ] <- I_after_aging[i, j, k] + vaccinating_into_I[i, j, k
 vaccinating_out_of_R[, , ] <- if (
   n_vacc == 1 || j >= n_vacc - 1 || R_after_aging[i, j, k] <= 0 || vaccination_prop[i, j, k] <= 0
 ) 0 else if (stochastic_vaccination == 1) Binomial(R_after_aging[i, j, k], max(min(vaccination_prop[i, j, k], 1), 0)) else
-  floor(R_after_aging[i, j, k] * max(min(vaccination_prop[i, j, k], 1), 0))
+  (R_after_aging[i, j, k] * max(min(vaccination_prop[i, j, k], 1), 0))
 
 R_after_vaccination[, , ] <- R_after_aging[i, j, k] + vaccinating_into_R[i, j, k] - vaccinating_out_of_R[i, j, k]
 
@@ -195,7 +195,7 @@ R_after_vaccination[, , ] <- R_after_aging[i, j, k] + vaccinating_into_R[i, j, k
 vaccinating_out_of_Is[, , ] <- if (
   n_vacc == 1 || j >= n_vacc - 1 || Is_after_aging[i, j, k] <= 0 || vaccination_prop[i, j, k] <= 0
 ) 0 else if (stochastic_vaccination == 1) Binomial(Is_after_aging[i, j, k], max(min(vaccination_prop[i, j, k], 1), 0)) else
-  floor(Is_after_aging[i, j, k] * max(min(vaccination_prop[i, j, k], 1), 0))
+  (Is_after_aging[i, j, k] * max(min(vaccination_prop[i, j, k], 1), 0))
 
 Is_after_vaccination[, , ] <- Is_after_aging[i, j, k] + vaccinating_into_Is[i, j, k] - vaccinating_out_of_Is[i, j, k]
 
@@ -203,7 +203,7 @@ Is_after_vaccination[, , ] <- Is_after_aging[i, j, k] + vaccinating_into_Is[i, j
 vaccinating_out_of_Rc[, , ] <- if (
   n_vacc == 1 || j >= n_vacc - 1 || Rc_after_aging[i, j, k] <= 0 || vaccination_prop[i, j, k] <= 0
 ) 0 else if (stochastic_vaccination == 1) Binomial(Rc_after_aging[i, j, k], max(min(vaccination_prop[i, j, k], 1), 0)) else
-  floor(Rc_after_aging[i, j, k] * max(min(vaccination_prop[i, j, k], 1), 0))
+  (Rc_after_aging[i, j, k] * max(min(vaccination_prop[i, j, k], 1), 0))
 
 Rc_after_vaccination[, , ] <- Rc_after_aging[i, j, k] + vaccinating_into_Rc[i, j, k] - vaccinating_out_of_Rc[i, j, k]
 
@@ -511,7 +511,7 @@ repro_weight_now <- interpolate(tt_migration, repro_weight, "constant")
 
 # Reproductive population (weighted sum across compartments)
 reproductive_population[] <- if (i >= repro_low && i <= repro_high)
-  floor((sum(S[i, , ]) + sum(E[i, , ]) + sum(I[i, , ]) +
+  ((sum(S[i, , ]) + sum(E[i, , ]) + sum(I[i, , ]) +
            sum(R[i, , ]) + sum(Is[i, , ]) + sum(Rc[i, , ])) * repro_weight_now[i]) else 0
 
 # Birth rate is based on current background death rate
@@ -523,7 +523,7 @@ birth_int <- interpolate(tt_birth_changes, crude_birth, "constant")
 
 # Compute births
 Births[] <- if (reproductive_population[i] <= 0) 0 else if (simp_birth_death == 1)
-  Binomial(reproductive_population[i], max(min(birth_rate[i] / 2, 1), 0)) else if (stochastic_birth == 1) Binomial(reproductive_population[i], max(min(birth_int[i] / 2, 1), 0)) else floor(reproductive_population[i] * max(min(birth_int[i] / 2, 1), 0))
+  Binomial(reproductive_population[i], max(min(birth_rate[i] / 2, 1), 0)) else if (stochastic_birth == 1) Binomial(reproductive_population[i], max(min(birth_int[i] / 2, 1), 0)) else (reproductive_population[i] * max(min(birth_int[i] / 2, 1), 0))
 
 # 4. MATERNAL IMMUNITY CONTRIBUTIONS
 
@@ -615,12 +615,8 @@ t_seeded <- interpolate(tt_seeded, seeded, "constant")
 
 # Capped seeding into S → I: no more than susceptible
 seeded_actual[, , ] <- if (S[i, j, k] < t_seeded[i, j, k])
-  floor(S[i, j, k] * reporting_rate) else
-    floor(t_seeded[i, j, k] * reporting_rate)
-
-# Track total seedings
-update(seeded_actual_sum) <- sum(seeded_actual)
-initial(seeded_actual_sum) <- 0
+  (S[i, j, k] * reporting_rate) else
+    (t_seeded[i, j, k] * reporting_rate)
 
 # ------------------------------------------------------------------------------
 # DIMENSIONS — Explicitly define array shapes for all variables
@@ -864,6 +860,9 @@ initial(seropositive[]) <- 0
 update(total_births) <- sum(Births)
 initial(total_births) <- 0
 
+update(repro_pop) <- sum(reproductive_population)
+initial(repro_pop) <- 0
+
 update(total_deaths) <- sum(S_death) + sum(E_death) + sum(I_death) +
   sum(R_death) + sum(Is_death) + sum(Rc_death)
 initial(total_deaths) <- 0
@@ -872,9 +871,6 @@ initial(total_deaths) <- 0
 # 4. VACCINATION FLOWS
 # ------------------------------------------------------------------------------
 
-# Total number of S individuals vaccinated (used for debugging)
-update(S_vaccinated) <- sum(vaccinating_out_of_S)
-initial(S_vaccinated) <- 0
 
 # ------------------------------------------------------------------------------
 # 5. CONSISTENCY CHECKS

@@ -60,7 +60,7 @@ plot_baseline_and_fitted_sero <- function(param_list, compare_data = serodata, n
     filter(time >= 100)
 
   # Create ggplot
-  ggplot(sero_plot_df, aes(x = time, y = value, color = source)) +
+  p_sero <- ggplot(sero_plot_df, aes(x = time, y = value, color = source)) +
     geom_line(data = filter(sero_plot_df, source %in% c("base", "fitted"))) +
     geom_point(data = filter(sero_plot_df, source == "data"),
                shape = 21, fill = "white", size = 2.5, stroke = 1) +
@@ -70,4 +70,6 @@ plot_baseline_and_fitted_sero <- function(param_list, compare_data = serodata, n
          y = "Seropositive", x = "Time", color = "Data type", linetype = "Age") +
     theme_bw() +
     facet_wrap(~paste("Age: ", age), scales = "free_y")
+
+  list(all_states = all_states, p_sero = p_sero)
 }

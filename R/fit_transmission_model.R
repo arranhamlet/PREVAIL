@@ -148,7 +148,7 @@ fit_transmission_model <- function(
   }
 
   # Simulate model and compare fit
-  p_sero <- plot_baseline_and_fitted_sero(
+  base_fit_plot <- plot_baseline_and_fitted_sero(
     param_list = list(parameters, parameters_alt),
     compare_data = serodata,
     n_particles = n_particles,
@@ -159,7 +159,7 @@ fit_transmission_model <- function(
     samples = samples,
     posterior = posterior,
     summarised_draws = sum_draws,
-    all_states = all_states,
-    plots = list(combined = combined_plot, sero = p_sero)
+    all_states = base_fit_plot$all_states,
+    plots = list(combined = fitting_plot, sero = base_fit_plot$p_sero)
   )
 }

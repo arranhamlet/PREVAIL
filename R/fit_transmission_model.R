@@ -9,6 +9,7 @@
 #' @param serodata A data.frame with columns \code{time} and \code{serosurvey}, where \code{serosurvey} is a list-column
 #'   containing numeric vectors of observed seropositivity by age.
 #' @param prior A prior distribution object created using \code{\link[monty]{monty_dsl}}.
+#' @param stochastic TRUE or FALSE. Determines whether to run the transmission_model() as stochastic or deterministic. By default uses FALSE to increase speed.
 #' @param fitted_parameters Character vector of parameter names to fit (e.g., \code{c("reporting_rate", "R0_modifier")}).
 #' @param initial A named list of initial parameter values, or \code{NULL} to default all to 1.
 #' @param domain A matrix with two rows (lower and upper) and columns named for each fitted parameter. Defines parameter bounds.
@@ -53,6 +54,7 @@ fit_transmission_model <- function(
     parameters,
     serodata,
     prior,
+    stochastic = F,
     fitted_parameters = c("reporting_rate", "R0_modifier"),
     initial = NULL,
     domain = matrix(c(0, 2, 0, 2), nrow = 2, byrow = T),
@@ -63,12 +65,21 @@ fit_transmission_model <- function(
 ) {
 
   # Create particle filter
-  filter <- dust2::dust_unfilter_create(
-    generator = transmission_model(),
-    time_start = 0,
-    data = serodata,
-    n_particles = n_particles
-  )
+  if(stochastic == T){
+    filter <- dust2::dust_filter_create(
+      generator = transmission_model(),
+      time_start = 0,
+      data = serodata,
+      n_particles = n_particles
+    )
+  } else {
+    filter <- dust2::dust_unfilter_create(
+      generator = transmission_model(),
+      time_start = 0,
+      data = serodata,
+      n_particles = n_particles
+    )
+  }
 
   # Create parameter packer
   # Remove parameters that we want to fit if already found in the provided parameter list
@@ -126,25 +137,8 @@ fit_transmission_model <- function(
 
   long_trace <- trace_df %>% tidyr::pivot_longer(-iteration, names_to = "parameter", values_to = "value")
 
-  p_trace <- ggplot2::ggplot(dplyr::filter(long_trace, parameter != "loglik"),
-                             ggplot2::aes(x = iteration, y = value, color = parameter)) +
-    ggplot2::geom_line() +
-    ggplot2::scale_x_continuous(breaks = scales::pretty_breaks()) +
-    ggplot2::scale_y_continuous(breaks = scales::pretty_breaks()) +
-    ggplot2::labs(x = "Iteration", y = "Parameter Value", title = "Trace Plot", color = "Parameter") +
-    ggplot2::theme_bw()
-
-  p_loglik <- ggplot2::ggplot(dplyr::filter(long_trace, parameter == "loglik"),
-                              ggplot2::aes(x = iteration, y = value)) +
-    ggplot2::geom_line(color = "black") +
-    ggplot2::scale_x_continuous(breaks = scales::pretty_breaks()) +
-    ggplot2::scale_y_continuous(breaks = scales::pretty_breaks(), labels = scales::comma) +
-    ggplot2::labs(x = "Iteration", y = "Log Likelihood", title = "Log Likelihood Trace") +
-    ggplot2::theme_bw()
-
-  combined_plot <- (p_trace + ggplot2::theme(axis.title.x = ggplot2::element_blank(),
-                                             axis.text.x = ggplot2::element_blank())) /
-    p_loglik + patchwork::plot_layout(guides = "collect") & ggplot2::theme(legend.position = "right")
+  #Plot
+  fitting_plot <- plot_fitting_results(long_trace = long_trace)
 
   # MAP parameters
   best_idx <- which.max(samples$density[, 1])
@@ -153,62 +147,19 @@ fit_transmission_model <- function(
     parameters_alt[[fitted_parameters[i]]] <- sum_draws %>% filter(variable == fitted_parameters[i]) %>% pull(median)
   }
 
-  # Simulate model
-  pars2 <- list(parameters, parameters_alt)
-  sys <- dust2::dust_system_create(transmission_model(), pars2, n_particles = n_particles, n_groups = 2)
-  dust2::dust_system_set_state_initial(sys)
-  time <- 0:max(serodata$time)
-  y <- dust2::dust_system_simulate(sys, time)
-  all_states <- dust2::dust_unpack_state(sys, y)
-
-  # Format sero output
-  sero_obs_df <- do.call(rbind, sapply(1:length(serodata$serosurvey), function(a){
-    not_NA <- which(!is.na(serodata$serosurvey[[a]]))
-    do.call(rbind, sapply(not_NA, function(b){
-      data.frame(
-        age = not_NA,
-        time = seq_along(all_states$seropositive[not_NA, 1, ]),
-        base = all_states$seropositive[not_NA, 1, ],
-        fitted = all_states$seropositive[not_NA, 2, ]
-      )
-    }, simplify = FALSE))
-  }, simplify = FALSE)) %>%
-    tidyr::pivot_longer(-c(time, age), names_to = "source", values_to = "value")
-
-  sero_true_df <- do.call(rbind, sapply(1:nrow(serodata), function(x){
-    data.frame(
-      time = serodata$time[x],
-      value = serodata$serosurvey[[x]],
-      source = "data"
-    ) %>%
-      dplyr::mutate(
-        age = 1:n()
-      )
-  }, simplify = FALSE)) %>%
-    dplyr::filter(!is.na(value))
-
-  sero_obs_df$type <- "model"
-  sero_plot_df <- dplyr::bind_rows(sero_obs_df, sero_true_df) %>%
-    dplyr::mutate(source = factor(source, levels = c("base", "fitted", "data"))) %>%
-    dplyr::filter(time >= 100)
-
-  p_sero <- ggplot2::ggplot(sero_plot_df, ggplot2::aes(x = time, y = value, color = source)) +
-    ggplot2::geom_line(data = dplyr::filter(sero_plot_df, source %in% c("base", "fitted"))) +
-    ggplot2::geom_point(data = dplyr::filter(sero_plot_df, source == "data"),
-                        shape = 21, fill = "white", size = 2.5, stroke = 1) +
-    ggplot2::scale_x_continuous(breaks = scales::pretty_breaks()) +
-    ggplot2::scale_y_continuous(breaks = scales::pretty_breaks()) +
-    ggplot2::labs(title = "Seropositivity Over Time",
-                  y = "Seropositive", x = "Time", color = "Data type", linetype = "Age") +
-    ggplot2::theme_bw() +
-    ggplot2::facet_wrap(~paste("Age: ", age), scales = "free_y")
+  # Simulate model and compare fit
+  p_sero <- plot_baseline_and_fitted_sero(
+    param_list = list(parameters, parameters_alt),
+    compare_data = serodata,
+    n_particles = n_particles,
+    n_groups = 2
+  )
 
   list(
     samples = samples,
     posterior = posterior,
     summarised_draws = sum_draws,
     all_states = all_states,
-    plots = list(trace = p_trace, loglik = p_loglik,
-                 combined = combined_plot, sero = p_sero)
+    plots = list(combined = combined_plot, sero = p_sero)
   )
 }

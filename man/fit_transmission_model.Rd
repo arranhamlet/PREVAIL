@@ -8,6 +8,7 @@ fit_transmission_model(
   parameters,
   serodata,
   prior,
+  stochastic = F,
   fitted_parameters = c("reporting_rate", "R0_modifier"),
   initial = NULL,
   domain = matrix(c(0, 2, 0, 2), nrow = 2, byrow = T),
@@ -24,6 +25,8 @@ fit_transmission_model(
 containing numeric vectors of observed seropositivity by age.}
 
 \item{prior}{A prior distribution object created using \code{\link[monty]{monty_dsl}}.}
+
+\item{stochastic}{TRUE or FALSE. Determines whether to run the transmission_model() as stochastic or deterministic. By default uses FALSE to increase speed.}
 
 \item{fitted_parameters}{Character vector of parameter names to fit (e.g., \code{c("reporting_rate", "R0_modifier")}).}
 

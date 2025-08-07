@@ -91,7 +91,7 @@ fit <- fit_transmission_model(
   prior = prior,
   fitted_parameters = parameters_to_fit,
   domain = domain,
-  vcv = diag(c(.1, .1)),
+  vcv = diag(c(.1, .1, .1)),
   n_steps = 2000,
   n_particles = 1
 )

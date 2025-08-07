@@ -56,19 +56,19 @@ generate_age_breaks <- function(df, global_min = 0, global_max = 100) {
   sort(unique(all_breaks))
 }
 
-#Filter to Singapore Measles data - remove sample that only included migrant workers
-sing_mea <- sero_data %>%
-  filter(iso3 == "SGP", disease_s == "Measles", !grepl("Migrant", country))
+#Filter to a countryle countries measles data - remove sample that only included migrant workers
+country_mea <- sero_data %>%
+  filter(iso3 == "MDG", disease_s == "Measles")
 
 #Generate serological data in the correct format
-these_age_breaks <- generate_age_breaks(sing_mea)
+these_age_breaks <- generate_age_breaks(country_mea)
 
-sero_sing <- make_serodata(data = sing_mea,
+sero_country <- make_serodata(data = country_mea,
                            age_breaks = these_age_breaks)
 
 #Generate parameters
 params <- PREVAIL::custom_data_process_wrapper(
-  iso = "SGP",
+  iso = "MDG",
   disease = "measles",
   R0 = 15,
   aggregate_age = T,
@@ -76,60 +76,31 @@ params <- PREVAIL::custom_data_process_wrapper(
 )
 
 #Defining domain and parameters
-parameters_to_fit <- c("vaccination_modifier", "R0_modifier")
-domain <- matrix(c(.75, 1.25, 0, 2), nrow = 2, byrow = TRUE)
+parameters_to_fit <- c("vaccination_modifier", "R0_modifier", "reporting_rate")
+domain <- matrix(c(0, 2, 0, 2, 0, 100), nrow = 3, byrow = TRUE)
 
-prior1 <- monty::monty_dsl({
-  vaccination_modifier ~ Normal(mean = 1, sd = .1)
-  R0_modifier ~ Normal(mean = 1, sd = .1)
+prior <- monty::monty_dsl({
+  vaccination_modifier ~ Normal(mean = 1, sd = 10)
+  R0_modifier ~ Normal(mean = 1, sd = 10)
+  reporting_rate ~ Normal(mean = 50, sd = 100)
 })
 
-fit1 <- fit_transmission_model(
+fit <- fit_transmission_model(
   parameters = params,
-  serodata = sero_sing,
-  prior = prior1,
+  serodata = sero_country,
+  prior = prior,
   fitted_parameters = parameters_to_fit,
   domain = domain,
   vcv = diag(c(.1, .1)),
-  n_steps = 500,
+  n_steps = 2000,
   n_particles = 1
 )
 
-print(fit1$plots$combined)
-print(fit1$plots$sero)
+print(fit$plots$combined)
+print(fit$plots$sero)
 
-samples_mat <- t(drop(fit1$samples$pars[, , 1]))
-colnames(samples_mat) <- c("reporting_rate", "R0_modifier")
 
-map_vals <- samples_mat[which.max(fit1$samples$density[, 1]), ]
 
-param_sds <- apply(samples_mat, 2, stats::sd, na.rm = TRUE)
-param_sds[is.na(param_sds) | param_sds == 0] <- 0.1
-
-domain2 <- generate_domain_from_map(map_vals, margin = 0.25)
-
-sd_from_domain <- apply(domain2, 1, function(x) diff(x) / 2)
-
-prior2 <- monty::monty_dsl({
-  reporting_rate ~ Normal(mean = !!map_vals["reporting_rate"], sd = !!sd_from_domain["reporting_rate"])
-  R0_modifier ~ Normal(mean = !!map_vals["R0_modifier"], sd = !!sd_from_domain["R0_modifier"])
-})
-
-vcv2 <- diag(param_sds^4)
-
-fit2 <- fit_transmission_model(
-  parameters = params,
-  serodata = sero_sing,
-  prior = prior2,
-  initial = as.list(map_vals),
-  domain = domain2,
-  vcv = vcv2,
-  n_steps = 500,
-  n_particles = 1
-)
-
-combine_ggplot(fit1$plots$sero,
-               fit2$plots$sero)
 
 
 

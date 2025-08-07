@@ -261,13 +261,18 @@ build_routine_vaccination_param <- function(vaccination_data, schedule, ages, ye
 #' @importFrom dplyr filter bind_rows
 #' @keywords internal
 build_seeded_case_param <- function(processed_case, demog_data, ages) {
+
   df <- insert_zero_case_rows(processed_case)
 
   years_adjusted <- unique(df$year)
+  years_adjusted <- years_adjusted[which(is.integer(round(years_adjusted)))]
+
+  pop_dat <- demog_data$population_data
+  row.names(pop_dat) <- demog_data$input_data$year_start:(nrow(pop_dat) + demog_data$input_data$year_start - 1)
 
   purrr::map_dfr(seq_len(nrow(df)), function(i) {
     row <- df[i, ]
-    popdist <- demog_data$population_data[which(row$year == years_adjusted), ]
+    popdist <- pop_dat[which(row.names(pop_dat) == floor(row$year)), ]
     popdist <- popdist / sum(popdist)
     names(popdist) <- ages + 1
     if (row$cases == 0) {

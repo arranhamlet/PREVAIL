@@ -93,7 +93,7 @@ params <- PREVAIL::custom_data_process_wrapper(
 
 **Function**: `custom_data_process_wrapper()`
 
-**What it does**: Loads and processes all required data inputs (demography, vaccination, disease parameters) into a named list of model-ready parameters. For further explanation, please see the [demography](), [disease](), and [vaccination]() vignettes.
+**What it does**: Loads and processes all required data inputs (demography, vaccination, disease parameters) into a named list of model-ready parameters. For further explanation, please see the [demography](demography.html), [disease](disease.html), and [vaccination](vaccination.html) vignettes.
 
 # 4. Define Parameters to Fit and Priors
 

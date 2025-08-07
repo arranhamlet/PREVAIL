@@ -19,7 +19,7 @@ insert_zero_case_rows <- function(df) {
     dplyr::mutate(row_id = dplyr::row_number()) %>%
     dplyr::bind_rows(
       df %>%
-        dplyr::mutate(year = year + 1, cases = 0)
+        dplyr::mutate(year = year + 1/365, cases = 0)
     ) %>%
     dplyr::arrange(year, row_id, dplyr::desc(cases)) %>%
     dplyr::distinct(year, iso3, disease_short, .keep_all = TRUE) %>%

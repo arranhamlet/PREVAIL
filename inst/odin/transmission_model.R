@@ -549,8 +549,8 @@ prop_maternal_natural[] <- if (reproductive_population[i] <= 0) 0 else max(min(a
 # 5. VACCINATION COVERAGE
 
 # Interpolated vaccination coverage (age-, vacc-, risk- specific)
-vaccination_prop <- interpolate(tt_vaccination_coverage, vaccination_coverage, "constant")
-vaccination_prop[, , ] <- vaccination_prop[i, j, k] * vaccination_modifier
+vaccination_prop_intermediate <- interpolate(tt_vaccination_coverage, vaccination_coverage, "constant")
+vaccination_prop[, , ] <- vaccination_prop_intermediate[i, j, k] * vaccination_modifier
 
 # 6. TRANSMISSION PARAMETERS
 
@@ -677,6 +677,7 @@ dim(Rc_after_waning)    <- c(n_age, n_vacc, n_risk)
 dim(tt_vaccination_coverage) <- no_vacc_changes
 dim(vaccination_coverage) <- c(n_age, n_vacc, n_risk, no_vacc_changes)
 dim(vaccination_prop) <- c(n_age, n_vacc, n_risk)
+dim(vaccination_prop_intermediate) <- c(n_age, n_vacc, n_risk)
 
 dim(vaccinating_into_S)  <- c(n_age, n_vacc, n_risk)
 dim(vaccinating_out_of_S) <- c(n_age, n_vacc, n_risk)
@@ -729,6 +730,7 @@ dim(waning_to_Rc_unvaccinated) <- c(n_age, n_vacc, n_risk)
 
 dim(short_term_waning) <- n_vacc
 dim(long_term_waning)  <- n_vacc
+
 
 # -- 7. MIGRATION VARIABLES --
 dim(tt_migration)              <- no_migration_changes
@@ -830,7 +832,6 @@ dim(Npop_age) <- n_age
 
 # Current total population (recalculated at each step)
 update(total_pop) <- N
-
 # Initial total population (from starting state)
 initial(total_pop) <- sum(S0) + sum(I0) + sum(Rpop0)
 
@@ -839,10 +840,6 @@ initial(total_pop) <- sum(S0) + sum(I0) + sum(Rpop0)
 # ------------------------------------------------------------------------------
 
 # Age-specific proportion seropositive (excluding unvaccinated)
-# Includes:
-#   - vaccinated susceptibles (j > 1)
-#   - all infectious (I, Is)
-#   - all recovered (R, Rc)
 update(seropositive[]) <- if(Npop_age[i] <= 0) 0 else (
   sum(S[i, 2:n_vacc, ]) +
     sum(I[i, , ]) +
@@ -860,28 +857,12 @@ initial(seropositive[]) <- 0
 update(total_births) <- sum(Births)
 initial(total_births) <- 0
 
-update(repro_pop) <- sum(reproductive_population)
-initial(repro_pop) <- 0
-
 update(total_deaths) <- sum(S_death) + sum(E_death) + sum(I_death) +
   sum(R_death) + sum(Is_death) + sum(Rc_death)
 initial(total_deaths) <- 0
 
 # ------------------------------------------------------------------------------
-# 4. VACCINATION FLOWS
-# ------------------------------------------------------------------------------
-
-
-# ------------------------------------------------------------------------------
-# 5. CONSISTENCY CHECKS
-# ------------------------------------------------------------------------------
-
-# Net population change per timestep
-update(net_pop_change) <- total_births - total_deaths
-initial(net_pop_change) <- 0
-
-# ------------------------------------------------------------------------------
-# 6. CASES
+# 4. CASES
 # ------------------------------------------------------------------------------
 
 # -- New infections (used for output) --
@@ -890,7 +871,7 @@ initial(new_case[, , ]) <- I0[i, j, k]
 dim(new_case) <- c(n_age, n_vacc, n_risk)
 
 # ------------------------------------------------------------------------------
-# 6. DEBUGGING
+# 5. DEBUGGING
 # ------------------------------------------------------------------------------
 # When enabled this allows debugging.
 # browser(phase = "update")

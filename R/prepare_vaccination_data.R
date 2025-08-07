@@ -210,6 +210,18 @@ case_vaccine_to_param <- function(
         TRUE ~ value
       ))
 
+    giant_df <- seed_data %>%
+      mutate(dim4 = dim4 * 2 - 1) %>%  # shift original dim4 to 1, 3, 5, ...
+      bind_rows(
+        seed_data %>%
+          mutate(
+            dim4 = dim4 * 2,          # shift to 2, 4, 6, ...
+            value = 0
+          )
+      ) %>%
+      arrange(dim1, dim2, dim3, dim4)
+
+
     # Adjust timepoints to match WHO-style seeding schedule
     original_times <- year_seed_time
     seed_time <- c(0, base::unlist(base::lapply(original_times[original_times != 0], function(e) c(e, e + 1))))
@@ -217,7 +229,7 @@ case_vaccine_to_param <- function(
   } else {
 
     # Minimal fallback if WHO seed switch is off
-    seed_time <- c(base::min(seed_time), base::max(seed_time) + 1)
+    seed_time <- c(base::min(year_seed_time), base::max(year_seed_time) + 1)
 
     seed_data <- base::data.frame(
       dim1 = 1, dim2 = 1, dim3 = 1,

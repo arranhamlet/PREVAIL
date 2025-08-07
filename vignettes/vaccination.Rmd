@@ -201,7 +201,7 @@ default_params <- custom_data_process_wrapper(
 
 # 3.  Running the model with our custom parameters and evaluating.
 
-Now we have generated our parameters, we want to see the impact of our custom vaccination. We do this as in the [Getting started vignette](), by using `run_model_unpack_results()`.
+Now we have generated our parameters, we want to see the impact of our custom vaccination. We do this as in the [Getting started vignette](Getting_started.html), by using `run_model_unpack_results()`.
 
 ```{r, eval = F}
 model_run_custom <- run_model_unpack_results(

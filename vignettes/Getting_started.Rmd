@@ -31,7 +31,7 @@ a stochastic transmission model, and visualize results.
 
 In this vignette we will be using the default data included in the
 package. If you are interested in learning how to use your own data on
-[demography](), [vaccination](), or [infection dynamics]() please see
+[demography](demography.html), [vaccination](vaccination.html), or [disease related parameters](disease.html) please see
 the linked vignettes.
 
 The below example will run through a measles transmission model in

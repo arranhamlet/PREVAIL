@@ -58,6 +58,7 @@ for follow-up analysis or second-stage fitting.</p>
 <span>  <span class="va">parameters</span>,</span>
 <span>  <span class="va">serodata</span>,</span>
 <span>  <span class="va">prior</span>,</span>
+<span>  stochastic <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  fitted_parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"reporting_rate"</span>, <span class="st">"R0_modifier"</span><span class="op">)</span>,</span>
 <span>  initial <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  domain <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">0</span>, <span class="fl">2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span>, byrow <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span>
@@ -83,6 +84,10 @@ containing numeric vectors of observed seropositivity by age.</p></dd>
 
 <dt id="arg-prior">prior<a class="anchor" aria-label="anchor" href="#arg-prior"></a></dt>
 <dd><p>A prior distribution object created using <code><a href="https://mrc-ide.github.io/monty/reference/monty_dsl.html" class="external-link">monty_dsl</a></code>.</p></dd>
+
+
+<dt id="arg-stochastic">stochastic<a class="anchor" aria-label="anchor" href="#arg-stochastic"></a></dt>
+<dd><p>TRUE or FALSE. Determines whether to run the transmission_model() as stochastic or deterministic. By default uses FALSE to increase speed.</p></dd>
 
 
 <dt id="arg-fitted-parameters">fitted_parameters<a class="anchor" aria-label="anchor" href="#arg-fitted-parameters"></a></dt>

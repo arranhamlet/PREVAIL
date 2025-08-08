@@ -56,9 +56,10 @@ generate_age_breaks <- function(df, global_min = 0, global_max = 100) {
   sort(unique(all_breaks))
 }
 
-#Filter to a countryle countries measles data - remove sample that only included migrant workers
+#Filter to a countryle countries measles data - select for nationally representative
 country_mea <- sero_data %>%
-  filter(iso3 == "SGP", disease_s == "Measles")
+  filter(iso3 == "ZMB", disease_s == "Measles") %>%
+  slice(1)
 
 #Generate serological data in the correct format
 these_age_breaks <- generate_age_breaks(country_mea)
@@ -68,7 +69,7 @@ sero_country <- make_serodata(data = country_mea,
 
 #Generate parameters
 params <- PREVAIL::custom_data_process_wrapper(
-  iso = "SGP",
+  iso = "ZMB",
   disease = "measles",
   R0 = 15,
   aggregate_age = T,
@@ -77,7 +78,7 @@ params <- PREVAIL::custom_data_process_wrapper(
 
 #Defining domain and parameters
 parameters_to_fit <- c("vaccination_modifier", "R0_modifier", "reporting_rate")
-domain <- matrix(c(0, 2, 0, 2, 0, 100), nrow = 3, byrow = TRUE)
+domain <- matrix(c(.75, 1.25, 0, 2, 0, 100), nrow = 3, byrow = TRUE)
 
 prior <- monty::monty_dsl({
   vaccination_modifier ~ Normal(mean = 1, sd = 10)
@@ -92,7 +93,7 @@ fit <- fit_transmission_model(
   fitted_parameters = parameters_to_fit,
   domain = domain,
   vcv = diag(c(.1, .1, .1)),
-  n_steps = 1000,
+  n_steps = 5000,
   n_particles = 1
 )
 

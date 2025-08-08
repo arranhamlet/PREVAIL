@@ -113,8 +113,8 @@ prepare_future_data <- function(params, future_events, current_susceptibility) {
 
   seed_df <- Reduce(rbind, lapply(seq_len(n_future), function(i) {
     n_cases <- future_events$introduced_cases[i]
-    if (n_cases == 0) return(NULL)
-    sampled_ages <- sample(seq_along(pop_weights), n_cases, prob = pop_weights)
+    if (n_cases == 0) return(data.frame(dim1 = 1, dim2 = 1, dim3 = 1, dim4 = i, value = 0))
+    sampled_ages <- sample(seq_along(pop_weights), n_cases, prob = pop_weights, replace = TRUE)
     data.frame(dim1 = sampled_ages, dim2 = 1, dim3 = 1, dim4 = i, value = 1)
   }))
 
@@ -127,7 +127,7 @@ prepare_future_data <- function(params, future_events, current_susceptibility) {
     dim3 = params$n_risk,
     dim4 = new_params$no_seeded_changes,
     updates = seed_df %>%
-      mutate(dim4 = match(dim4, sort(unique(dim4))) * 2)
+      mutate(dim4 = match(dim4, sort(unique(dim4))))
   ) %>% df_to_array()
 
   new_params$repro_weight <- params$repro_weight %>%

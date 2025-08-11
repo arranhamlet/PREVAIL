@@ -8,3 +8,6 @@ dev
 /doc/
 /Meta/
 .Rproj.user
+*.o
+*.so
+*.dll

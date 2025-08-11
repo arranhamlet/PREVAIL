@@ -34,10 +34,10 @@ plot_baseline_and_fitted_sero <- function(param_list, compare_data = serodata, n
     not_NA <- which(!is.na(compare_data$serosurvey[[a]]))
     do.call(rbind, sapply(not_NA, function(b) {
       data.frame(
-        age = not_NA,
-        time = seq_along(all_states$seropositive[not_NA, 1, ]),
-        base = all_states$seropositive[not_NA, 1, ],
-        fitted = all_states$seropositive[not_NA, 2, ]
+        age = b,
+        time = seq_along(all_states$seropositive[b, 1, ]),
+        base = all_states$seropositive[b, 1, ],
+        fitted = all_states$seropositive[b, 2, ]
       )
     }, simplify = FALSE))
   }, simplify = FALSE)) %>%

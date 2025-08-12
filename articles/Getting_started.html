@@ -332,7 +332,8 @@ example we will be looking forward 10 years, with vaccination steadily
 decreasing, cases being introduced in year 7, and R0 remaining constant.
 To summarise our onwards scenario, we need to create a data.frame with
 four columns.</p>
-<p><strong>year</strong> - The year of simulation.</p>
+<p><strong>time</strong> - The timepoint where an event happens,
+measured in days.</p>
 <p><strong>relative_coverage</strong> - The relative vaccination
 coverage compared to the final entry of
 <code>params$vaccination_coverage</code>. A value of 0.5 would indicate
@@ -348,30 +349,30 @@ over time, falling to 50%, then 25% and then to 0% vaccination coverage
 relative to our initial timepoint.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">vaccination_reduction</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  year <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">9</span>,</span>
+<span>  time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">9</span><span class="op">)</span> <span class="op">*</span> <span class="fl">365</span>,</span>
 <span>  relative_coverage <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="fl">0.25</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,</span>
 <span>  introduced_cases <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">10</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,</span>
 <span>  R0 <span class="op">=</span> <span class="fl">15</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">vaccination_reduction</span></span>
-<span><span class="co">#&gt;    year relative_coverage introduced_cases R0</span></span>
+<span><span class="co">#&gt;    time relative_coverage introduced_cases R0</span></span>
 <span><span class="co">#&gt; 1     0              0.50                0 15</span></span>
-<span><span class="co">#&gt; 2     1              0.50                0 15</span></span>
-<span><span class="co">#&gt; 3     2              0.50                0 15</span></span>
-<span><span class="co">#&gt; 4     3              0.25                0 15</span></span>
-<span><span class="co">#&gt; 5     4              0.25                0 15</span></span>
-<span><span class="co">#&gt; 6     5              0.25                0 15</span></span>
-<span><span class="co">#&gt; 7     6              0.00                0 15</span></span>
-<span><span class="co">#&gt; 8     7              0.00               10 15</span></span>
-<span><span class="co">#&gt; 9     8              0.00                0 15</span></span>
-<span><span class="co">#&gt; 10    9              0.00                0 15</span></span></code></pre></div>
+<span><span class="co">#&gt; 2   365              0.50                0 15</span></span>
+<span><span class="co">#&gt; 3   730              0.50                0 15</span></span>
+<span><span class="co">#&gt; 4  1095              0.25                0 15</span></span>
+<span><span class="co">#&gt; 5  1460              0.25                0 15</span></span>
+<span><span class="co">#&gt; 6  1825              0.25                0 15</span></span>
+<span><span class="co">#&gt; 7  2190              0.00                0 15</span></span>
+<span><span class="co">#&gt; 8  2555              0.00               10 15</span></span>
+<span><span class="co">#&gt; 9  2920              0.00                0 15</span></span>
+<span><span class="co">#&gt; 10 3285              0.00                0 15</span></span></code></pre></div>
 <p>We are also going to run a baseline example, where vaccination
 coverage is maintained (<code>relative_coverage = 1</code>) for
 comparison.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">vaccination_maintenance</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  year <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">9</span>,</span>
+<span>  time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">9</span><span class="op">)</span> <span class="op">*</span> <span class="fl">365</span>,</span>
 <span>  relative_coverage <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  introduced_cases <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">10</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,</span>
 <span>  R0 <span class="op">=</span> <span class="fl">15</span></span>

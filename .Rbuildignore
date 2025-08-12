@@ -7,3 +7,5 @@
 ^doc$
 ^Meta$
 analysis/
+inst/extdata/data-raw
+inst/extdata/data-processed

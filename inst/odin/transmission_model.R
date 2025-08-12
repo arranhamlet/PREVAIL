@@ -1,4 +1,33 @@
 # ------------------------------------------------------------------------------
+# GENERAL CODE COMMENTS
+# ------------------------------------------------------------------------------
+
+# There are a few aspects to this code which might require further evaluation for those not experienced with Odin models.
+# A few examples of these will be documented here.
+
+# --------------------------
+# Why is the value being sampled in a Binomial(value, probability) call often first evaluated to see whether it is 0 or lower? I.e. if (S_available[i, j, k] <= 0) 0
+# --------------------------
+# If an object in the Binomial() call is below 0, it will cause an error in Odin and lead to it crashing. Evaluating to see if the value is below 0, and providing the value of 0 rather than using Binomial() avoids this error.
+
+# --------------------------
+# Why is the probability being sampled in a Binomial(value, probability) wrapped with a min/max? I.e. Binomial(S_available[i, j, k], max(min(lambda[i, j, k], 1), 0))
+# --------------------------
+#If a Binomial value is sampled with a value below 0 or above 1 it will cause an error in Odin. Wrapping with min/max stops this from occurring and crashing Odin.
+
+# --------------------------
+# Why are
+# --------------------------
+
+
+
+
+
+
+
+
+
+# ------------------------------------------------------------------------------
 # INITIAL COMPARTMENT VALUES
 # ------------------------------------------------------------------------------
 
@@ -118,8 +147,11 @@ recovered_Is_to_Rc[, , ] <- if(recovered_Is_to_R[i, j, k] >= recovered_from_Is[i
 #Compute aging flows and post-aging compartment states for all modelled compartments.
 
 # Susceptible (S)
-aging_into_S[1, 1, ]              <- sum(Births)  # Newborns enter first age & vacc group
+# The only way to age into the first compartment is into the Susceptible compartment
+aging_into_S[1, 1, ]              <- sum(Births)
+# For ages after the 1st age group, we evaluate to see if there are any in the prior age group (i - 1), and i there are, then we sample the aging rate for the prior compartment (aging_rate[i - 1]) to calculate how many are aging into that compartment
 aging_into_S[2:n_age, , ]         <- if(S[i - 1, j, k] <= 0 || aging_rate[i - 1] <= 0) 0 else (S[i - 1, j, k] * max(min(aging_rate[i - 1], 1), 0))
+#To estimate the aging out of the 1st compartment, we make sure that the compartment does not have negative individuals, and then we age them out at the applied rate.
 aging_out_of_S[1, , ] <- if(S[1, j, k] - aging_into_S[1, 1, k] <= 0 || aging_rate[1] <= 0) 0 else (max(S[1, j, k] - aging_into_S[1, 1, k], 0) * aging_rate[1])
 aging_out_of_S[2:n_age, , ] <- if(S[i, j, k] <= 0 || aging_rate[i] <= 0) 0 else (S[i, j, k] * max(min(aging_rate[i], 1), 0))
 S_after_aging[, , ]               <- max(S[i, j, k] + aging_into_S[i, j, k] - aging_out_of_S[i, j, k], 0)
@@ -160,6 +192,7 @@ Rc_after_aging[, , ]               <- max(Rc[i, j, k] + aging_into_Rc[i, j, k] -
 #Apply stochastic or deterministic vaccination transitions between vaccination strata for each compartment.
 
 # Susceptible (S)
+#Here we ensure that those being vaccinated out of the compartment have individuals in it (S_after_aging[i, j, k] <= 0), the probability is more than 0 (vaccination_prop[i, j, k] <= 0), and that vaccination can occur in the specified compartment (i.e we dont vaccine someone already in the highest vaccination compartment as they are already max vaccinated)
 vaccinating_out_of_S[, , ] <- if (
   n_vacc == 1 || j >= n_vacc - 1 || S_after_aging[i, j, k] <= 0 || vaccination_prop[i, j, k] <= 0
 ) 0 else if (stochastic_vaccination == 1) Binomial(S_after_aging[i, j, k], max(min(vaccination_prop[i, j, k], 1), 0)) else
@@ -210,68 +243,68 @@ Rc_after_vaccination[, , ] <- Rc_after_aging[i, j, k] + vaccinating_into_Rc[i, j
 # --- Vaccination transitions INTO higher protection compartments ---
 
 # Susceptible (S)
+#The 1st compartment represents unvaccinated, and so people are not vaccinated into that. After this there are two vaccination compartments per dose, a short (odd number) and long (even number) term protection compartment
+#The first two cannot be vaccinated into
 vaccinating_into_S[, 1:2, ]     <- 0
-vaccinating_into_S[, 4, ] <- 0
+#The 3rd compartment can only be increased by unvaccinated individuals
 vaccinating_into_S[, 3, ]       <- if(vaccinating_out_of_S[i, 1, k] <= 0) 0 else vaccinating_out_of_S[i, 1, k]
-vaccinating_into_S[, 5:n_vacc, ] <-
+#Here, individuals are vaccinated into the short term protection compartments (the odd numbers) and can come from those in a prior vaccine dose section in either the short (odd) or long (even) term protection compartments. I.e if you have had 1 dose already (in j = 2 or j = 3) then you can go into the 2nd dose short compartment (j = 5). No one can be directly vaccinated into the long (even) term compartments. The if statement here ensures assignment is accurate
+vaccinating_into_S[, 4:n_vacc, ] <-
   if (j >= 5 && j %% 2 == 1 && j - 3 >= 1 && j - 2 >= 1 && j <= n_vacc)
     vaccinating_out_of_S[i, j - 2, k] + vaccinating_out_of_S[i, j - 3, k] else 0
 
-
 # Exposed (E)
 vaccinating_into_E[, 1:2, ]     <- 0
-vaccinating_into_E[, 4, ] <- 0
 vaccinating_into_E[, 3, ]       <- if(vaccinating_out_of_E[i, 1, k] <= 0) 0 else vaccinating_out_of_E[i, 1, k]
-vaccinating_into_E[, 5:n_vacc, ] <-
+vaccinating_into_E[, 4:n_vacc, ] <-
   if (j >= 5 && j %% 2 == 1 && j - 3 >= 1 && j - 2 >= 1 && j <= n_vacc)
     vaccinating_out_of_E[i, j - 2, k] + vaccinating_out_of_E[i, j - 3, k] else 0
 
-
 # Infectious (I)
 vaccinating_into_I[, 1:2, ]     <- 0
-vaccinating_into_I[, 4, ] <- 0
 vaccinating_into_I[, 3, ]       <- if(vaccinating_out_of_I[i, 1, k] <= 0) 0 else vaccinating_out_of_I[i, 1, k]
-vaccinating_into_I[, 5:n_vacc, ] <-
+vaccinating_into_I[, 4:n_vacc, ] <-
   if (j >= 5 && j %% 2 == 1 && j - 3 >= 1 && j - 2 >= 1 && j <= n_vacc)
     vaccinating_out_of_I[i, j - 2, k] + vaccinating_out_of_I[i, j - 3, k] else 0
 
 
 # Recovered (R)
 vaccinating_into_R[, 1:2, ]     <- 0
-vaccinating_into_R[, 4, ] <- 0
 vaccinating_into_R[, 3, ]       <- if(vaccinating_out_of_R[i, 1, k] <= 0) 0 else vaccinating_out_of_R[i, 1, k]
-vaccinating_into_R[, 5:n_vacc, ] <-
+vaccinating_into_R[, 4:n_vacc, ] <-
   if (j >= 5 && j %% 2 == 1 && j - 3 >= 1 && j - 2 >= 1 && j <= n_vacc)
     vaccinating_out_of_R[i, j - 2, k] + vaccinating_out_of_R[i, j - 3, k] else 0
 
 # Severe Infectious (Is)
 vaccinating_into_Is[, 1:2, ]     <- 0
-vaccinating_into_Is[, 4, ] <- 0
 vaccinating_into_Is[, 3, ]       <- if(vaccinating_out_of_Is[i, 1, k] <= 0) 0 else vaccinating_out_of_Is[i, 1, k]
-vaccinating_into_Is[, 5:n_vacc, ] <-
+vaccinating_into_Is[, 4:n_vacc, ] <-
   if (j >= 5 && j %% 2 == 1 && j - 3 >= 1 && j - 2 >= 1 && j <= n_vacc)
     vaccinating_out_of_Is[i, j - 2, k] + vaccinating_out_of_Is[i, j - 3, k] else 0
 
-
 # Recovered with Complications (Rc)
 vaccinating_into_Rc[, 1:2, ]     <- 0
-vaccinating_into_Rc[, 4, ] <- 0
 vaccinating_into_Rc[, 3, ]       <- if(vaccinating_out_of_Rc[i, 1, k] <= 0) 0 else vaccinating_out_of_Rc[i, 1, k]
-vaccinating_into_Rc[, 5:n_vacc, ] <-
+vaccinating_into_Rc[, 4:n_vacc, ] <-
   if (j >= 5 && j %% 2 == 1 && j - 3 >= 1 && j - 2 >= 1 && j <= n_vacc)
     vaccinating_out_of_Rc[i, j - 2, k] + vaccinating_out_of_Rc[i, j - 3, k] else 0
 
 # ------------------------------------------------------------------------------
 # STEP 3: WANING — Apply waning to the results after vaccination
 # ------------------------------------------------------------------------------
-# Apply biphasic waning transitions (short → long → unvaccinated) to all compartments, modifying vaccination strata.
+# Apply biphasic waning transitions (short → long) to all compartments, modifying vaccination strata.
+# Waning can  occur from a short (odd) to a long (even) compartment, or from a long (even) compartment to unvaccinated (j = 1)
 
 # Susceptible (S)
+#If the the vaccine compartment is odd, more than 1, and there are individuals left after vaccination, then sample for waning
 waning_from_S_short[, , ] <- if (j %% 2 == 1 && j > 1 && S_after_vaccination[i, j, k] > 0)
   Binomial(S_after_vaccination[i, j, k], max(min(short_term_waning[j], 1), 0)) else 0
+#Waning from long occurs if the vaccine compartment is even, more than 1, and there are individuals in the above compartment
 waning_to_S_long[, 1:(n_vacc - 1), ] <- if (j %% 2 == 0 && j > 1) waning_from_S_short[i, j + 1, k] else 0
+#Waning occurs if the vaccine comarptment is even, more than 1 j is less than the n_vacc, and there are individuals
 waning_from_S_long[, , ] <- if (j %% 2 == 0 && j > 1 && j <= n_vacc && S_after_vaccination[i, j, k] > 0)
   Binomial(S_after_vaccination[i, j, k], max(min(long_term_waning[j], 1), 0)) else 0
+#Waning to unvaccinated can only come to j = 1, and only from j = 2
 waning_to_S_unvaccinated[, , ] <- if (j == 1 && n_vacc >= 2) waning_from_S_long[i, 2, k] else 0
 waning_to_S_short[, 1:(n_vacc - 1), ] <- if (j %% 2 == 1 && j > 1 && j + 1 <= n_vacc)
   waning_from_S_long[i, j + 1, k] else 0
@@ -350,9 +383,12 @@ migration_adjusted[, , ] <- migration[i, j, k] * pos_neg_migration
 
 # Susceptible (S)
 sum_S <- sum(S)
+# Work out the proportion of migration that S should represent
 migration_prop_S <- if(N <= 0) 0 else sum_S/N
+#Sample the proportional number of migration that should go into S
 migration_occuring_S <- if (migration_distribution[1] <= 0 || sum_S <= 0) 0 else
   Binomial(sum(migration_adjusted), max(min(migration_prop_S, 1), 0))
+#Assign the migration to the current demographic makeup of S (maintain age, vaccination and risk distribution overall)
 migration_S[, , ] <- if (migration_occuring_S <= 0 || sum_S <= 0) 0 else
   Binomial(migration_occuring_S, S[i, j, k]/max(sum_S, 1e-12))
 
@@ -510,6 +546,7 @@ Npop_background_death[, ] <- if (Npop_age_risk[i, j] <= 0) 0 else
 repro_weight_now <- interpolate(tt_migration, repro_weight, "constant")
 
 # Reproductive population (weighted sum across compartments)
+# Here we only calculate the reproductive population if it is between repro_low and repro_high, and multiply this by the repro_weight. This value contains the proportion of the age group that is of reproductive age (15-50)
 reproductive_population[] <- if (i >= repro_low && i <= repro_high)
   ((sum(S[i, , ]) + sum(E[i, , ]) + sum(I[i, , ]) +
            sum(R[i, , ]) + sum(Is[i, , ]) + sum(Rc[i, , ])) * repro_weight_now[i]) else 0
@@ -522,6 +559,7 @@ birth_rate[] <- if (reproductive_population[i] <= 0) 0 else
 birth_int <- interpolate(tt_birth_changes, crude_birth, "constant")
 
 # Compute births
+# The stochastic_birth argument is 0 by default, and represents whether to use a constant rate, or to sample
 Births[] <- if (reproductive_population[i] <= 0) 0 else if (simp_birth_death == 1)
   Binomial(reproductive_population[i], max(min(birth_rate[i] / 2, 1), 0)) else if (stochastic_birth == 1) Binomial(reproductive_population[i], max(min(birth_int[i] / 2, 1), 0)) else (reproductive_population[i] * max(min(birth_int[i] / 2, 1), 0))
 

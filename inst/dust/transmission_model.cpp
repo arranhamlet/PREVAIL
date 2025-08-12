@@ -1208,16 +1208,11 @@ public:
     }
     for (size_t i = 1; i <= shared.dim.vaccinating_into_E.dim[0]; ++i) {
       for (size_t k = 1; k <= shared.dim.vaccinating_into_E.dim[2]; ++k) {
-        internal.vaccinating_into_E[i - 1 + 3 * shared.dim.vaccinating_into_E.mult[1] + (k - 1) * shared.dim.vaccinating_into_E.mult[2]] = 0;
-      }
-    }
-    for (size_t i = 1; i <= shared.dim.vaccinating_into_E.dim[0]; ++i) {
-      for (size_t k = 1; k <= shared.dim.vaccinating_into_E.dim[2]; ++k) {
         internal.vaccinating_into_E[i - 1 + 2 * shared.dim.vaccinating_into_E.mult[1] + (k - 1) * shared.dim.vaccinating_into_E.mult[2]] = (internal.vaccinating_out_of_E[i - 1 + (k - 1) * shared.dim.vaccinating_out_of_E.mult[2]] <= 0 ? 0 : internal.vaccinating_out_of_E[i - 1 + (k - 1) * shared.dim.vaccinating_out_of_E.mult[2]]);
       }
     }
     for (size_t i = 1; i <= shared.dim.vaccinating_into_E.dim[0]; ++i) {
-      for (size_t j = 5; j <= static_cast<size_t>(shared.n_vacc); ++j) {
+      for (size_t j = 4; j <= static_cast<size_t>(shared.n_vacc); ++j) {
         for (size_t k = 1; k <= shared.dim.vaccinating_into_E.dim[2]; ++k) {
           internal.vaccinating_into_E[i - 1 + (j - 1) * shared.dim.vaccinating_into_E.mult[1] + (k - 1) * shared.dim.vaccinating_into_E.mult[2]] = (j >= 5 && std::fmod(j, 2) == 1 && j - 3 >= 1 && j - 2 >= 1 && static_cast<int>(j) <= shared.n_vacc ? internal.vaccinating_out_of_E[i - 1 + (j - 2 - 1) * shared.dim.vaccinating_out_of_E.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_E.mult[2]] + internal.vaccinating_out_of_E[i - 1 + (j - 3 - 1) * shared.dim.vaccinating_out_of_E.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_E.mult[2]] : 0);
         }
@@ -1232,16 +1227,11 @@ public:
     }
     for (size_t i = 1; i <= shared.dim.vaccinating_into_I.dim[0]; ++i) {
       for (size_t k = 1; k <= shared.dim.vaccinating_into_I.dim[2]; ++k) {
-        internal.vaccinating_into_I[i - 1 + 3 * shared.dim.vaccinating_into_I.mult[1] + (k - 1) * shared.dim.vaccinating_into_I.mult[2]] = 0;
-      }
-    }
-    for (size_t i = 1; i <= shared.dim.vaccinating_into_I.dim[0]; ++i) {
-      for (size_t k = 1; k <= shared.dim.vaccinating_into_I.dim[2]; ++k) {
         internal.vaccinating_into_I[i - 1 + 2 * shared.dim.vaccinating_into_I.mult[1] + (k - 1) * shared.dim.vaccinating_into_I.mult[2]] = (internal.vaccinating_out_of_I[i - 1 + (k - 1) * shared.dim.vaccinating_out_of_I.mult[2]] <= 0 ? 0 : internal.vaccinating_out_of_I[i - 1 + (k - 1) * shared.dim.vaccinating_out_of_I.mult[2]]);
       }
     }
     for (size_t i = 1; i <= shared.dim.vaccinating_into_I.dim[0]; ++i) {
-      for (size_t j = 5; j <= static_cast<size_t>(shared.n_vacc); ++j) {
+      for (size_t j = 4; j <= static_cast<size_t>(shared.n_vacc); ++j) {
         for (size_t k = 1; k <= shared.dim.vaccinating_into_I.dim[2]; ++k) {
           internal.vaccinating_into_I[i - 1 + (j - 1) * shared.dim.vaccinating_into_I.mult[1] + (k - 1) * shared.dim.vaccinating_into_I.mult[2]] = (j >= 5 && std::fmod(j, 2) == 1 && j - 3 >= 1 && j - 2 >= 1 && static_cast<int>(j) <= shared.n_vacc ? internal.vaccinating_out_of_I[i - 1 + (j - 2 - 1) * shared.dim.vaccinating_out_of_I.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_I.mult[2]] + internal.vaccinating_out_of_I[i - 1 + (j - 3 - 1) * shared.dim.vaccinating_out_of_I.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_I.mult[2]] : 0);
         }
@@ -1256,16 +1246,11 @@ public:
     }
     for (size_t i = 1; i <= shared.dim.vaccinating_into_R.dim[0]; ++i) {
       for (size_t k = 1; k <= shared.dim.vaccinating_into_R.dim[2]; ++k) {
-        internal.vaccinating_into_R[i - 1 + 3 * shared.dim.vaccinating_into_R.mult[1] + (k - 1) * shared.dim.vaccinating_into_R.mult[2]] = 0;
-      }
-    }
-    for (size_t i = 1; i <= shared.dim.vaccinating_into_R.dim[0]; ++i) {
-      for (size_t k = 1; k <= shared.dim.vaccinating_into_R.dim[2]; ++k) {
         internal.vaccinating_into_R[i - 1 + 2 * shared.dim.vaccinating_into_R.mult[1] + (k - 1) * shared.dim.vaccinating_into_R.mult[2]] = (internal.vaccinating_out_of_R[i - 1 + (k - 1) * shared.dim.vaccinating_out_of_R.mult[2]] <= 0 ? 0 : internal.vaccinating_out_of_R[i - 1 + (k - 1) * shared.dim.vaccinating_out_of_R.mult[2]]);
       }
     }
     for (size_t i = 1; i <= shared.dim.vaccinating_into_R.dim[0]; ++i) {
-      for (size_t j = 5; j <= static_cast<size_t>(shared.n_vacc); ++j) {
+      for (size_t j = 4; j <= static_cast<size_t>(shared.n_vacc); ++j) {
         for (size_t k = 1; k <= shared.dim.vaccinating_into_R.dim[2]; ++k) {
           internal.vaccinating_into_R[i - 1 + (j - 1) * shared.dim.vaccinating_into_R.mult[1] + (k - 1) * shared.dim.vaccinating_into_R.mult[2]] = (j >= 5 && std::fmod(j, 2) == 1 && j - 3 >= 1 && j - 2 >= 1 && static_cast<int>(j) <= shared.n_vacc ? internal.vaccinating_out_of_R[i - 1 + (j - 2 - 1) * shared.dim.vaccinating_out_of_R.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_R.mult[2]] + internal.vaccinating_out_of_R[i - 1 + (j - 3 - 1) * shared.dim.vaccinating_out_of_R.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_R.mult[2]] : 0);
         }
@@ -1280,16 +1265,11 @@ public:
     }
     for (size_t i = 1; i <= shared.dim.vaccinating_into_Is.dim[0]; ++i) {
       for (size_t k = 1; k <= shared.dim.vaccinating_into_Is.dim[2]; ++k) {
-        internal.vaccinating_into_Is[i - 1 + 3 * shared.dim.vaccinating_into_Is.mult[1] + (k - 1) * shared.dim.vaccinating_into_Is.mult[2]] = 0;
-      }
-    }
-    for (size_t i = 1; i <= shared.dim.vaccinating_into_Is.dim[0]; ++i) {
-      for (size_t k = 1; k <= shared.dim.vaccinating_into_Is.dim[2]; ++k) {
         internal.vaccinating_into_Is[i - 1 + 2 * shared.dim.vaccinating_into_Is.mult[1] + (k - 1) * shared.dim.vaccinating_into_Is.mult[2]] = (internal.vaccinating_out_of_Is[i - 1 + (k - 1) * shared.dim.vaccinating_out_of_Is.mult[2]] <= 0 ? 0 : internal.vaccinating_out_of_Is[i - 1 + (k - 1) * shared.dim.vaccinating_out_of_Is.mult[2]]);
       }
     }
     for (size_t i = 1; i <= shared.dim.vaccinating_into_Is.dim[0]; ++i) {
-      for (size_t j = 5; j <= static_cast<size_t>(shared.n_vacc); ++j) {
+      for (size_t j = 4; j <= static_cast<size_t>(shared.n_vacc); ++j) {
         for (size_t k = 1; k <= shared.dim.vaccinating_into_Is.dim[2]; ++k) {
           internal.vaccinating_into_Is[i - 1 + (j - 1) * shared.dim.vaccinating_into_Is.mult[1] + (k - 1) * shared.dim.vaccinating_into_Is.mult[2]] = (j >= 5 && std::fmod(j, 2) == 1 && j - 3 >= 1 && j - 2 >= 1 && static_cast<int>(j) <= shared.n_vacc ? internal.vaccinating_out_of_Is[i - 1 + (j - 2 - 1) * shared.dim.vaccinating_out_of_Is.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_Is.mult[2]] + internal.vaccinating_out_of_Is[i - 1 + (j - 3 - 1) * shared.dim.vaccinating_out_of_Is.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_Is.mult[2]] : 0);
         }
@@ -1304,16 +1284,11 @@ public:
     }
     for (size_t i = 1; i <= shared.dim.vaccinating_into_Rc.dim[0]; ++i) {
       for (size_t k = 1; k <= shared.dim.vaccinating_into_Rc.dim[2]; ++k) {
-        internal.vaccinating_into_Rc[i - 1 + 3 * shared.dim.vaccinating_into_Rc.mult[1] + (k - 1) * shared.dim.vaccinating_into_Rc.mult[2]] = 0;
-      }
-    }
-    for (size_t i = 1; i <= shared.dim.vaccinating_into_Rc.dim[0]; ++i) {
-      for (size_t k = 1; k <= shared.dim.vaccinating_into_Rc.dim[2]; ++k) {
         internal.vaccinating_into_Rc[i - 1 + 2 * shared.dim.vaccinating_into_Rc.mult[1] + (k - 1) * shared.dim.vaccinating_into_Rc.mult[2]] = (internal.vaccinating_out_of_Rc[i - 1 + (k - 1) * shared.dim.vaccinating_out_of_Rc.mult[2]] <= 0 ? 0 : internal.vaccinating_out_of_Rc[i - 1 + (k - 1) * shared.dim.vaccinating_out_of_Rc.mult[2]]);
       }
     }
     for (size_t i = 1; i <= shared.dim.vaccinating_into_Rc.dim[0]; ++i) {
-      for (size_t j = 5; j <= static_cast<size_t>(shared.n_vacc); ++j) {
+      for (size_t j = 4; j <= static_cast<size_t>(shared.n_vacc); ++j) {
         for (size_t k = 1; k <= shared.dim.vaccinating_into_Rc.dim[2]; ++k) {
           internal.vaccinating_into_Rc[i - 1 + (j - 1) * shared.dim.vaccinating_into_Rc.mult[1] + (k - 1) * shared.dim.vaccinating_into_Rc.mult[2]] = (j >= 5 && std::fmod(j, 2) == 1 && j - 3 >= 1 && j - 2 >= 1 && static_cast<int>(j) <= shared.n_vacc ? internal.vaccinating_out_of_Rc[i - 1 + (j - 2 - 1) * shared.dim.vaccinating_out_of_Rc.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_Rc.mult[2]] + internal.vaccinating_out_of_Rc[i - 1 + (j - 3 - 1) * shared.dim.vaccinating_out_of_Rc.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_Rc.mult[2]] : 0);
         }
@@ -1733,16 +1708,11 @@ public:
     }
     for (size_t i = 1; i <= shared.dim.vaccinating_into_S.dim[0]; ++i) {
       for (size_t k = 1; k <= shared.dim.vaccinating_into_S.dim[2]; ++k) {
-        internal.vaccinating_into_S[i - 1 + 3 * shared.dim.vaccinating_into_S.mult[1] + (k - 1) * shared.dim.vaccinating_into_S.mult[2]] = 0;
-      }
-    }
-    for (size_t i = 1; i <= shared.dim.vaccinating_into_S.dim[0]; ++i) {
-      for (size_t k = 1; k <= shared.dim.vaccinating_into_S.dim[2]; ++k) {
         internal.vaccinating_into_S[i - 1 + 2 * shared.dim.vaccinating_into_S.mult[1] + (k - 1) * shared.dim.vaccinating_into_S.mult[2]] = (internal.vaccinating_out_of_S[i - 1 + (k - 1) * shared.dim.vaccinating_out_of_S.mult[2]] <= 0 ? 0 : internal.vaccinating_out_of_S[i - 1 + (k - 1) * shared.dim.vaccinating_out_of_S.mult[2]]);
       }
     }
     for (size_t i = 1; i <= shared.dim.vaccinating_into_S.dim[0]; ++i) {
-      for (size_t j = 5; j <= static_cast<size_t>(shared.n_vacc); ++j) {
+      for (size_t j = 4; j <= static_cast<size_t>(shared.n_vacc); ++j) {
         for (size_t k = 1; k <= shared.dim.vaccinating_into_S.dim[2]; ++k) {
           internal.vaccinating_into_S[i - 1 + (j - 1) * shared.dim.vaccinating_into_S.mult[1] + (k - 1) * shared.dim.vaccinating_into_S.mult[2]] = (j >= 5 && std::fmod(j, 2) == 1 && j - 3 >= 1 && j - 2 >= 1 && static_cast<int>(j) <= shared.n_vacc ? internal.vaccinating_out_of_S[i - 1 + (j - 2 - 1) * shared.dim.vaccinating_out_of_S.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_S.mult[2]] + internal.vaccinating_out_of_S[i - 1 + (j - 3 - 1) * shared.dim.vaccinating_out_of_S.mult[1] + (k - 1) * shared.dim.vaccinating_out_of_S.mult[2]] : 0);
         }

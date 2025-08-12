@@ -17,5 +17,11 @@ utils::globalVariables(c(
   "target_pop_description", "time", "total_median", "type", "upper",
   "vaccination", "vaccination_name", "vaccine", "vaccine_code",
   "vaccine_description", "value", "value.update", "weight", "where",
-  "who_region", ".", "year", ".I", ".N"
+  "who_region", ".", "year", ".I", ".N",
+  ".SD",
+  "age_from", "age_from_expanded", "age_to", "age_to_expanded",
+  "dist", "duration",
+  "group_pop", "in_repro", "introduction_year", "iteration",
+  "migration_rate_1000", "na.omit",
+  "repro_pop", "row_id", "serodata", "variable"
 ))

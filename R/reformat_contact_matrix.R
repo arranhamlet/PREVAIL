@@ -12,6 +12,7 @@
 #'
 #' @importFrom dplyr mutate rowwise ungroup select rename slice arrange pull
 #' @importFrom tidyr unnest
+#' @importFrom stats na.omit dist
 #' @export
 reformat_contact_matrix <- function(custom_data,
                                     iso = "custom",

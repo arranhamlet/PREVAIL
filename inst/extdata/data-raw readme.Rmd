@@ -1,0 +1,107 @@
+---
+title: "data-raw readme"
+output: html_document 
+date: "2025-08-11"
+---
+
+# Introduction
+
+This document serves to provide information on the raw data used within the PREVAIL package. This includes the type of data, the origin of the data, and any formatting that may have occurred.
+
+## Demographic data - UN World Population Prospects (UN WPP)
+
+The underlying demographic data in the model is, by default, provided by the [UN World Population Prospects](https://population.un.org/wpp/). The original version of the **PREVAIL** package uses the 2024 revision 
+
+The files used from the UN WPP are:
+
+* Fertility (fertility.rds)
+* Mortality (mortality.rds)
+* Population, both sexes (population_all.rds)
+* Population, female (population_female.rds)
+* Migration (migration)
+
+### Fertility (fertility.rds)
+
+Age specific fertility rates by single age are found [here](https://population.un.org/wpp/downloads?folder=Standard%20Projections&group=Fertility).
+
+We are specifically using the [Age-specific Fertility Rates (ASFR) by Single Age (XLSX)](https://population.un.org/wpp/assets/Excel%20Files/1_Indicator%20(Standard)/EXCEL_FILES/3_Fertility/WPP2024_FERT_F01_FERTILITY_RATES_BY_SINGLE_AGE_OF_MOTHER.xlsx), which provides the number of births to women in a particular single age, divided by the number of women in that age.
+
+
+### Mortality (mortality.rds)
+
+Mortality rates by single age (both sexes) are found [here](https://population.un.org/wpp/downloads?folder=Standard%20Projections&group=Mortality).
+
+The file we are specifically using is [Deaths by Single Age - Both Sexes (XLSX)](https://population.un.org/wpp/assets/Excel%20Files/1_Indicator%20(Standard)/EXCEL_FILES/4_Mortality/WPP2024_MORT_F01_1_DEATHS_SINGLE_AGE_BOTH_SEXES.xlsx). This information contains the number of deaths by single age. Data are presented in thousands.
+
+### Population (population_all.rds and population_female.rds)
+
+For population, we are using information on single ages found [here](https://population.un.org/wpp/downloads?folder=Standard%20Projections&group=Population).
+
+We use two distinct files, one for the overall population [Population by Single Age - Both Sexes (XLSX)](https://population.un.org/wpp/assets/Excel%20Files/1_Indicator%20(Standard)/EXCEL_FILES/2_Population/WPP2024_POP_F01_1_POPULATION_SINGLE_AGE_BOTH_SEXES.xlsx), and one to adjust fertility, the [Population by Single Age - Female (XLSX)](https://population.un.org/wpp/assets/Excel%20Files/1_Indicator%20(Standard)/EXCEL_FILES/2_Population/WPP2024_POP_F01_3_POPULATION_SINGLE_AGE_FEMALE.xlsx)
+
+This provides information for the total population, for for the female population  by single age. De facto population as of 1 July of the year indicated classified by single age (0, 1, 2, ..., 99, 100+). Data are presented in thousands.
+
+### Migration (migration.rds)
+
+Migration information is found within the [Demographic Indicators](https://population.un.org/wpp/downloads?folder=Standard%20Projections&group=Most%20used). This [file](https://population.un.org/wpp/assets/Excel%20Files/1_Indicator%20(Standard)/EXCEL_FILES/1_General/WPP2024_GEN_F01_DEMOGRAPHIC_INDICATORS_COMPACT.xlsx) contains information on a variety of different commonly used demographic indicators. The column of data that we use in the **PREVAIL** package is "Net Migration Rate (per 1,000 population)".
+
+## Vaccination data
+
+Vaccination data comes from a variety of sources and comprises several individual files. Vaccination information consists of:
+
+* Routine vaccination activities (routine_vaccination_data.rds).
+* Vaccination schedule (vaccination_schedule.rds)
+* Supplementary vaccination activities (sia_vaccination.rds).
+* Vaccination activities pre-1980, when WHO publically available data begins (vaccination_pre1980.rds).
+* Vaccination parameters (vaccine_parameters.rds)
+* Vaccine abbreviations (vaccine_abbreviations_diseases.csv)
+
+### WHO vaccination data (routine_vaccination_data.rds, vaccination_schedule.rds)
+
+Routine vaccination data represents the administrative and official vaccination coverage reported annually through the WHO/UNICEF Joint Reporting Form on Immunization (JRF). This information is recorded from 1980-present day.
+
+This information is found on the [Immunization data dashboard](https://immunizationdata.who.int/global?topic=Vaccination-coverage&location=) and can be downloaded with this [link](https://srhdpeuwpubsa-geecgzbpd5h0fueu.z01.azurefd.net/whdh/WIISE/export/coverage-data.xlsx)
+
+[Vaccination schedules](https://immunizationdata.who.int/global?topic=Vaccination-schedule&location=) summarizes the current vaccination schedule for young children, adolescents, and adults for each country and disease. This data can be downloaded through this [link](https://srhdpeuwpubsa-geecgzbpd5h0fueu.z01.azurefd.net/whdh/WIISE/export/vaccine-schedule-data.xlsx).
+
+### Supplementary vaccination activities (sia_vaccination.rds)
+
+Data on supplementary vaccination activities (Supplementary Immunization Activities, SIAs) were obtained from data processed by Shattock et al., (2024) who estimated the contribution of vaccination to improved survival and health. This information was compiled by the World Health Organization (WHO) and collaborating partners.
+
+The script used to generate this data is found [here](https://github.com/arranhamlet/epi50-vaccine-impact/blob/master/PREVAIL_sia_source_script.R), and the data itself can be downloaded [here](https://github.com/arranhamlet/epi50-vaccine-impact/blob/master/output/sia_vimc.rds).
+
+### Vaccination activities pre-1980 (vaccination_pre1980.rds
+
+See [pre-1980 google document](https://docs.google.com/document/d/1ap4yWYjtCsrol1Njp-TA_74WsXoWt2wHEd1257bRYV8/edit?tab=t.772vepk9b6dk).
+
+### Vaccination parameters (vaccine_parameters.rds)
+
+See [OJ]().
+
+### Vaccine abbreviations (vaccine_abbreviations_diseases.csv)
+
+This file was created by comparing the vaccines listed in "vaccination_schedule.rds" object and manually noting the diseases it was used to prevent.
+
+## Disease parameters and reported cases
+
+Disease parameters are compiled from a scoping review, and disease cases are from WHO records.
+
+### Disease parameters (disease_parameters.rds)
+
+This table provides information on required disease specific parameters for the model. This information was found in a variety of sources, cited in the table and methods, and compiled into a table.
+
+See the original file [disease_parameters.rds]() for details
+
+### Reported cases (full_disease_df.rds)
+
+Reported cases represent the disease specific cases and incidence collected annually through the WHO/UNICEF Joint Reporting Form on Immunization (JRF).
+
+These provide the annual number of cases of a disease reported in a year by location and can be found [here](https://immunizationdata.who.int/global?topic=Reported-cases-and-incidence&location=), and downloaded directly through this [link](https://srhdpeuwpubsa-geecgzbpd5h0fueu.z01.azurefd.net/whdh/WIISE/export/reported-cases-data.xlsx). 
+
+## Contact matricies
+
+These are the contact matrices generated from the paper "Projecting social contact matrices in 152 countries using contact surveys and demographic data" by [Prem et al., (2017)](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005697). Each matrix estimates contact rates across 16 age groups (0–4, 5–9, ..., 75–79) for 152 countries. Data is found in a list where the name of the object in the list is the country/territories ISO3 code.
+
+This information can be downloaded using this [link](https://doi.org/10.1371/journal.pcbi.1005697.s002). The files "MUestimates_all_locations_1.xlsx" and "MUestimates_all_locations_2.xlsx" were imported into R and combined, with each of the items in a list corresponding to individual countries contact matricies.
+
+

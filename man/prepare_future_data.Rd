@@ -11,9 +11,9 @@ prepare_future_data(params, future_events, current_susceptibility)
 
 \item{future_events}{A `data.frame` specifying future event timepoints and modifications. Must contain:
 \itemize{
-  \item \code{year}: Future year (numeric, in calendar years).
+  \item \code{time}: Future time (numeric).
   \item \code{relative_coverage}: Multiplicative modifier to vaccination coverage.
-  \item \code{R0}: Basic reproduction number for each future year.
+  \item \code{R0}: Basic reproduction number for each future timepoint.
   \item \code{introduced_cases}: Number of seed infections to introduce at each timepoint.
 }}
 

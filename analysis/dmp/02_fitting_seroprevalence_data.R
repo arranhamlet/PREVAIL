@@ -58,22 +58,22 @@ generate_age_breaks <- function(df, global_min = 0, global_max = 100) {
 
 #Filter to a countryle countries measles data - select for nationally representative
 country_mea <- sero_data %>%
-  filter(iso3 == "ZMB", disease_s == "Measles") %>%
+  filter(iso3 == "SGP", disease_s == "Measles") %>%
   slice(1)
 
 #Generate serological data in the correct format
 these_age_breaks <- generate_age_breaks(country_mea)
 
 sero_country <- make_serodata(data = country_mea,
-                           age_breaks = these_age_breaks)
+                           age_breaks = seq(0, 80, by = 5))
 
 #Generate parameters
 params <- PREVAIL::custom_data_process_wrapper(
-  iso = "ZMB",
+  iso = "SGP",
   disease = "measles",
   R0 = 15,
   aggregate_age = T,
-  new_age_breaks = these_age_breaks
+  new_age_breaks = seq(0, 80, by = 5)#these_age_breaks
 )
 
 #Defining domain and parameters
@@ -93,14 +93,15 @@ fit <- fit_transmission_model(
   fitted_parameters = parameters_to_fit,
   domain = domain,
   vcv = diag(c(.1, .1, .1)),
-  n_steps = 5000,
+  n_steps = 500,
   n_particles = 1
 )
 
 print(fit$plots$combined)
 print(fit$plots$sero)
 
-
+#Save output
+#put some plots
 
 
 

@@ -306,7 +306,7 @@ decreasing, cases being introduced in year 7, and R0 remaining constant.
 To summarise our onwards scenario, we need to create a data.frame with
 four columns.
 
-**year** - The year of simulation.
+**time** - The timepoint where an event happens, measured in days.
 
 **relative_coverage** - The relative vaccination coverage compared to
 the final entry of `params$vaccination_coverage`. A value of 0.5 would
@@ -326,7 +326,7 @@ relative to our initial timepoint.
 
 ```{r, eval = T}
 vaccination_reduction <- data.frame(
-  year = 0:9,
+  time = c(0:9) * 365,
   relative_coverage = c(0.5, 0.5, 0.5, 0.25, 0.25, 0.25, 0, 0, 0, 0),
   introduced_cases = c(0, 0, 0, 0, 0, 0, 0, 10, 0, 0),
   R0 = 15
@@ -340,7 +340,7 @@ is maintained (`relative_coverage = 1`) for comparison.
 
 ```{r, eval = F}
 vaccination_maintenance <- data.frame(
-  year = 0:9,
+  time = c(0:9) * 365,
   relative_coverage = 1,
   introduced_cases = c(0, 0, 0, 0, 0, 0, 0, 10, 0, 0),
   R0 = 15

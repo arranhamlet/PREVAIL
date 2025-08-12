@@ -7,9 +7,9 @@
 #' @param params A named list of model parameters as used in the core transmission model.
 #' @param future_events A `data.frame` specifying future event timepoints and modifications. Must contain:
 #'   \itemize{
-#'     \item \code{year}: Future year (numeric, in calendar years).
+#'     \item \code{time}: Future time (numeric).
 #'     \item \code{relative_coverage}: Multiplicative modifier to vaccination coverage.
-#'     \item \code{R0}: Basic reproduction number for each future year.
+#'     \item \code{R0}: Basic reproduction number for each future timepoint.
 #'     \item \code{introduced_cases}: Number of seed infections to introduce at each timepoint.
 #'   }
 #' @param current_susceptibility A named list with updated `S0`, `Rpop0` values reflecting the final simulation state.
@@ -24,7 +24,7 @@ prepare_future_data <- function(params, future_events, current_susceptibility) {
   ## --- Initialize ---
   new_params <- params
   n_future <- nrow(future_events)
-  future_event_tt <- future_events$year * 365
+  future_event_tt <- future_events$time
   new_params$input_data$year_start <- if(new_params$input_data$year_end == "") 2024 else new_params$input_data$year_end
 
   # Re-establish CFR
@@ -115,10 +115,12 @@ prepare_future_data <- function(params, future_events, current_susceptibility) {
     n_cases <- future_events$introduced_cases[i]
     if (n_cases == 0) return(data.frame(dim1 = 1, dim2 = 1, dim3 = 1, dim4 = i, value = 0))
     sampled_ages <- sample(seq_along(pop_weights), n_cases, prob = pop_weights, replace = TRUE)
-    data.frame(dim1 = sampled_ages, dim2 = 1, dim3 = 1, dim4 = i, value = 1)
+    data.frame(dim1 = sampled_ages, dim2 = 1, dim3 = 1, dim4 = i, value = 1) %>%
+      group_by(dim1, dim2, dim3, dim4) %>%
+      summarise(value = sum(value), .groups = "drop")
   }))
 
-  new_params$tt_seeded <- sort(c(0, which(future_events$introduced_cases != 0) * 365, which(future_events$introduced_cases != 0) * 365 + 1))
+  new_params$tt_seeded <- unique(sort(c(0, future_events$time[which(future_events$introduced_cases != 0)], future_events$time[which(future_events$introduced_cases != 0)] + 1, future_events$time)))
   new_params$no_seeded_changes <- length(new_params$tt_seeded)
 
   new_params$seeded <- generate_array_df(
